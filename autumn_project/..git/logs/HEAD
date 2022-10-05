@@ -1,0 +1,22 @@
+0000000000000000000000000000000000000000 79882d748e06f575e13fd334dbfbfdaac404a9c2 Akhil Punia <ak216punia@gmail.com> 1663843467 +0530	commit (initial): Created models
+79882d748e06f575e13fd334dbfbfdaac404a9c2 79882d748e06f575e13fd334dbfbfdaac404a9c2 Akhil Punia <ak216punia@gmail.com> 1663844569 +0530	reset: moving to 79882d748e06f575e13fd334dbfbfdaac404a9c2
+79882d748e06f575e13fd334dbfbfdaac404a9c2 2c060137939ec28e5d46ec62f7e3fdf840a0e9d5 Akhil Punia <ak216punia@gmail.com> 1663866245 +0530	commit: Updated models.py
+2c060137939ec28e5d46ec62f7e3fdf840a0e9d5 3bef4fa254415846f876944b9edb45b533860e9f Akhil Punia <ak216punia@gmail.com> 1663874773 +0530	commit: Added files
+3bef4fa254415846f876944b9edb45b533860e9f f8c18e5d3388c1e23aa8a7e0519f68e7afb24806 Akhil Punia <ak216punia@gmail.com> 1663875410 +0530	commit: .gitignore fix
+f8c18e5d3388c1e23aa8a7e0519f68e7afb24806 39d9cc3de92c6f548d66e83db6f6616af54ffbe2 Akhil Punia <ak216punia@gmail.com> 1663899208 +0530	commit: Corrected .env
+39d9cc3de92c6f548d66e83db6f6616af54ffbe2 1b56748b3e17b433cbb321746fb5425e2bcd759a Akhil Punia <ak216punia@gmail.com> 1663981938 +0530	commit: Modified models
+1b56748b3e17b433cbb321746fb5425e2bcd759a fee178d39d89d35baea8966b2f0f99cdc018181d Akhil Punia <ak216punia@gmail.com> 1663991669 +0530	commit: Added serializers
+fee178d39d89d35baea8966b2f0f99cdc018181d a7757fcde554573c21fb8d6f378b8e10330bd4e8 Akhil Punia <ak216punia@gmail.com> 1664068810 +0530	commit: Corrected InterviewPanelSerializer
+a7757fcde554573c21fb8d6f378b8e10330bd4e8 42c7704610d50ecd9da7c43e504496fde13f228f Akhil Punia <ak216punia@gmail.com> 1664076177 +0530	commit: Added views
+42c7704610d50ecd9da7c43e504496fde13f228f a961b66788994e6cd27aace5f78bfe3f6578d9f0 Akhil Punia <ak216punia@gmail.com> 1664225414 +0530	commit: Started auth feature
+a961b66788994e6cd27aace5f78bfe3f6578d9f0 c4f8ccb2cbb95b18c3e27c9858cabc03c3439528 Akhil Punia <ak216punia@gmail.com> 1664239422 +0530	commit: Worked on auth feature
+c4f8ccb2cbb95b18c3e27c9858cabc03c3439528 797ccd63f3f2d3780329ac1e113c825ad0830e3d Akhil Punia <ak216punia@gmail.com> 1664243282 +0530	commit: Added permissions
+797ccd63f3f2d3780329ac1e113c825ad0830e3d 3bea780431e53f74a7627aa3e52d5680a1d837ed Akhil Punia <ak216punia@gmail.com> 1664243459 +0530	commit: Modified permissions.py
+3bea780431e53f74a7627aa3e52d5680a1d837ed e54f31a09aa37309cb9243c60afe38b8b810b499 Akhil Punia <ak216punia@gmail.com> 1664244068 +0530	commit: Renamed auth.py
+e54f31a09aa37309cb9243c60afe38b8b810b499 f74ae131b2be5ff68f73918ce4ee14d98be0cc8a Akhil Punia <ak216punia@gmail.com> 1664328250 +0530	commit: Exception handling in user_auth.py
+f74ae131b2be5ff68f73918ce4ee14d98be0cc8a 3a9ceb81b3242d2fe9180d453d87c2806d0079b6 Akhil Punia <ak216punia@gmail.com> 1664330813 +0530	commit: Exception handling for authentication
+3a9ceb81b3242d2fe9180d453d87c2806d0079b6 bc7191bf630a02f5f639d3f512c36b709389d643 Akhil Punia <ak216punia@gmail.com> 1664572213 +0530	commit: Fixed bugs in oauth
+bc7191bf630a02f5f639d3f512c36b709389d643 4fc2f54ae42b657124e93ccdb8df12d604ea079d Akhil Punia <ak216punia@gmail.com> 1664579116 +0530	commit: Completed oauth
+4fc2f54ae42b657124e93ccdb8df12d604ea079d 382dac57db613f453a955e325e1635946eaa2b9a Akhil Punia <ak216punia@gmail.com> 1664781930 +0530	commit: Added LogoutView
+382dac57db613f453a955e325e1635946eaa2b9a 4535bece894ad0f3e96620df811785d9c766f7b5 Akhil Punia <ak216punia@gmail.com> 1664818069 +0530	commit: Fixed status code 500 bug in oauth
+4535bece894ad0f3e96620df811785d9c766f7b5 77736224bbab78de819a00ddad23fd416e5990c5 Akhil Punia <ak216punia@gmail.com> 1664972955 +0530	commit: Removed unnecessary comments

@@ -1,0 +1,112 @@
+.inPageBar{
+    display: flex;
+    flex-direction: row;
+}
+
+.topRightCorner{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-top: 44px solid #FFE06A;
+    /* background-color: #FFE06A; */
+}  
+
+.topLeftCorner{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-top: 44px solid #FFE06A;
+    /* background-color: #FFE06A; */
+}
+
+.bottomLeftCorner{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-bottom: 44px solid white;
+    /* background-color: white; */
+}
+
+.bottomRightCorner{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-bottom: 44px solid white;
+    /* background-color: white; */
+}
+
+.inPageNavBar{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    padding-top: 8px;
+    background-color: #FFE06A;
+}
+
+.currentPageDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 72px;
+}
+
+.largeText{
+    font-size: 20px;
+}
+
+.centerContent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.currentPageArrow{
+    margin-left: 18px;
+}
+
+.tabDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.pageTabs{
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 14px;
+}
+
+.pageTab{
+    font-size: 16px;
+    width: 136px;
+}
+
+.TabsDownArrowDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    height: 0px;
+    background-color: white;
+    z-index: 1;
+}
+
+.currentTabDownArrowDiv{
+    width: 136px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 0px;
+    z-index: 1;
+}
+
+.currentTabDownArrow{
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+    border-width:22px;
+    z-index: 1;
+}
