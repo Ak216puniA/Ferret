@@ -1,0 +1,79 @@
+.homepageContent{
+    background-color: #393E46;
+    margin: 12px 44px;
+    padding-bottom: 44px;
+}
+
+.contentDiv{
+    padding: 0px 44px;
+}
+
+.contentHeading{
+    color: white;
+    font-size: 22px;
+}
+
+.seasonHeadingRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 4px;
+    background-color: #F5B041;
+    color: black;
+    height: 40px;
+    font-size: 18px;
+}
+
+.seasonRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+    background-color: #515864;
+    color: white;
+    height: 40px;
+    font-size: 18px;
+}
+
+.seasonIndex{
+    width: 5%;
+}
+
+.seasonName{
+    width: 45%;
+}
+
+.seasonStartEnd{
+    width: 25%;
+}
+
+.singleElementRowFlew{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentTriangleDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 44px;
+    margin-bottom: 4px;
+}
+
+.topRightCornerDark{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.topLeftCornerDark{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-top: 44px solid #222831;
+}

@@ -8,7 +8,7 @@ class Header extends Component{
         return(
             <div className="header">
                 <div className="headerDiv1">
-                    <div className="smallIcon"><BsFillSquareFill size={24} /></div>
+                    <div className="smallIcon"><BsFillSquareFill size={24} color='#BABABA'/></div>
                     <div className="appName">Ferret</div>
                 </div>
                 <div className="headerDiv2">

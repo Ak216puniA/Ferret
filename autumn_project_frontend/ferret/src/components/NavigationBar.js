@@ -9,8 +9,8 @@ class NavigationBar extends Component{
     render(){
         return(
             <div className="navigationBar">
-                <div className="navigationIcon" id="homeIcon"><MdHomeFilled size={32}/></div>
-                <div className="navigationIcon" id="groupIcon"><MdGroups size={48}/></div>
+                <div className="navigationIcon"><MdHomeFilled size={32}/></div>
+                <div className="navigationIcon"><MdGroups size={48}/></div>
                 <div className="navigationIcon"><IoMdSettings size={32}/></div>
                 <div className="navigationIcon"><MdHelpCenter size={32}/></div>
             </div>

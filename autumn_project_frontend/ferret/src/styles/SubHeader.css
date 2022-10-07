@@ -3,36 +3,32 @@
     flex-direction: row;
 }
 
-.topRightCorner{
+.topRightCornerLight{
     width: 0;
     height: 0;
     border-left: 44px solid transparent;
-    border-top: 44px solid #FFE06A;
-    /* background-color: #FFE06A; */
+    border-top: 44px solid #EEEEEE;
 }  
 
-.topLeftCorner{
+.topLeftCornerLight{
     width: 0;
     height: 0;
     border-right: 44px solid transparent;
-    border-top: 44px solid #FFE06A;
-    /* background-color: #FFE06A; */
+    border-top: 44px solid #EEEEEE;
 }
 
-.bottomLeftCorner{
+.bottomLeftCornerDark{
     width: 0;
     height: 0;
     border-right: 44px solid transparent;
-    border-bottom: 44px solid white;
-    /* background-color: white; */
+    border-bottom: 44px solid #222831;
 }
 
-.bottomRightCorner{
+.bottomRightCornerDark{
     width: 0;
     height: 0;
     border-left: 44px solid transparent;
-    border-bottom: 44px solid white;
-    /* background-color: white; */
+    border-bottom: 44px solid #222831;
 }
 
 .inPageNavBar{
@@ -41,7 +37,7 @@
     justify-content: space-between;
     flex-grow: 1;
     padding-top: 8px;
-    background-color: #FFE06A;
+    background-color: #EEEEEE;
 }
 
 .currentPageDiv{
@@ -76,12 +72,26 @@
 .pageTabs{
     display: flex;
     flex-direction: row;
-    padding-bottom: 14px;
+    /* padding-bottom: 14px; */
+}
+
+.pageTabDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .pageTab{
     font-size: 16px;
     width: 136px;
+    height: 36px;
+    border: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.pageTab:hover{
+    background-color: #E0E0E0;
 }
 
 .TabsDownArrowDiv{
@@ -106,7 +116,8 @@
 .currentTabDownArrow{
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid black;
+    border-top: 5px solid #00ADB5;
     border-width:22px;
     z-index: 1;
+    display: none;
 }
