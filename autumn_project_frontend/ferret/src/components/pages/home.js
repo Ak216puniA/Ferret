@@ -1,11 +1,8 @@
 import React, {Component} from "react";
-import Header from "../components/Header";
-import HomepageContent from "../components/HomepageContent";
-import NavigationBar from "../components/NavigationBar";
-import SubHeader from "../components/SubHeader";
-import '../styles/Header.css';
-import '../styles/NavigationBar.css';
-import '../styles/SubHeader.css';
+import Header from "../header/index";
+import HomepageContent from "../home_page_content/index";
+import NavigationBar from "../navbar/index";
+import SubHeader from "../subheader/index";
 
 class Home extends Component {
   render() {

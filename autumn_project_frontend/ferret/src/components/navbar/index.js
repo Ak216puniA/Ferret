@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import '../styles/NavigationBar.css'
+import './index.css'
 import { MdHomeFilled } from "react-icons/md";
 import { MdGroups } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";

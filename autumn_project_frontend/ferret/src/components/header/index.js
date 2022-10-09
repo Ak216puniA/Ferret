@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { BsFillSquareFill } from "react-icons/bs"
-import '../styles/Header.css';
+import './index.css';
 
 class Header extends Component{
     render(){

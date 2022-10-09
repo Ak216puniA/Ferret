@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../styles/SubHeader.css";
+import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 
 class SubHeader extends Component{

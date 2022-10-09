@@ -1,10 +1,15 @@
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Home from './pages/Home';
+import Home from './components/pages/home';
+import LoginScreen from './components/pages/login_screen';
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Routes>
+        <Route path='/home' element={<Home />} />
+        <Route path='/login' element={<LoginScreen />} />
+      </Routes>  
     </div>
   );
 }
