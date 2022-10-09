@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { OAUTH_AUTH_ROOT } from '../../urls'
+import { OAUTH_AUTH } from '../../urls'
+import Cookies from 'js-cookie';
 
 const initialState = {
     loading : false,
@@ -9,14 +10,25 @@ const initialState = {
     error : ''
 }
 
+const csrf_token = Cookies.get('csrftoken')
+
+let config = {
+    headers : {
+        Authorization : `Token ${csrf_token}`
+    }
+}
+
 export const loginUser = createAsyncThunk('login/loginUser', () => {
     return axios
-    .get({OAUTH_AUTH_ROOT})
+    .get(`${OAUTH_AUTH}`,config={config})
     .then((response) => response.data)
+    .catch((error) => {
+        console.log(error.message)
+    })
 })
 
 const loginSlice = createSlice({
-    name : login,
+    name : 'login',
     initialState,
     extraReducers: builder => {
         builder.addCase(loginUser.pending, state => {
@@ -25,12 +37,12 @@ const loginSlice = createSlice({
         builder.addCase(loginUser.fulfilled, (state,action) => {
             state.loading = false
             state.user = action.payload
-            error = ''
+            state.error = ''
         })
         builder.addCase(loginUser.rejected, (state,action) => {
             state.loading = false
             state.user = ''
-            error = action.error.message
+            state.error = action.error.message
         })
     }
 })
