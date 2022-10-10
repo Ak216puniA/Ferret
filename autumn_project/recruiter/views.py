@@ -11,6 +11,7 @@ from .permissions import YearWisePermission, SuperUserPermission
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login,logout
 from .serializers import UserSerializer
+from django.shortcuts import redirect
 
 env = environ.Env()
 environ.Env.read_env()
@@ -65,23 +66,31 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     serializer_class=CandidateMarksSerializer
     permission_classes=[YearWisePermission]  
 
+# class getAuthCode(APIView):
+#     permission_classes=[AllowAny]
+#     def get(self, request, format=None):
+#         auth_code_url=env('AUTH_CODE_URL')
+#         params = {
+#             'response_type' : 'code',
+#             'client_id' : env('CLIENT_ID'),
+#             'redirect_uri' : 'http://localhost:8000/auth/login/',
+#             'state' : 'foo_success216'
+#         }
+#         try:
+#             response_auth_code = requests.get(url=auth_code_url, params=params)
+#         except Exception as e:
+#             return Response({'auth_code_status':e})
+#         else:
+#             if response_auth_code.status_code==200:
+#                 return Response({'auth_code_status':response_auth_code.content})
+#             return Response({'auth_code_status':response_auth_code.status_code})    
+
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
     def get(self, request, format=None):
-        auth_code_url=env('AUTH_CODE_URL')
-        params = {
-            'response_type' : 'code',
-            'client_id' : env('CLIENT_ID'),
-            'redirect_uri' : 'http://localhost:8000/auth/login/',
-        }
-        try:
-            response_auth_code = requests.get(url=auth_code_url, params=params)
-        except Exception as e:
-            return Response({'auth_code_status':e})
-        else:
-            if response_auth_code.status_code==200:
-                return Response({'auth_code_status':response_auth_code.content})
-            return Response({'auth_code_status':response_auth_code.status_code})    
+        SITE = env('AUTH_CODE_URL')+'?response_type=code&client_id='+env('CLIENT_ID')+'&redirect_uri='+env('REDIRECT_URL')+'&state=foo_success216'
+        return redirect(SITE)
+
 
 class LoginView(APIView):
     permission_classes=[AllowAny]
@@ -137,6 +146,7 @@ class LoginView(APIView):
                         view_response['succesful']=True
                         serializer=UserSerializer(user_dict['user'])
                         view_response['desc']=serializer.data
+                        return redirect('http://localhost:3000/home')
 
         return Response(view_response)
 

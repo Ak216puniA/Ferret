@@ -14,16 +14,27 @@ const csrf_token = Cookies.get('csrftoken')
 
 let config = {
     headers : {
-        Authorization : `Token ${csrf_token}`
+        'Content-Type': 'application/json',
+        'Authorization' : `Token ${csrf_token}`
     }
 }
+
+// export const loginUser = createAsyncThunk('login/loginUser', () => {
+//     return axios
+//     .get(`${OAUTH_AUTH}`,config={config})
+//     .then((response) => response.data)
+//     .catch((error) => {
+//         console.log(error.message)
+//     })
+// })
 
 export const loginUser = createAsyncThunk('login/loginUser', () => {
     return axios
     .get(`${OAUTH_AUTH}`,config={config})
-    .then((response) => response.data)
+    // .get('http://localhost:8000/auth/auth_code')
+    .then((response) => console.log(response.data))
     .catch((error) => {
-        console.log(error.message)
+        console.log(error)
     })
 })
 
