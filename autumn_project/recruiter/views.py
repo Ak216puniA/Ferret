@@ -146,7 +146,7 @@ class LoginView(APIView):
                         view_response['succesful']=True
                         serializer=UserSerializer(user_dict['user'])
                         view_response['desc']=serializer.data
-                        return redirect('http://localhost:3000/home')
+                        # return redirect('http://localhost:3000/home')
 
         return Response(view_response)
 

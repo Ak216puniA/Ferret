@@ -1,3 +1,4 @@
+from dataclasses import fields
 from rest_framework import serializers
 from .models import *
 
@@ -28,7 +29,7 @@ class RecruitmentSeasonsNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecruitmentSeasons
         fields = ['id','name']
-
+        
 
 # Rounds model serializers
 
