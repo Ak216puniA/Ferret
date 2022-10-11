@@ -19,7 +19,7 @@ router.register('candidate_link',CandidateProjectLinkModelViewSet ,basename='can
 urlpatterns =[
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
-    path('auth/auth_code', getAuthCode.as_view()),
+    path('auth/auth_code/', getAuthCode.as_view()),
     path('auth/login/', LoginView.as_view()),
     path('auth/logout/', LogoutView.as_view())
 ]

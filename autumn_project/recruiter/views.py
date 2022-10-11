@@ -88,7 +88,8 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
     def get(self, request, format=None):
-        SITE = env('AUTH_CODE_URL')+'?response_type=code&client_id='+env('CLIENT_ID')+'&redirect_uri='+env('REDIRECT_URL')+'&state=foo_success216'
+        # SITE = env('AUTH_CODE_URL')+'?response_type=code&client_id='+env('CLIENT_ID')+'&redirect_uri='+env('REDIRECT_URL')+'&state=foo_success216'
+        SITE = env('AUTH_CODE_URL')+"?response_type=code&client_id="+env('CLIENT_ID')+"&redirect_uri=http://localhost:8000/auth/login/&state=foo_success216"
         return redirect(SITE)
 
 
@@ -104,7 +105,7 @@ class LoginView(APIView):
         request_data = {
             'grant_type':'authorization_code',
             'code' : request.query_params['code'],
-            'redirect_url' : 'http://localhost:8000/auth/login/',
+            'redirect_uri' : 'http://localhost:8000/auth/login/',
             'client_id' : env('CLIENT_ID'),
             'client_secret' : env('CLIENT_SECRET'),
         }
@@ -146,7 +147,7 @@ class LoginView(APIView):
                         view_response['succesful']=True
                         serializer=UserSerializer(user_dict['user'])
                         view_response['desc']=serializer.data
-                        # return redirect('http://localhost:3000/home')
+                        return redirect('http://localhost:3000/home')
 
         return Response(view_response)
 

@@ -47,7 +47,7 @@ class LoginScreen extends Component {
         <div className='loginScreenDiv2'>
           <button>list the state</button>
           {/* <button onClick={this.listState}>list the state</button> */}
-          <a href='http://localhost:8000/auth/auth_code'>
+          <a href='http://localhost:8000/auth/auth_code/'>
             <button className='loginButton'>Login with Omniport</button>
           </a>
           {/* <button className='loginButton' onClick={() => this.props.loginUser()}>Login with Omniport</button> */}
