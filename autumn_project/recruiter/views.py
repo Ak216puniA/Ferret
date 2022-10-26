@@ -22,10 +22,17 @@ class UsersModelViewSet(viewsets.ModelViewSet):
     permission_classes=[SuperUserPermission]
 
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
-    queryset=RecruitmentSeasons.objects.all()
+    # queryset=RecruitmentSeasons.objects.all()
     serializer_class=RecruitmentSeasonsSerializer
-    permission_classes=[YearWisePermission]
+    # permission_classes=[YearWisePermission]
 
+    def get_queryset(self):
+        season_type = self.request.query_params.get('season_type')
+        if season_type is not None:
+            return RecruitmentSeasons.objects.filter(type=season_type)
+        return RecruitmentSeasons.objects.all()
+        # return RecruitmentSeasons.objects.filter(type=season_type)
+        
 class RoundsModelViewSet(viewsets.ModelViewSet):
     queryset=Rounds.objects.all()
     serializer_class=RoundsSerializer

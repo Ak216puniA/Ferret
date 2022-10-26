@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loginReducer from '../features/login/loginSlice'
-// import { createLogger } from 'redux-logger'
-
-// const logger = createLogger()
+import seasonReducer from '../features/season/seasonSlice'
+import navigationTabReducer from '../features/navigationTab/navigationTabSlice'
 
 const store = configureStore({
     reducer: {
-        login : loginReducer
+        login : loginReducer,
+        season : seasonReducer,
+        navigationTab : navigationTabReducer
     },
-    // middleware: ()
 })
 
 export default store

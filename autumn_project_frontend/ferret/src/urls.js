@@ -1,5 +1,16 @@
+// Backend URls
+
 export const OAUTH_AUTH_ROOT = 'https://channeli.in/oauth/authorise/'
 export const CLIENT_ID = 'AIEwG4pJKHWdgNWHeaUs56KpDNfHyEgBQLKRz1DL'
-export const REDIRECT_URL = 'http://localhost:8000/auth/login/'
+export const REDIRECT_URI = 'http://localhost:8000/auth/login/'
 export const STATE = 'foo_success216'
-export const OAUTH_AUTH = `${OAUTH_AUTH_ROOT}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&state=${STATE}`
+export const OAUTH_AUTH = `${OAUTH_AUTH_ROOT}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`
+
+export const BACKEND_BASE_URL = 'http://localhost:8000/'
+export const SEASONS_BY_TYPE = `${BACKEND_BASE_URL}recruitment_season/`
+
+
+// Frontend URLs
+
+export const FRONTEND_BASE_URL = 'http://localhost:3000/ferret/'
+export const home = `${FRONTEND_BASE_URL}home`
