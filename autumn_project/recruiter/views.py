@@ -24,7 +24,7 @@ class UsersModelViewSet(viewsets.ModelViewSet):
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     # queryset=RecruitmentSeasons.objects.all()
     serializer_class=RecruitmentSeasonsSerializer
-    # permission_classes=[YearWisePermission]
+    permission_classes=[YearWisePermission]
 
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')

@@ -82,7 +82,7 @@
     border-top: 44px solid #222831;
 }
 
-.createButtonDiv{
+.createSeasonButtonDiv{
     margin-top: 16px;
     margin-right: 44px;
     display: flex;
@@ -90,11 +90,46 @@
     justify-content: flex-end;
 }
 
-.createButton{
+.createSeasonButton{
     height: 32px;
     padding: 4px 16px;
     font-size: 17px;
     background-color: #F5B041;
     color: black;
     border: none;
+}
+
+.crossDiv{
+    padding: 4px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+.fieldsDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field{
+    width: 100%;
+    margin: 8px 20px;
+}
+
+.createButtonDiv{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.createButton{
+    font-size: 16px;
+    background-color: #00ADB5;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
 }

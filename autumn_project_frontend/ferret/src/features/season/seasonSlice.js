@@ -9,7 +9,8 @@ const initialState = {
     loading : false,
     season_type : '',
     data : [],
-    error : ''
+    error : '',
+    open : false
 }
 
 export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) => {
@@ -36,6 +37,14 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 const seasonSlice = createSlice({
     name : 'season',
     initialState,
+    reducers: {
+        openCreateSeasonDialog: (state) => {
+            state.open = true
+        },
+        closeCreateSeasonDialog: (state) => {
+            state.open = false
+        }
+    },
     extraReducers: builder => {
         builder
         .addCase(listSeasons.pending, (state) => {
@@ -56,3 +65,4 @@ const seasonSlice = createSlice({
 })
 
 export default seasonSlice.reducer
+export const {openCreateSeasonDialog,closeCreateSeasonDialog} = seasonSlice.actions
