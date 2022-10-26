@@ -8,6 +8,7 @@ export const OAUTH_AUTH = `${OAUTH_AUTH_ROOT}?response_type=code&client_id=${CLI
 
 export const BACKEND_BASE_URL = 'http://localhost:8000/'
 export const SEASONS_BY_TYPE = `${BACKEND_BASE_URL}recruitment_season/`
+export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 
 
 // Frontend URLs

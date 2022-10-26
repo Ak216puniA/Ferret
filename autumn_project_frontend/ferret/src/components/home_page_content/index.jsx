@@ -185,6 +185,9 @@ function HomepageContent(props){
                     {seasonTable}
                 </div>
             </div>
+            <div className='createButtonDiv'>
+                <button className='createButton'>Create Season</button>
+            </div>
         </div>
         )
 }

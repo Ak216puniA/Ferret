@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
-// import { tabClicked } from '../navigationTab/navigationTabSlice'
+import Cookies from 'js-cookie';
+
+const csrf_token = Cookies.get('csrftoken')
 
 const initialState = {
     loading : false,
@@ -16,7 +18,8 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
         `${SEASONS_BY_TYPE}?season_type=${season_type}`,
         {
             headers: {
-                'Authorization': 'Token EzZM3KZ3b0iHnom7gIXlbv57KokceSQh' 
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${csrf_token}`
             }
         }
     )
@@ -28,7 +31,6 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
         }
         return payload
     })
-    // .catch((error) => console.log(error))
 })
 
 const seasonSlice = createSlice({
@@ -50,12 +52,6 @@ const seasonSlice = createSlice({
             state.data = []
             state.error = action.error.message
         })
-        // .addCase(tabClicked, (state,action) => {
-        //     // dispatch(listSeasons(action.payload))
-        //     console.log("tabClicked reaching here!")
-        //     listSeasons(action.payload)
-        //     console.log(state.laoding+" "+state.season_type+" "+state.data+" "+state.error)
-        // })
     }
 })
 
