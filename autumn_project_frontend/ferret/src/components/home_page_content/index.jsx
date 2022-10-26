@@ -164,7 +164,7 @@ function HomepageContent(props){
         let seasonTable = (
             seasons.length>0 ? 
             seasons.map((season, index) => <SeasonTableRow key={season.name} season={season} index={index+1}/>) : 
-            <div>No seasons available</div>
+            <div></div>
         )
 
         return (

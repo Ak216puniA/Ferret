@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import {tabClicked} from "../../features/navigationTab/navigationTabSlice"
+import {listSeasons} from "../../features/season/seasonSlice"
 
 // class SubHeader extends Component{
 //     constructor(props) {
@@ -64,11 +65,12 @@ import {tabClicked} from "../../features/navigationTab/navigationTabSlice"
 function SubHeader(props){
     const {page, initialTabs} = props
     const dispatch = useDispatch()
-    const tabState = useSelector((state) => state.navigationTab.currentTab)
+    // const tabState = useSelector((state) => state.navigationTab.currentTab)
 
     const changeTab = (() => {
         let targetTab = document.activeElement.innerHTML
         dispatch(tabClicked(targetTab))
+        dispatch(listSeasons(targetTab))
         initialTabs.forEach(tab => {
             document.getElementById(`${tab}Arrow`).style.display = (tab===targetTab) ? 'block' : 'none'
         });

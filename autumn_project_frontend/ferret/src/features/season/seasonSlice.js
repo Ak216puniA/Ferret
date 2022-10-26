@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
-import { tabClicked } from '../navigationTab/navigationTabSlice'
+// import { tabClicked } from '../navigationTab/navigationTabSlice'
 
 const initialState = {
     loading : false,
-    season_type : 'developer',
+    season_type : '',
     data : [],
     error : ''
 }
@@ -50,10 +50,12 @@ const seasonSlice = createSlice({
             state.data = []
             state.error = action.error.message
         })
-        .addCase(tabClicked, (action) => {
-            // dispatch(listSeasons(action.payload))
-            console.log("tabClicked reaching here!")
-        })
+        // .addCase(tabClicked, (state,action) => {
+        //     // dispatch(listSeasons(action.payload))
+        //     console.log("tabClicked reaching here!")
+        //     listSeasons(action.payload)
+        //     console.log(state.laoding+" "+state.season_type+" "+state.data+" "+state.error)
+        // })
     }
 })
 
