@@ -3,7 +3,7 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material'
 import { FormControl, InputLabel, Input } from '@mui/material';
-import { openCreateSeasonDialog, closeCreateSeasonDialog} from '../../features/season/seasonSlice'
+import { openCreateSeasonDialog, closeCreateSeasonDialog, handleChangeNewYear, handleChangeNewType, createSeason} from '../../features/season/seasonSlice'
 import { GrClose } from "react-icons/gr";
 
 function SeasonTableRow(props){
@@ -37,6 +37,8 @@ function HomepageContent(props){
             <div></div>
         )
 
+        // const new_year = 0
+
         return (
         <div className='homepageContent'>
             <div className='contentTriangleDiv'>
@@ -61,11 +63,6 @@ function HomepageContent(props){
             <Dialog 
             open={seasonState.open} 
             onClose={() => dispatch(closeCreateSeasonDialog())}
-            // sx={{
-            //     backgroundImage:"#EEEEEE",
-            //     color:"#EEEEEE",
-            //     minHeight:"400px"
-            // }}
             className='dialog'
             >
                 <div className='crossDiv' onClick={() => dispatch(closeCreateSeasonDialog())}><GrClose size={12}/></div>
@@ -74,12 +71,27 @@ function HomepageContent(props){
                     <form id='createSeasonForm' onSubmit={() => dispatch()}>
                         <div className='fieldsDiv'>
                             <div className='field'>
-                                <TextField label='Academic Year' placeholder='yyyy' variant='outlined' fullWidth/>
+                                <TextField 
+                                required 
+                                label='Academic Year' 
+                                type='number' 
+                                placeholder='yyyy' 
+                                variant='outlined' 
+                                fullWidth
+                                onChange={(e) => dispatch(handleChangeNewYear(e.target.value))}
+                                />
                             </div>
                             <div className='field'>
                                 <FormControl fullWidth>
                                     <InputLabel id='type'>Season Type</InputLabel>
-                                    <Select labelId='type' label="Season type" variant='outlined'>
+                                    <Select 
+                                    required 
+                                    labelId='type' 
+                                    label="Season type" 
+                                    defaultValue={seasonState.season_type}
+                                    variant='outlined'
+                                    onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
+                                    >
                                         <MenuItem value={'developer'}>Developer</MenuItem>
                                         <MenuItem value={'designer'}>Designer</MenuItem>
                                     </Select>
@@ -89,11 +101,15 @@ function HomepageContent(props){
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    {/* <div className='createButtonDiv'>
-                        <Button>Create</Button>
-                    </div> */}
                     <div className='createButtonDiv'>
-                        <button className='createButton' type='submit' form='createSeasonForm'>Create</button>
+                        <button 
+                        className='createButton' 
+                        type='submit' 
+                        form='createSeasonForm'
+                        onClick={() => dispatch(createSeason())}
+                        >
+                            Create
+                        </button>
                     </div>
                 </DialogActions>
             </Dialog>

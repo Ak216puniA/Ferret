@@ -23,8 +23,8 @@ class Users(AbstractUser):
 class RecruitmentSeasons(models.Model):
     name=models.CharField(max_length=16)
     start=models.DateField(auto_now_add=True)
-    end=models.DateField()
-    description=models.TextField()
+    end=models.DateField(null=True)
+    description=models.TextField(null=True,blank=True)
 
     class TypeOfSeason(models.TextChoices):
         DEVELOPER = 'developer', _('Developer')

@@ -10,7 +10,9 @@ const initialState = {
     season_type : '',
     data : [],
     error : '',
-    open : false
+    open : false,
+    new_year : 0,
+    new_type : 'developer'
 }
 
 export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) => {
@@ -34,6 +36,34 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
     })
 })
 
+export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
+    const state = getState()
+    return axios
+    .post(
+        `${SEASONS_BY_TYPE}`,
+        { 
+            data: {
+                "name": state.season.new_year,
+                "end": null,
+                "description": "",
+                "type": state.season.new_type,
+                "image": null
+            }
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${csrf_token}`
+            }
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
+    .catch((error) =>  alert("Cannot create new season! \n"+error.message))
+})
+
 const seasonSlice = createSlice({
     name : 'season',
     initialState,
@@ -43,7 +73,13 @@ const seasonSlice = createSlice({
         },
         closeCreateSeasonDialog: (state) => {
             state.open = false
-        }
+        },
+        handleChangeNewYear: (state,action) => {
+            state.new_year = action.payload
+        },
+        handleChangeNewType: (state,action) => {
+            state.new_type = action.payload
+        },
     },
     extraReducers: builder => {
         builder
@@ -61,8 +97,23 @@ const seasonSlice = createSlice({
             state.data = []
             state.error = action.error.message
         })
+        .addCase(createSeason.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createSeason.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.new_year = 0
+            state.new_type = ''
+            console.log("Season created: \n"+action.payload)
+        })
+        .addCase(createSeason.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Season NOT created: \n"+action.error.message)
+        })
     }
 })
 
 export default seasonSlice.reducer
-export const {openCreateSeasonDialog,closeCreateSeasonDialog} = seasonSlice.actions
+export const {openCreateSeasonDialog,closeCreateSeasonDialog,handleChangeNewYear,handleChangeNewType} = seasonSlice.actions
