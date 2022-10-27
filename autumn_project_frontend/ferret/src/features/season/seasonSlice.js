@@ -43,11 +43,16 @@ export const createSeason = createAsyncThunk('season/createSeason', (payload,{ge
         `${SEASONS_BY_TYPE}`,
         { 
             data: {
-                "name": state.season.new_year,
-                "end": null,
-                "description": "",
-                "type": state.season.new_type,
-                "image": null
+                // "name": state.season.new_year,
+                // "end": null,
+                // "description": "",
+                // "type": state.season.new_type,
+                // "image": null
+                name: state.season.new_year,
+                // end: null,
+                // description: "",
+                type: state.season.new_type,
+                // image: null
             }
         },
         {

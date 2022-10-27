@@ -13,7 +13,7 @@ function Home() {
         <>
           <Header />
           <NavigationBar />
-          <SubHeader page='Home' initialTabs={['Developer','Designer']}/>
+          <SubHeader page='Home' initialTabs={['Developer','Designer']} firstTab='Developer'/>
           <HomepageContent contentHeading='Recruitment Seasons'/>
         </>
       )
