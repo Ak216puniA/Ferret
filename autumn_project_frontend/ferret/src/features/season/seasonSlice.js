@@ -38,30 +38,69 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 
 export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
     const state = getState()
-    return axios
-    .post(
-        `${SEASONS_BY_TYPE}`,
-        { 
-            data: {
-                // "name": state.season.new_year,
-                // "end": null,
-                // "description": "",
-                // "type": state.season.new_type,
-                // "image": null
-                name: state.season.new_year,
-                // end: null,
-                // description: "",
-                type: state.season.new_type,
-                // image: null
-            }
+    // const data = {
+    //     // "name": state.season.new_year,
+    //     // "end": null,
+    //     // "description": "",
+    //     // "type": state.season.new_type,
+    //     // "image": null
+    //     name: state.season.new_year,
+    //     end: null,
+    //     description: "",
+    //     type: state.season.new_type,
+    //     image: null
+    // }
+    // return axios
+    // .post(
+    //     `${SEASONS_BY_TYPE}`,
+        //{ 
+            // data: {
+            //     // "name": state.season.new_year,
+            //     // "end": null,
+            //     // "description": "",
+            //     // "type": state.season.new_type,
+            //     // "image": null
+            //     name: state.season.new_year,
+            //     end: null,
+            //     description: "",
+            //     type: state.season.new_type,
+            //     image: null
+            // }
+        //},
+        // data: {
+        //     // "name": state.season.new_year,
+        //     // "end": null,
+        //     // "description": "",
+        //     // "type": state.season.new_type,
+        //     // "image": null
+        //     name: state.season.new_year,
+        //     end: null,
+        //     description: "",
+        //     type: state.season.new_type,
+        //     image: null
+        // },
+        // {data},
+        // {
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": `Token ${csrf_token}`
+        //     }
+        // }
+    // )
+    return axios({
+        method: "post",
+        url: `${SEASONS_BY_TYPE}`,
+        headers: {
+            Authorization: `Token ${csrf_token}`
         },
-        {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${csrf_token}`
-            }
+        data: {
+            name: state.season.new_year,
+            end: null,
+            description: "",
+            type: state.season.new_type,
+            image: null
         }
-    )
+    })
     .then((response) => {
         console.log(response.data)
         return response.data
