@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loginReducer from '../features/login/loginSlice'
 import seasonReducer from '../features/season/seasonSlice'
-import navigationTabReducer from '../features/navigationTab/navigationTabSlice'
+import seasonTabReducer from '../features/seasonTab/seasonTabSlice'
 import logoutReducer from '../features/logout/logoutSlice'
 
 const store = configureStore({
     reducer: {
         login : loginReducer,
         season : seasonReducer,
-        navigationTab : navigationTabReducer,
+        seasonTab : seasonTabReducer,
         logout : logoutReducer
     },
 })

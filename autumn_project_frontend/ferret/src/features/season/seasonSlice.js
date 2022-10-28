@@ -8,7 +8,7 @@ const csrf_token = Cookies.get('csrftoken')
 const initialState = {
     loading : false,
     season_type : '',
-    data : [],
+    season_list : [],
     error : '',
     open : false,
     new_year : 0,
@@ -38,55 +38,6 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 
 export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
     const state = getState()
-    // const data = {
-    //     // "name": state.season.new_year,
-    //     // "end": null,
-    //     // "description": "",
-    //     // "type": state.season.new_type,
-    //     // "image": null
-    //     name: state.season.new_year,
-    //     end: null,
-    //     description: "",
-    //     type: state.season.new_type,
-    //     image: null
-    // }
-    // return axios
-    // .post(
-    //     `${SEASONS_BY_TYPE}`,
-        //{ 
-            // data: {
-            //     // "name": state.season.new_year,
-            //     // "end": null,
-            //     // "description": "",
-            //     // "type": state.season.new_type,
-            //     // "image": null
-            //     name: state.season.new_year,
-            //     end: null,
-            //     description: "",
-            //     type: state.season.new_type,
-            //     image: null
-            // }
-        //},
-        // data: {
-        //     // "name": state.season.new_year,
-        //     // "end": null,
-        //     // "description": "",
-        //     // "type": state.season.new_type,
-        //     // "image": null
-        //     name: state.season.new_year,
-        //     end: null,
-        //     description: "",
-        //     type: state.season.new_type,
-        //     image: null
-        // },
-        // {data},
-        // {
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         "Authorization": `Token ${csrf_token}`
-        //     }
-        // }
-    // )
     return axios({
         method: "post",
         url: `${SEASONS_BY_TYPE}`,
@@ -133,12 +84,12 @@ const seasonSlice = createSlice({
         .addCase(listSeasons.fulfilled, (state,action) => {
             state.loading = false
             state.season_type = action.payload['type']
-            state.data = action.payload['data']
+            state.season_list = action.payload['data']
             state.error = ''
         })
         .addCase(listSeasons.rejected, (state,action) => {
             state.loading = false
-            state.data = []
+            state.season_list = []
             state.error = action.error.message
         })
         .addCase(createSeason.pending, (state) => {

@@ -9,6 +9,9 @@
 }
 
 .navigationIcon{
-    /* margin: 0px 52px; */
     width: 8%;
+}
+
+.icon:hover{
+    color: #EEEEEE;
 }

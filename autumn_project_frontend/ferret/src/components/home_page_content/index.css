@@ -48,6 +48,14 @@
     width: 45%;
 }
 
+.seasonNameHeading{
+    width: 45%;
+}
+
+.seasonName:hover{
+    color: #00ADB5;
+}
+
 .seasonStartEnd{
     width: 25%;
 }
