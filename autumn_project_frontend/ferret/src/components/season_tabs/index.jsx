@@ -7,10 +7,10 @@ import "./index.css";
 function SeasonTabs(props) {
     const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
-
-    dispatch(listRounds())
     
-    return <>hello</>
+    return (
+        <div onClick={() => dispatch(listRounds())}>Click</div>
+    )
 }
 
 export default SeasonTabs

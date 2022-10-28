@@ -1,28 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { ROUNDS } from "../../urls";
 
-const csrf_token = Cookies.get('csrftoken')
+// const csrf_token = Cookies.get('csrftoken')
 
 const initialState = {
     loading : false,
     error : '',
     round_list: [],
     currentTab : '',
-    currentSeason : -1
+    // currentSeason : -1
 }
 
-export const listRounds = createAsyncThunk('seasonTab/listRounds', (payload, {getState}) => {
-    const state = getState()
+export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
+    // const state = getState()
     return axios
     .get(
-        `${ROUNDS}?season_id=${state.seasonTab.currentSeasonq}`,
+        `${ROUNDS}?season_id=${season_id}`,
         {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${csrf_token}`
-            }
+            // headers: {
+            //     'Content-Type': 'application/json',
+            //     'Authorization': `Token ${csrf_token}`
+            // }
+            withCredentials: true
         }
     )
     .then((response) => {
@@ -38,9 +39,9 @@ const seasonTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload
         },
-        seasonClicked: (state,action) => {
-            state.currentSeason = action.payload
-        }
+        // seasonClicked: (state,action) => {
+        //     state.currentSeason = action.payload
+        // }
     },
     extraReducers: builder => {
         builder
@@ -65,4 +66,4 @@ const seasonTabSlice = createSlice({
 })
 
 export default seasonTabSlice.reducer
-export const { tabClicked, seasonClicked } = seasonTabSlice.actions
+export const { tabClicked } = seasonTabSlice.actions

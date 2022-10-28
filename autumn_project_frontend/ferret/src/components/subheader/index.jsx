@@ -1,15 +1,18 @@
 import React from "react";
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import HomeTabs from "../home_tabs";
 import SeasonTabs from "../season_tabs";
+import { useParams } from "react-router-dom";
 
 function SubHeader(props){
     const {page, initialTabs} = props
     // const subHeaderTabs = initialTabs
 
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const {season_id} = useParams()
+
+    // const seasonTabState = useSelector((state) => state.seasonTab)
     // const dispatch = useDispatch()
 
     // useEffect(() => {
@@ -37,7 +40,10 @@ function SubHeader(props){
     //     )
     // }) : []
 
-    const tabs = seasonTabState.currentSeason===-1 ? <HomeTabs homeTabs={initialTabs}/> : []
+    // console.log(seasonTabState.currentSeason)
+    // console.log("Season "+season_id)
+    // const tabs = seasonTabState.currentSeason===-1 ? <HomeTabs homeTabs={initialTabs}/> : []
+    const tabs = season_id>0 ? [] : <HomeTabs homeTabs={initialTabs}/>
     return(
         <div className="inPageBar">
             <div className="topRightCornerLight"></div>

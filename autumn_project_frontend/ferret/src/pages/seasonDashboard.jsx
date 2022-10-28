@@ -15,7 +15,7 @@ function SeasonDashboard() {
         <>
         <Header />
         <NavigationBar />
-        <SubHeader page={`Home / Recruitment Season ${season_id}`} initialTabs={[]} />
+        <SubHeader page={`Home / Recruitment Season ${season_id}`} />
         </>
     )
 }
