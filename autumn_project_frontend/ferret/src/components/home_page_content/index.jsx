@@ -5,13 +5,21 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { openCreateSeasonDialog, closeCreateSeasonDialog, handleChangeNewYear, handleChangeNewType, createSeason} from '../../features/season/seasonSlice'
 import { GrClose } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 
 function SeasonTableRow(props){
+
+    let navigate = useNavigate()
+    const routeChange = (season_id) => {
+        const url = `/season/${season_id}`
+        navigate(url)
+    }
+
     const {season, index} = props
     return (
         <div className='seasonRow'>
             <div className={`seasonIndex singleElementRowFlex`}>{index}</div>
-            <div className={`seasonName  singleElementRowFlex`}>{`Recruitment season ${season.name}`}</div>
+            <div className={`seasonName  singleElementRowFlex`} onClick={() => routeChange(season.id)}>{`Recruitment season ${season.name}`}</div>
             <div className={`seasonStartEnd  singleElementRowFlex`}>{season.start}</div>
             <div className={`seasonStartEnd  singleElementRowFlex`}>{season.end}</div>
         </div>
@@ -33,7 +41,7 @@ function HomepageContent(props){
     const seasons = seasonState.data
     let seasonTable = (
         seasons.length>0 ? 
-        seasons.map((season, index) => <SeasonTableRow key={season.name} season={season} index={index+1}/>) : 
+        seasons.map((season, index) => <SeasonTableRow key={season.id} season={season} index={index+1}/>) : 
         <div></div>
     )
 

@@ -13,5 +13,6 @@ export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 
 // Frontend URLs
 
-export const FRONTEND_BASE_URL = 'http://localhost:3000/ferret/'
-export const home = `${FRONTEND_BASE_URL}home`
+export const FRONTEND_BASE_URL = 'http://localhost:3000/'
+export const HOME = `${FRONTEND_BASE_URL}home`
+export const SEASON_DASHBOARD = `${FRONTEND_BASE_URL}season/`
