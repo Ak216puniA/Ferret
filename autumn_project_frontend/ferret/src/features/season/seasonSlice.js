@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
-const csrf_token = Cookies.get('ferret_csrftoken')
+// const csrf_token = Cookies.get('ferret_csrftoken')
 
 const initialState = {
     loading : false,
@@ -20,15 +20,6 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
     .get(
         `${SEASONS_BY_TYPE}?season_type=${season_type}`,
         {
-            // headers: {
-                
-            //     // 'Content-Type': 'application/json',
-            //     // 'Authorization': `Token ${csrf_token}`
-            //     // 'X-CSRFToken':Cookies.get('ferret_csrftoken')
-            // },
-            // // params: {
-            // //     withCredentials: true
-            // // }
             withCredentials: true
         }
     )

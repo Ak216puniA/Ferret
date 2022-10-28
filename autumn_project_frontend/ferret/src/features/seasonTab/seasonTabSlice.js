@@ -10,24 +10,19 @@ const initialState = {
     error : '',
     round_list: [],
     currentTab : '',
-    // currentSeason : -1
 }
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
-    // const state = getState()
     return axios
     .get(
         `${ROUNDS}?season_id=${season_id}`,
         {
-            // headers: {
-            //     'Content-Type': 'application/json',
-            //     'Authorization': `Token ${csrf_token}`
-            // }
             withCredentials: true
         }
     )
     .then((response) => {
         console.log(response.data)
+        console.log("successful rounds retrieval")
         return response.data
     })
 })
@@ -39,9 +34,6 @@ const seasonTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload
         },
-        // seasonClicked: (state,action) => {
-        //     state.currentSeason = action.payload
-        // }
     },
     extraReducers: builder => {
         builder
@@ -51,7 +43,6 @@ const seasonTabSlice = createSlice({
         .addCase(listRounds.fulfilled, (state,action) => {
             state.loading = false
             state.round_list = action.payload
-            // state.currentTab = action.payload
             state.error = ''
             console.log(state.round_list)
         })

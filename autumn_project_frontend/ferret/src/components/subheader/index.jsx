@@ -1,49 +1,25 @@
 import React from "react";
-// import { useSelector } from 'react-redux'
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import HomeTabs from "../home_tabs";
 import SeasonTabs from "../season_tabs";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { listRounds } from "../../features/seasonTab/seasonTabSlice";
 
 function SubHeader(props){
     const {page, initialTabs} = props
-    // const subHeaderTabs = initialTabs
 
     const {season_id} = useParams()
+    const dispatch = useDispatch()
 
-    // const seasonTabState = useSelector((state) => state.seasonTab)
-    // const dispatch = useDispatch()
+    const tabs = season_id>0 ? <SeasonTabs /> : <HomeTabs homeTabs={initialTabs}/>
 
-    // useEffect(() => {
-    //     if(seasonTabState.currentSeason===-1){
-    //         if(seasonTabState.currentTab===''){
-    //             document.getElementById(`${subHeaderTabs[0]}Arrow`).style.display = 'block'
-    //             dispatch(listSeasons(subHeaderTabs[0]))
-    //         }else{
-    //             subHeaderTabs.forEach(tab => {
-    //                 document.getElementById(`${tab}Arrow`).style.display = (tab===seasonTabState.currentTab) ? 'block' : 'none'
-    //             });
-    //             dispatch(listSeasons(seasonTabState.currentTab))
-    //         }
-    //     }else{
-    //         console.log("yah")
-    //     }
-    // })
-
-    // let tabs = subHeaderTabs.length>0 ? subHeaderTabs.map(tab => {
-    //     return(
-    //         <div className="pageTabDiv" key={tab}>
-    //             <button className="pageTab" onClick={() => dispatch(tabClicked(tab))}>{tab}</button>
-    //             <div className="currentTabDownArrowDiv"><div className="currentTabDownArrow" id={`${tab}Arrow`}></div></div>
-    //         </div>
-    //     )
-    // }) : []
-
-    // console.log(seasonTabState.currentSeason)
-    // console.log("Season "+season_id)
-    // const tabs = seasonTabState.currentSeason===-1 ? <HomeTabs homeTabs={initialTabs}/> : []
-    const tabs = season_id>0 ? [] : <HomeTabs homeTabs={initialTabs}/>
+    useEffect(() => {
+        if(season_id>0) dispatch(listRounds(season_id))
+    }, [])
+    
     return(
         <div className="inPageBar">
             <div className="topRightCornerLight"></div>
@@ -62,8 +38,7 @@ function SubHeader(props){
             </div>
             <div className="topLeftCornerLight"></div>
         </div>
-    )
-    
+    ) 
 }
 
 export default SubHeader
