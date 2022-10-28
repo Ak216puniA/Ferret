@@ -28,7 +28,7 @@ function HomeDialog() {
                             type='number' 
                             placeholder='yyyy' 
                             variant='outlined'
-                            InputProps={{ inputProps: { min: 0, max: 10 } }}
+                            InputProps={{ inputProps: { min: 2000, max: 2100 } }}
                             fullWidth
                             onChange={(e) => dispatch(handleChangeNewYear(e.target.value))}
                             />
