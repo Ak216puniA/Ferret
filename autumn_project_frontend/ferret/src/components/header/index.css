@@ -47,3 +47,15 @@
     justify-content: center;
     align-items: center;
 }
+
+.logoutButton{
+    background-color: transparent;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+}
+
+.logoutButton:hover{
+    background-color: #393E46;
+}

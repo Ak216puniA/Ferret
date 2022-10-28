@@ -1,7 +1,11 @@
 .homepageContent{
     background-color: #393E46;
-    margin: 12px 44px;
+    margin-left: 44px;
+    margin-right: 44px;
     padding-bottom: 44px;
+    height: 62vh;
+    margin-top: 12px;
+    margin-bottom: 0px;
 }
 
 .contentDiv{
@@ -22,7 +26,7 @@
     background-color: #F5B041;
     color: black;
     height: 40px;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .seasonRow{
@@ -33,7 +37,7 @@
     background-color: #515864;
     color: white;
     height: 40px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .seasonIndex{
@@ -42,6 +46,14 @@
 
 .seasonName{
     width: 45%;
+}
+
+.seasonNameHeading{
+    width: 45%;
+}
+
+.seasonName:hover{
+    color: #00ADB5;
 }
 
 .seasonStartEnd{
@@ -76,4 +88,21 @@
     height: 0;
     border-right: 44px solid transparent;
     border-top: 44px solid #222831;
+}
+
+.createSeasonButtonDiv{
+    margin-top: 16px;
+    margin-right: 44px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.createSeasonButton{
+    height: 32px;
+    padding: 4px 16px;
+    font-size: 17px;
+    background-color: #F5B041;
+    color: black;
+    border: none;
 }

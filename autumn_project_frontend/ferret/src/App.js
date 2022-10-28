@@ -1,14 +1,18 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Home from './components/pages/home';
-import LoginScreen from './components/pages/login_screen';
+import Home from './pages/home';
+import LoginScreen from './pages/login_screen';
+import SeasonDashboard from './pages/seasonDashboard';
+import Root from './pages/root';
 
 function App() {
   return (
     <div className="App">
       <Routes>
+        <Route path='/' element={<Root />} />
         <Route path='/home' element={<Home />} />
         <Route path='/login' element={<LoginScreen />} />
+        <Route path='/season/:season_id' element={<SeasonDashboard />} />
       </Routes>  
     </div>
   );
