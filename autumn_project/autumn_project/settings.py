@@ -125,6 +125,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'recruiter.Users'
 
+SESSION_COOKIE_NAME = 'ferret_session'
+
+CSRF_COOKIE_NAME = 'ferret_csrftoken'
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -147,12 +151,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ]
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.SessionAuthentication',
+#         'rest_framework.authentication.BasicAuthentication',
+#     ]
+# }
 
 # CORS_ORIGIN_ALLOW_ALL = True
 

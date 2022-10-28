@@ -1,4 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import { ROUNDS } from "../../urls";
+
+const csrf_token = Cookies.get('csrftoken')
 
 const initialState = {
     loading : false,
@@ -8,7 +13,23 @@ const initialState = {
     currentSeason : -1
 }
 
-export const listRounds = createAsyncThunk('seasonTab/listRounds')
+export const listRounds = createAsyncThunk('seasonTab/listRounds', (payload, {getState}) => {
+    const state = getState()
+    return axios
+    .get(
+        `${ROUNDS}?season_id=${state.seasonTab.currentSeasonq}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${csrf_token}`
+            }
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
+})
 
 const seasonTabSlice = createSlice({
     name : 'seasonTab',
@@ -20,6 +41,26 @@ const seasonTabSlice = createSlice({
         seasonClicked: (state,action) => {
             state.currentSeason = action.payload
         }
+    },
+    extraReducers: builder => {
+        builder
+        .addCase(listRounds.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(listRounds.fulfilled, (state,action) => {
+            state.loading = false
+            state.round_list = action.payload
+            // state.currentTab = action.payload
+            state.error = ''
+            console.log(state.round_list)
+        })
+        .addCase(listRounds.rejected, (state,action) => {
+            state.loading = false
+            state.round_list = []
+            state.currentTab = ''
+            state.error = action.error.message
+            console.log(action.error.message)
+        })
     }
 })
 

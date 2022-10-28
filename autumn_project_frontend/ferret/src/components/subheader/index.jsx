@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import HomeTabs from "../home_tabs";
+import SeasonTabs from "../season_tabs";
 
 function SubHeader(props){
     const {page, initialTabs} = props

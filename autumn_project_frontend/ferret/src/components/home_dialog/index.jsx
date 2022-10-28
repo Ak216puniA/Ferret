@@ -27,7 +27,8 @@ function HomeDialog() {
                             label='Academic Year' 
                             type='number' 
                             placeholder='yyyy' 
-                            variant='outlined' 
+                            variant='outlined'
+                            InputProps={{ inputProps: { min: 0, max: 10 } }}
                             fullWidth
                             onChange={(e) => dispatch(handleChangeNewYear(e.target.value))}
                             />

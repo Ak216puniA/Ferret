@@ -3,7 +3,7 @@ import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
 import Cookies from 'js-cookie';
 
-const csrf_token = Cookies.get('csrftoken')
+const csrf_token = Cookies.get('ferret_csrftoken')
 
 const initialState = {
     loading : false,
@@ -20,10 +20,16 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
     .get(
         `${SEASONS_BY_TYPE}?season_type=${season_type}`,
         {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${csrf_token}`
-            }
+            // headers: {
+                
+            //     // 'Content-Type': 'application/json',
+            //     // 'Authorization': `Token ${csrf_token}`
+            //     // 'X-CSRFToken':Cookies.get('ferret_csrftoken')
+            // },
+            // // params: {
+            // //     withCredentials: true
+            // // }
+            withCredentials: true
         }
     )
     .then((response) => {
@@ -38,12 +44,20 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 
 export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
     const state = getState()
+
     return axios({
         method: "post",
         url: `${SEASONS_BY_TYPE}`,
         headers: {
-            Authorization: `Token ${csrf_token}`
+            // 'Content-Type': 'application/json',
+            // 'Authorization': `Token ${csrf_token}`,
+            // 'X-CSRFToken':Cookies.get('ferret_csrftoken'),
+            "Content-Type": "multipart/form-data"
         },
+        params: {
+            withCredentials: true
+        },
+        // withCredentials: true,
         data: {
             name: state.season.new_year,
             end: null,
@@ -52,6 +66,55 @@ export const createSeason = createAsyncThunk('season/createSeason', (payload,{ge
             image: null
         }
     })
+
+    // return axios
+    // .post(
+    //     `${SEASONS_BY_TYPE}`,
+    //     {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Token ${csrf_token}`,
+    //             'X-CSRFToken':Cookies.get('ferret_csrftoken')
+    //         },
+    //         withCredentials: true,
+            // data: {
+            //     name: state.season.new_year,
+            //     end: null,
+            //     description: "",
+            //     type: state.season.new_type,
+            //     image: null
+            // }
+    //     }
+    // )
+
+    // return axios
+    // .post(
+    //     `${SEASONS_BY_TYPE}`,
+    //     // { 
+    //     //     data: {
+    //     //         name: state.season.new_year,
+    //     //         end: null,
+    //     //         description: "",
+    //     //         type: state.season.new_type,
+    //     //         image: null
+    //     //     }
+    //     // },
+    //     {
+    //         data: {
+    //             name: state.season.new_year,
+    //             end: null,
+    //             description: "",
+    //             type: state.season.new_type,
+    //             image: null
+    //         },
+    //         headers: { 
+    //             "Content-Type": "multipart/form-data" 
+    //         },
+    //         params: {
+    //             withCredentials : true
+    //         }
+    //     }
+    // )
     .then((response) => {
         console.log(response.data)
         return response.data
