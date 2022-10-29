@@ -4,7 +4,8 @@ import { openCreateRoundDialog } from "../../features/seasonTab/seasonTabSlice"
 import { useDispatch } from "react-redux";
 import './index.css';
 
-function SeasonTestContent() {
+function SeasonTestContent(props) {
+    const { s_id } = props
     const dispatch = useDispatch()
     return (
         <div className="seasonTestContent">
@@ -12,7 +13,7 @@ function SeasonTestContent() {
                 <div className='topLeftCornerDark'></div>
                 <div className='topRightCornerDark'></div>
             </div>
-            <SeasonTabDialog />
+            <SeasonTabDialog season_id={s_id}/>
         </div>
     )
 }

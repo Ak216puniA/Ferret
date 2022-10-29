@@ -3,10 +3,11 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } from "../../features/seasonTab/seasonTabSlice";
+import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType, createRound } from "../../features/seasonTab/seasonTabSlice";
 import { GrClose } from "react-icons/gr";
 
-function SeasonTabDialog() {
+function SeasonTabDialog(props) {
+    const { season_id } = props
     const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
 
@@ -59,7 +60,7 @@ function SeasonTabDialog() {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={() => alert("Create new round")}
+                    onClick={() => dispatch(createRound(season_id))}
                     >
                         Create
                     </button>

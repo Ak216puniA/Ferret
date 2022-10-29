@@ -24,12 +24,12 @@ class UsersModelViewSet(viewsets.ModelViewSet):
 
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     serializer_class=RecruitmentSeasonsSerializer
-    # permission_classes=[YearWisePermission]
+    permission_classes=[YearWisePermission]
 
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')
-        season_id = self.request.query_parms_get('season_id')
-        print("Recruitment season request user: "+self.request.user)
+        season_id = self.request.query_params.get('season_id')
+        print(self.request.user)
         if season_type is not None:
             return RecruitmentSeasons.objects.filter(type=season_type)
         if season_id is not None:
@@ -38,7 +38,7 @@ class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
         
 class RoundsModelViewSet(viewsets.ModelViewSet):
     serializer_class=RoundsSerializer
-    permission_classes=[YearWisePermission]
+    # permission_classes=[YearWisePermission]
 
     def get_queryset(self):
         s_id = self.request.query_params.get('season_id')

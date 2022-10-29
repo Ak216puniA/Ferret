@@ -16,20 +16,20 @@ const initialState = {
     new_type: 'test'
 }
 
-export const seasonClicked = createAsyncThunk('seasonTab/seasonClicked', (season_id) => {
-    return axios
-    .get(
-        `${SEASONS_BY_TYPE}?season_id=${season_id}`,
-        {
-            withCredentials: true
-        }
-    )
-    .then((response) => {
-        console.log(response.data)
-        console.log("successful season retrieval")
-        return response.data['name']
-    })
-})
+// export const seasonClicked = createAsyncThunk('seasonTab/seasonClicked', (season_id) => {
+//     return axios
+//     .get(
+//         `${SEASONS_BY_TYPE}?season_id=${season_id}`,
+//         {
+//             withCredentials: true
+//         }
+//     )
+//     .then((response) => {
+//         console.log(response.data)
+//         console.log("successful season retrieval")
+//         return response.data['name']
+//     })
+// })
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
     return axios
@@ -46,8 +46,9 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
     })
 })
 
-export const createRound = createAsyncThunk('seasonTab/createRound', (payload, {getState}) => {
+export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {getState}) => {
     const state = getState()
+    // alert("Reaching here!")
     return axios({
         method: "post",
         url: `${ROUNDS}`,
@@ -55,11 +56,11 @@ export const createRound = createAsyncThunk('seasonTab/createRound', (payload, {
             withCredentials: true
         },
         data: {
-            name: state.season.new_year,
-            end: null,
-            description: "",
-            type: state.season.new_type,
-            image: null
+            season_id: {
+                name: "2019"
+            },
+            name: state.seasonTab.new_title,
+            type: state.seasonTab.new_type
         }
     })
     .then((response) => {
@@ -116,12 +117,12 @@ const seasonTabSlice = createSlice({
             state.error = ''
             state.new_title = ' '
             state.new_type = 'test'
-            console.log("Round created: \n"+action.payload)
+            alert("Round created: \n"+action.payload)
         })
         .addCase(createRound.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log("Round NOT created: \n"+action.error.message)
+            alert("Round NOT created: \n"+action.error.message)
         })
     }
 })

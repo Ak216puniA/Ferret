@@ -26,6 +26,7 @@ class RecruitmentSeasonsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RecruitmentSeasonsNameSerializer(serializers.ModelSerializer):
+    # id = serializers.ReadOnlyField()
     class Meta:
         model = RecruitmentSeasons
         fields = ['id','name']
@@ -35,6 +36,7 @@ class RecruitmentSeasonsNameSerializer(serializers.ModelSerializer):
 
 class RoundsSerializer(serializers.ModelSerializer):
     season_id = RecruitmentSeasonsNameSerializer()
+    # season_id = RecruitmentSeasonsSerializer()
     class Meta:
         model = Rounds
         fields = '__all__'
