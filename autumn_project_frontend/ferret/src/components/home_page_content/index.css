@@ -106,3 +106,7 @@
     color: black;
     border: none;
 }
+
+.createSeasonButton:hover{
+    background-color: #F7A624;
+}

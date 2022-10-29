@@ -8,6 +8,7 @@ import HomeDialog from '../home_dialog';
 
 function SeasonTableRow(props){
     // const dispatch = useDispatch()
+    // const homeTabstate = useSelector((state) => state.homeTab.currentTab)
     let navigate = useNavigate()
     
     const routeChange = (season_id) => {
@@ -16,7 +17,8 @@ function SeasonTableRow(props){
     }
 
     // const seasonClickHandler = (season_id) => {
-    //     dispatch(seasonClicked(season_id))
+    //     console.log(homeTabstate)
+    //     alert("Stop once")
     //     routeChange(season_id)
     // }
 

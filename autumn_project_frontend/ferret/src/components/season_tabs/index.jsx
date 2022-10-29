@@ -16,10 +16,11 @@ function SeasonTabs(props) {
     useEffect(() => {
         if(roundList.length>0){
             if(seasonTabState.currentTab===''){
-                document.getElementById(`${roundList[0]}Arrow`).style.display = 'block'
+                document.getElementById(`${roundList[0]['name']}Arrow`).style.display = 'block'
+                dispatch(tabClicked(roundList[0]['name']))
             }else{
                 roundList.forEach(tab => {
-                    document.getElementById(`${tab}Arrow`).style.display = (tab===seasonTabState.currentTab) ? 'block' : 'none'
+                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===seasonTabState.currentTab) ? 'block' : 'none'
                 });
             }
         } 
@@ -27,9 +28,9 @@ function SeasonTabs(props) {
 
     let tabs = seasonTabState.round_list.length>0 ? roundList.map(tab => {
         return(
-            <div className="pageTabDiv" key={tab}>
-                <button className="pageTab" onClick={() => dispatch(tabClicked(tab))}>{tab}</button>
-                <div className="currentTabDownArrowDiv"><div className="currentTabDownArrow" id={`${tab}Arrow`}></div></div>
+            <div className="pageTabDiv" key={tab['id']}>
+                <button className={"pageTab pageTabArrowDiv"} onClick={() => dispatch(tabClicked(tab['name']))}>{tab['name']}</button>
+                <div className={"currentTabDownArrowDiv pageTabArrowDiv"}><div className="currentTabDownArrow" id={`${tab['name']}Arrow`}></div></div>
             </div>
         )
     }) : []
@@ -37,7 +38,7 @@ function SeasonTabs(props) {
     return (
         <>
             {tabs}
-            <div><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div>
+            <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div>
         </>
     )
 }

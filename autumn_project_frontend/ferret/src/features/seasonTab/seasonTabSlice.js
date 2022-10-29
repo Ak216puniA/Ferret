@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import Cookies from 'js-cookie';
-import { ROUNDS, SEASONS_BY_TYPE } from "../../urls";
-
-// const csrf_token = Cookies.get('csrftoken')
+import Cookies from 'js-cookie';
+import { ROUNDS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -16,21 +14,6 @@ const initialState = {
     new_type: 'test'
 }
 
-// export const seasonClicked = createAsyncThunk('seasonTab/seasonClicked', (season_id) => {
-//     return axios
-//     .get(
-//         `${SEASONS_BY_TYPE}?season_id=${season_id}`,
-//         {
-//             withCredentials: true
-//         }
-//     )
-//     .then((response) => {
-//         console.log(response.data)
-//         console.log("successful season retrieval")
-//         return response.data['name']
-//     })
-// })
-
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
     return axios
     .get(
@@ -40,33 +23,33 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
         }
     )
     .then((response) => {
-        console.log(response.data)
-        console.log("successful rounds retrieval")
+        // console.log(response.data)
         return response.data
     })
 })
 
 export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {getState}) => {
     const state = getState()
-    // alert("Reaching here!")
-    return axios({
-        method: "post",
-        url: `${ROUNDS}`,
-        params: {
-            withCredentials: true
-        },
-        data: {
-            season_id: {
-                name: "2019"
-            },
+    return axios
+    .post(
+        `${ROUNDS}`,
+        {
+            season_id: s_id,
             name: state.seasonTab.new_title,
             type: state.seasonTab.new_type
-        }
-    })
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
     .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         return response.data
     })
+    .catch((error) => alert("New round not created! \n"+error.message))
 })
 
 const seasonTabSlice = createSlice({
@@ -100,7 +83,7 @@ const seasonTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
-            console.log(state.round_list)
+            // console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {
             state.loading = false

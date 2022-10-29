@@ -37,14 +37,18 @@ class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
         return RecruitmentSeasons.objects.all()
         
 class RoundsModelViewSet(viewsets.ModelViewSet):
-    serializer_class=RoundsSerializer
-    # permission_classes=[YearWisePermission]
+    permission_classes=[YearWisePermission]
 
     def get_queryset(self):
         s_id = self.request.query_params.get('season_id')
         if s_id is not None:
             return Rounds.objects.filter(season_id=s_id)
         return Rounds.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return RoundsNestedSerializer
+        return RoundsSerializer
 
 class SectionsModelViewSet(viewsets.ModelViewSet):
     queryset=Sections.objects.all()

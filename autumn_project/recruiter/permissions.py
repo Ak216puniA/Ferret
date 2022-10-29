@@ -4,19 +4,19 @@ class YearWisePermission(permissions.BasePermission):
     message = 'Junior years have limited access.'
     def has_permission(self, request, view):
 
-        print(request.user)
-        print("Hello1.")
+        # print(request.user)
+        # print("Hello1.")
         if request.user.is_authenticated:
 
-            print("Hello2.")
+            # print("Hello2.")
             if request.method in permissions.SAFE_METHODS:
                 return True
         
-            print("Hello3.")
-            if request.user.year == 2:
+            # print("Hello3.")
+            if request.user.year > 2:
                 return True
 
-            print("Hello4.")
+            # print("Hello4.")
 
         return False
 

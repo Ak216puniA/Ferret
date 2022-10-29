@@ -1,6 +1,5 @@
 .pageTab{
     font-size: 17px;
-    width: 136px;
     height: 36px;
     border: none;
     border-top-left-radius: 8px;
@@ -11,8 +10,11 @@
     background-color: #E0E0E0;
 }
 
+.pageTabArrowDiv{
+    min-width: 136px;
+}
+
 .currentTabDownArrowDiv{
-    width: 136px;
     display: flex;
     justify-content: center;
     align-items: flex-start;

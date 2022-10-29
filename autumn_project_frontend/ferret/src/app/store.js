@@ -3,13 +3,17 @@ import loginReducer from '../features/login/loginSlice'
 import seasonReducer from '../features/season/seasonSlice'
 import seasonTabReducer from '../features/seasonTab/seasonTabSlice'
 import logoutReducer from '../features/logout/logoutSlice'
+import homeTabReducer from '../features/homeTab/homeTabSlice'
+import seasonSubHeaderReducer from '../features/seasonSubHeader/seasonSubHeaderSlice'
 
 const store = configureStore({
     reducer: {
         login : loginReducer,
         season : seasonReducer,
         seasonTab : seasonTabReducer,
-        logout : logoutReducer
+        logout : logoutReducer,
+        homeTab : homeTabReducer,
+        seasonSubHeader : seasonSubHeaderReducer
     },
 })
 

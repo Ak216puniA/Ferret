@@ -3,8 +3,6 @@ import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
 import Cookies from 'js-cookie';
 
-const csrf_token = Cookies.get('ferret_csrftoken')
-
 const initialState = {
     loading : false,
     season_type : '',
@@ -24,7 +22,7 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
         }
     )
     .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         const payload = {
             type : season_type,
             data : response.data
@@ -35,141 +33,6 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 
 export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
     const state = getState()
-    // const data = JSON.stringify(
-    //     {
-    //         "name": state.season.new_year,
-    //         "end": null,
-    //         "description": "",
-    //         "type": state.season.new_type,
-    //         "image": null
-    //     }
-    // )
-    // console.log('csrftoken='+Cookies.get('ferret_csrftoken')+'; sessionid='+Cookies.get('ferret_session'))
-
-    // return axios({
-    //     method: "post",
-    //     url: `${SEASONS_BY_TYPE}`,
-    //     headers: {
-    //         // 'Content-Type': 'application/json',
-    //         // 'Authorization': `Token ${csrf_token}`,
-    //         // 'X-CSRFToken':Cookies.get('ferret_csrftoken'),
-    //         "Content-Type": "multipart/form-data"
-    //     },
-    //     params: {
-    //         withCredentials: true
-    //     },
-    //     // withCredentials: true,
-    //     data: {
-    //         name: state.season.new_year,
-    //         end: null,
-    //         description: "",
-    //         type: state.season.new_type,
-    //         image: null
-    //     }
-    // })
-
-    // return axios
-    // .post(
-    //     `${SEASONS_BY_TYPE}`,
-    //     {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${csrf_token}`,
-    //             'X-CSRFToken':Cookies.get('ferret_csrftoken')
-    //         },
-    //         withCredentials: true,
-            // data: {
-            //     name: state.season.new_year,
-            //     end: null,
-            //     description: "",
-            //     type: state.season.new_type,
-            //     image: null
-            // }
-    //     }
-    // )
-
-    // return axios
-    // .post(
-    //     `${SEASONS_BY_TYPE}`,
-    //     // { 
-    //     //     data: {
-    //     //         name: state.season.new_year,
-    //     //         end: null,
-    //     //         description: "",
-    //     //         type: state.season.new_type,
-    //     //         image: null
-    //     //     }
-    //     // },
-    //     {
-    //         data: {
-    //             name: state.season.new_year,
-    //             end: null,
-    //             description: "",
-    //             type: state.season.new_type,
-    //             image: null
-    //         },
-    //         headers: { 
-    //             "Content-Type": "multipart/form-data" 
-    //         },
-    //         params: {
-    //             withCredentials : true
-    //         }
-    //     }
-    // )
-
-    // return axios
-    // .post(
-    //     `${SEASONS_BY_TYPE}`,
-    //     // data,
-    //     {
-    //         name: state.season.new_year,
-    //         end: null,
-    //         description: "",
-    //         type: state.season.new_type,
-    //         image: null
-    //     },
-    //     // {
-    //     //     data: {
-    //     //         name: state.season.new_year,
-    //     //         end: null,
-    //     //         description: "",
-    //     //         type: state.season.new_type,
-    //     //         image: null
-    //     //     }
-    //     // },
-    //     {
-    //         headers: {
-    //             "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-    //             // "Content-Type":"application/json",
-    //         },
-    //         withCredentials:true
-    //     },
-    //     // {
-    //     //     withCredentials:true
-    //     // }
-    // )
-
-    // return axios({
-    //     method: "post",
-    //     url: `${SEASONS_BY_TYPE}`,
-    //     {
-    //         headers: {
-    //             "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-    //         },
-    //         withCredentials: true
-    //     },
-    //     // params: {
-    //     //     withCredentials: true
-    //     // },
-    //     // withCredentials: true,
-    //     data: {
-    //         name: state.season.new_year,
-    //         end: null,
-    //         description: "",
-    //         type: state.season.new_type,
-    //         image: null
-    //     }
-    // })
     console.log(state.season.new_type)
     console.log(state.season.new_year)
     return axios
@@ -190,7 +53,7 @@ export const createSeason = createAsyncThunk('season/createSeason', (payload,{ge
         },
     )
     .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         return response.data
     })
     .catch((error) =>  alert("Cannot create new season! \n"+error.message))
