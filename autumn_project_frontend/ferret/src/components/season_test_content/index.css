@@ -1,0 +1,23 @@
+.seasonTestContent{
+    background-color: #393E46;
+    margin-left: 44px;
+    margin-right: 44px;
+    padding-bottom: 44px;
+    min-height: 62vh;
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+.topRightCornerDark{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.topLeftCornerDark{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-top: 44px solid #222831;
+}

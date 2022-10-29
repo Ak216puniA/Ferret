@@ -10,6 +10,7 @@ const initialState = {
     error : '',
     round_list: [],
     currentTab : '',
+    open : false
 }
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
@@ -27,6 +28,11 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
     })
 })
 
+// export const createRound = createAsyncThunk('seasonTab/createRound', (payload) => {
+//     console.log(payload)
+//     return 
+// })
+
 const seasonTabSlice = createSlice({
     name : 'seasonTab',
     initialState,
@@ -34,6 +40,15 @@ const seasonTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload
         },
+        createRound: (state,action) => {
+            console.log(action.payload)
+        },
+        openCreateRoundDialog: (state) => {
+            state.open = true
+        },
+        closeCreateRoundDialog: (state) => {
+            state.open = false
+        }
     },
     extraReducers: builder => {
         builder
@@ -57,4 +72,4 @@ const seasonTabSlice = createSlice({
 })
 
 export default seasonTabSlice.reducer
-export const { tabClicked } = seasonTabSlice.actions
+export const { tabClicked, createRound, openCreateRoundDialog, closeCreateRoundDialog } = seasonTabSlice.actions

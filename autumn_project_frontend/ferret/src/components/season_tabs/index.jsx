@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 // import { useParams } from "react-router-dom";
 import { tabClicked } from "../../features/seasonTab/seasonTabSlice";
 import { MdAddBox } from "react-icons/md"
+import { openCreateRoundDialog } from "../../features/seasonTab/seasonTabSlice";
 import "./index.css";
 
 function SeasonTabs(props) {
@@ -36,7 +37,7 @@ function SeasonTabs(props) {
     return (
         <>
             {tabs}
-            <div><MdAddBox className="addIcon" size={28}/></div>
+            <div><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div>
         </>
     )
 }
