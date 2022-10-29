@@ -28,9 +28,12 @@ class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')
-        print(self.request.user)
+        season_id = self.request.query_parms_get('season_id')
+        print("Recruitment season request user: "+self.request.user)
         if season_type is not None:
             return RecruitmentSeasons.objects.filter(type=season_type)
+        if season_id is not None:
+            return RecruitmentSeasons.objects.filter(id=season_id)
         return RecruitmentSeasons.objects.all()
         
 class RoundsModelViewSet(viewsets.ModelViewSet):

@@ -3,7 +3,7 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { closeCreateRoundDialog } from "../../features/seasonTab/seasonTabSlice";
+import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } from "../../features/seasonTab/seasonTabSlice";
 import { GrClose } from "react-icons/gr";
 
 function SeasonTabDialog() {
@@ -24,13 +24,13 @@ function SeasonTabDialog() {
                         <div className='field'>
                             <TextField 
                             required 
-                            label='Academic Year' 
-                            type='number' 
-                            placeholder='yyyy' 
+                            label='Title' 
+                            type='text' 
+                            placeholder='Title' 
                             variant='outlined'
                             InputProps={{ inputProps: { min: 2000, max: 2100 } }}
                             fullWidth
-                            // onChange={(e) => dispatch(handleChangeNewYear(e.target.value))}
+                            onChange={(e) => dispatch(handleChangeNewTitle(e.target.value))}
                             />
                         </div>
                         <div className='field'>
@@ -39,13 +39,14 @@ function SeasonTabDialog() {
                                 <Select 
                                 required 
                                 labelId='type' 
-                                label="Season type" 
-                                // defaultValue={seasonTabState.new_type}
+                                label="Round type" 
+                                placeholder='Test/Interview' 
+                                defaultValue={seasonTabState.new_type}
                                 variant='outlined'
-                                // onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
+                                onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
                                 >
-                                    <MenuItem value={'developer'}>Developer</MenuItem>
-                                    <MenuItem value={'designer'}>Designer</MenuItem>
+                                    <MenuItem value={'test'}>Test</MenuItem>
+                                    <MenuItem value={'interview'}>Interview</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
@@ -58,7 +59,7 @@ function SeasonTabDialog() {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={() => console.log("Create new round")}
+                    onClick={() => alert("Create new round")}
                     >
                         Create
                     </button>

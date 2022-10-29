@@ -1,17 +1,35 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 // import Cookies from 'js-cookie';
-import { ROUNDS } from "../../urls";
+import { ROUNDS, SEASONS_BY_TYPE } from "../../urls";
 
 // const csrf_token = Cookies.get('csrftoken')
 
 const initialState = {
     loading : false,
     error : '',
+    current_season: 0,
     round_list: [],
     currentTab : '',
-    open : false
+    open : false,
+    new_title: 'title',
+    new_type: 'test'
 }
+
+export const seasonClicked = createAsyncThunk('seasonTab/seasonClicked', (season_id) => {
+    return axios
+    .get(
+        `${SEASONS_BY_TYPE}?season_id=${season_id}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        console.log("successful season retrieval")
+        return response.data['name']
+    })
+})
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
     return axios
@@ -28,10 +46,27 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
     })
 })
 
-// export const createRound = createAsyncThunk('seasonTab/createRound', (payload) => {
-//     console.log(payload)
-//     return 
-// })
+export const createRound = createAsyncThunk('seasonTab/createRound', (payload, {getState}) => {
+    const state = getState()
+    return axios({
+        method: "post",
+        url: `${ROUNDS}`,
+        params: {
+            withCredentials: true
+        },
+        data: {
+            name: state.season.new_year,
+            end: null,
+            description: "",
+            type: state.season.new_type,
+            image: null
+        }
+    })
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
+})
 
 const seasonTabSlice = createSlice({
     name : 'seasonTab',
@@ -40,14 +75,19 @@ const seasonTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload
         },
-        createRound: (state,action) => {
-            console.log(action.payload)
-        },
         openCreateRoundDialog: (state) => {
             state.open = true
         },
         closeCreateRoundDialog: (state) => {
             state.open = false
+        },
+        handleChangeNewTitle: (state,action) => {
+            state.new_title = action.payload
+            console.log(state.new_title)
+        },
+        handleChangeNewType: (state,action) => {
+            state.new_type = action.payload
+            console.log(state.new_type)
         }
     },
     extraReducers: builder => {
@@ -68,8 +108,23 @@ const seasonTabSlice = createSlice({
             state.error = action.error.message
             console.log(action.error.message)
         })
+        .addCase(createRound.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createRound.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.new_title = ' '
+            state.new_type = 'test'
+            console.log("Round created: \n"+action.payload)
+        })
+        .addCase(createRound.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Round NOT created: \n"+action.error.message)
+        })
     }
 })
 
 export default seasonTabSlice.reducer
-export const { tabClicked, createRound, openCreateRoundDialog, closeCreateRoundDialog } = seasonTabSlice.actions
+export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } = seasonTabSlice.actions
