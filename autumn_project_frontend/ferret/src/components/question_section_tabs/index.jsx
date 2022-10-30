@@ -16,7 +16,7 @@ function QuestionSectionTabs(props) {
             document.getElementById(`${sections[0]['name']}Arrow`).style.display = 'block'
             dispatch(tabClicked(
                 {
-                    tab_name: sections[0]['id'],
+                    tab_name: sections[0]['name'],
                     tab_id: sections[0]['id']
                 }
             ))
