@@ -17,6 +17,7 @@ export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRo
         }
     )
     .then((response) => {
+        console.log(response.data)
         return response.data
     })
 })
@@ -25,7 +26,7 @@ export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRo
 const seasonRoundContentSlice = createSlice({
     name: 'seasonRoundContent',
     initialState,
-    extraReducers: (builder) => {
+    extraReducers: builder => {
         builder
         .addCase(fetchRoundCandidates.pending, (state) => {
             state.loading = true
@@ -33,12 +34,13 @@ const seasonRoundContentSlice = createSlice({
         .addCase(fetchRoundCandidates.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
-            candidate_list = action.payload
+            state.candidate_list = action.payload
             console.log("Candidates' retrieval successful!")
         })
         .addCase(fetchRoundCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
+            state.candidate_list = []
             console.log("Candidates' retrieval failed! \n"+state.error)
         })
     }

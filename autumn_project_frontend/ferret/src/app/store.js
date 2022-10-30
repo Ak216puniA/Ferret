@@ -5,6 +5,7 @@ import seasonTabReducer from '../features/seasonTab/seasonTabSlice'
 import logoutReducer from '../features/logout/logoutSlice'
 import homeTabReducer from '../features/homeTab/homeTabSlice'
 import seasonSubHeaderReducer from '../features/seasonSubHeader/seasonSubHeaderSlice'
+import seasonRoundContentReducer from '../features/seasonRoundContent/seasonRoundContentSlice'
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         seasonTab : seasonTabReducer,
         logout : logoutReducer,
         homeTab : homeTabReducer,
-        seasonSubHeader : seasonSubHeaderReducer
+        seasonSubHeader : seasonSubHeaderReducer,
+        seasonRoundContent : seasonRoundContentReducer
     },
 })
 

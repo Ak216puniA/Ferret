@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SeasonTabDialog from "../season_tab_dialog";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import './index.css';
 
 function RoundTableRow(props){
@@ -17,9 +17,12 @@ function RoundTableRow(props){
 
 function SeasonTestContent(props) {
     const { s_id } = props
+    const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const dispatch = useDispatch()
 
-    const candidates = [
+    const candidates = seasonRoundContentState.candidate_list.length>0 ? 
+    seasonRoundContentState.candidate_list :
+    [
         {
             id: 1,
             candidate_id: {
@@ -35,6 +38,7 @@ function SeasonTestContent(props) {
             status: "Done"
         }
     ]
+    
     let roundTable = (
         candidates.length>0 ? 
         candidates.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 

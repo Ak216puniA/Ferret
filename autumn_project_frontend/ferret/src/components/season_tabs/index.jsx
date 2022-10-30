@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { tabClicked } from "../../features/seasonTab/seasonTabSlice";
 import { MdAddBox } from "react-icons/md"
 import { openCreateRoundDialog } from "../../features/seasonTab/seasonTabSlice";
+import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
 
 function SeasonTabs(props) {
@@ -31,10 +32,20 @@ function SeasonTabs(props) {
         } 
     })
 
+    const tabOnClickHandler = (tab_data) => {
+        dispatch(
+            tabClicked({
+                tab_name: tab_data['tab_name'],
+                tab_id: tab_data['tab_id']
+            })
+        )
+        dispatch(fetchRoundCandidates(tab_data['tab_id']))
+    }
+
     let tabs = seasonTabState.round_list.length>0 ? roundList.map(tab => {
         return(
             <div className="pageTabDiv" key={tab['id']}>
-                <button className={"pageTab pageTabArrowDiv"} onClick={() => dispatch(tabClicked({tab_name: tab['name'],tab_id: tab['id']}))}>{tab['name']}</button>
+                <button className={"pageTab pageTabArrowDiv"} onClick={() => tabOnClickHandler({tab_name: tab['name'],tab_id: tab['id']})}>{tab['name']}</button>
                 <div className={"currentTabDownArrowDiv pageTabArrowDiv"}><div className="currentTabDownArrow" id={`${tab['name']}Arrow`}></div></div>
             </div>
         )
