@@ -42,7 +42,24 @@
 }
 
 .seasonTestContentButton:hover{
-    background-color: #F7A624;
+    background-color: #D39737;
+}
+
+.rightButtonDiv{
+    display: flex;
+    flex-direction: row;
+}
+
+.rightButton{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.csvButton:hover{
+    background-color: #EEEEEE;
 }
 
 .roundContentDiv{
