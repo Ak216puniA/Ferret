@@ -21,3 +21,77 @@
     border-right: 44px solid transparent;
     border-top: 44px solid #222831;
 }
+
+.seasonTestContentButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding-left: 56px;
+    padding-right: 56px;
+}
+
+.seasonTestContentButton{
+    height: 24px;
+    padding: 4px 16px;
+    font-size: 15px;
+    background-color: #F5B041;
+    color: black;
+    border: none;
+}
+
+.seasonTestContentButton:hover{
+    background-color: #F7A624;
+}
+
+.roundContentDiv{
+    padding: 0px 44px;
+}
+
+.roundHeadingRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    background-color: #F5B041;
+    color: black;
+    height: 32px;
+    font-size: 16px;
+}
+
+.roundContentCheckbox{
+    width: 5%;
+}
+
+.roundContentIndex{
+    width: 5%;
+}
+
+.roundContentCandidateName{
+    width: 50%;
+}
+
+.roundContentCandidateNameHeading{
+    width: 50%;
+}
+
+.roundContentCandidateName:hover{
+    color: #00ADB5;
+}
+
+.roundContentCandidateStatus{
+    width: 40%;
+}
+
+.roundCandidateRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+    background-color: #515864;
+    color: white;
+    height: 28px;
+    font-size: 14px;
+}

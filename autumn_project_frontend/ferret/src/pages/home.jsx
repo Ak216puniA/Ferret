@@ -19,7 +19,6 @@ function Home() {
     )
   }else{
     return <Navigate to="/login" replace={true} />
-
   }
   
 }

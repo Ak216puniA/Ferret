@@ -118,6 +118,7 @@ class CandidateRound(models.Model):
     total_marks=models.IntegerField()
 
     class StatusOfRound(models.TextChoices):
+        PENDING = 'pending', _('Pending')
         NOT_NOTIFIED = 'not_notified', _('Not Notified')
         NOTIFIED = 'notified', _('Notified')
         WAITING_ROOM = 'waiting_room', _('In Waiting Room')

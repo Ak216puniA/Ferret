@@ -77,8 +77,18 @@ class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
 
 class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateRound.objects.all()
-    serializer_class=CandidateRoundSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        if r_id is not None:
+            return CandidateRound.objects.filter(round_id=r_id)
+        return CandidateRound.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return CandidateRoundNestedSerializer
+        return CandidateRoundSerializer
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()

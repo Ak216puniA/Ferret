@@ -9,9 +9,10 @@ const initialState = {
     current_season: 0,
     round_list: [],
     currentTab : '',
+    currentTabId : -1,
     open : false,
     new_title: 'title',
-    new_type: 'test'
+    new_type: 'test',
 }
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
@@ -57,7 +58,11 @@ const seasonTabSlice = createSlice({
     initialState,
     reducers: {
         tabClicked: (state,action) => {
-            state.currentTab = action.payload
+            state.currentTab = action.payload['tab_name']
+            state.currentTabId = action.payload['tab_id']
+            // console.log(action.payload)
+            // console.log(state.currentTab)
+            // console.log(state.currentTabId)
         },
         openCreateRoundDialog: (state) => {
             state.open = true
@@ -83,7 +88,7 @@ const seasonTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
-            // console.log(state.round_list)
+            console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {
             state.loading = false

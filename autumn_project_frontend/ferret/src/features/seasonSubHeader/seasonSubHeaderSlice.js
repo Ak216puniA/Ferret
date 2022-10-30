@@ -6,7 +6,7 @@ const initialState = {
     loading: false,
     current_season_type: '',
     current_season_year: 0,
-    current_season_desc: ''
+    current_season_desc: '',
 }
 
 export const fetchCurrentSeason = createAsyncThunk('seasonSubHeader/fetchCurrentSeason', (season_id) => {

@@ -141,8 +141,8 @@ class CandidateMarksSerializer(serializers.ModelSerializer):
 # CandidateRound model serializers
 
 class CandidateRoundNestedSerializer(serializers.ModelSerializer):
-    candidate_id = CandidatesNameSerializer()
-    round_id = RoundsNameSerializer()
+    candidate_id = CandidatesSerializer()
+    round_id = RoundsSerializer()
     interview_panel = InterviewPanelNameSerializer()
     class Meta:
         model = CandidateRound

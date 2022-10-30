@@ -17,7 +17,12 @@ function SeasonTabs(props) {
         if(roundList.length>0){
             if(seasonTabState.currentTab===''){
                 document.getElementById(`${roundList[0]['name']}Arrow`).style.display = 'block'
-                dispatch(tabClicked(roundList[0]['name']))
+                dispatch(
+                    tabClicked({
+                        tab_name: roundList[0]['name'],
+                        tab_id: roundList[0]['id']
+                    })
+                )
             }else{
                 roundList.forEach(tab => {
                     document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===seasonTabState.currentTab) ? 'block' : 'none'
@@ -29,7 +34,7 @@ function SeasonTabs(props) {
     let tabs = seasonTabState.round_list.length>0 ? roundList.map(tab => {
         return(
             <div className="pageTabDiv" key={tab['id']}>
-                <button className={"pageTab pageTabArrowDiv"} onClick={() => dispatch(tabClicked(tab['name']))}>{tab['name']}</button>
+                <button className={"pageTab pageTabArrowDiv"} onClick={() => dispatch(tabClicked({tab_name: tab['name'],tab_id: tab['id']}))}>{tab['name']}</button>
                 <div className={"currentTabDownArrowDiv pageTabArrowDiv"}><div className="currentTabDownArrow" id={`${tab['name']}Arrow`}></div></div>
             </div>
         )
