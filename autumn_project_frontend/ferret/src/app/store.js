@@ -6,6 +6,7 @@ import logoutReducer from '../features/logout/logoutSlice'
 import homeTabReducer from '../features/homeTab/homeTabSlice'
 import seasonSubHeaderReducer from '../features/seasonSubHeader/seasonSubHeaderSlice'
 import seasonRoundContentReducer from '../features/seasonRoundContent/seasonRoundContentSlice'
+import questionReducer from '../features/question/questionSlice'
 
 const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
         logout : logoutReducer,
         homeTab : homeTabReducer,
         seasonSubHeader : seasonSubHeaderReducer,
-        seasonRoundContent : seasonRoundContentReducer
+        seasonRoundContent : seasonRoundContentReducer,
+        question : questionReducer
     },
 })
 

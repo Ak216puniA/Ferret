@@ -29,7 +29,6 @@ function SeasonDashboard() {
             <NavigationBar />
             <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`} />
             {seasonDashboardContent}
-            {/* <SeasonTestContent s_id={season_id}/> */}
             </>
         )
     }else{

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { ROUNDS } from "../../urls";
+import { ROUNDS, SECTIONS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -13,7 +13,9 @@ const initialState = {
     open : false,
     new_title: 'title',
     new_type: 'test',
+    current_sections: []
 }
+
 
 export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
     return axios
@@ -53,6 +55,21 @@ export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {get
     .catch((error) => alert("New round not created! \n"+error.message))
 })
 
+export const fetchSections = createAsyncThunk('question/fetchSections', (round_id) => {
+    return axios
+    .get(
+        `${SECTIONS}?round_id=${round_id}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
+})
+
+
 const seasonTabSlice = createSlice({
     name : 'seasonTab',
     initialState,
@@ -60,9 +77,6 @@ const seasonTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload['tab_name']
             state.currentTabId = action.payload['tab_id']
-            // console.log(action.payload)
-            // console.log(state.currentTab)
-            // console.log(state.currentTabId)
         },
         openCreateRoundDialog: (state) => {
             state.open = true
@@ -111,6 +125,21 @@ const seasonTabSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             alert("Round NOT created: \n"+action.error.message)
+        })
+        .addCase(fetchSections.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchSections.fulfilled, (state, action) => {
+            state.loading = false
+            state.error = ''
+            state.current_sections = action.payload
+            console.log("Sections fetched successfully!")
+        })
+        .addCase(fetchSections.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.current_sections = []
+            console.log("Sections' fetch unsuccessful!")
         })
     }
 })

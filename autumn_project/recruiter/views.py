@@ -52,13 +52,27 @@ class RoundsModelViewSet(viewsets.ModelViewSet):
 
 class SectionsModelViewSet(viewsets.ModelViewSet):
     queryset=Sections.objects.all()
-    serializer_class=SectionsSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        if r_id is not None:
+            return Sections.objects.filter(round_id=r_id)
+        return Sections.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return SectionsNestedSerializer
+        return SectionsSerializer
 
 class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
-    serializer_class=QuestionsSerializer
     permission_classes=[YearWisePermission]
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return QuestionsNestedSerializer
+        return QuestionsSerializer
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     queryset=InterviewPanel.objects.all()
