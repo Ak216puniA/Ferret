@@ -10,6 +10,7 @@ export const BACKEND_BASE_URL = 'http://localhost:8000/'
 export const SEASONS_BY_TYPE = `${BACKEND_BASE_URL}recruitment_season/`
 export const ROUNDS = `${BACKEND_BASE_URL}round/`
 export const SECTIONS = `${BACKEND_BASE_URL}section/`
+export const QUESTIONS = `${BACKEND_BASE_URL}question/`
 export const CANDIDATE_ROUND = `${BACKEND_BASE_URL}candidate_round/`
 export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 

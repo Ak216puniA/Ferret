@@ -23,6 +23,7 @@ function SeasonTabs(props) {
                         tab_id: roundList[0]['id']
                     })
                 )
+                dispatch(fetchSections(roundList[0]['id']))
             }else{
                 roundList.forEach(tab => {
                     document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===seasonTabState.currentTab) ? 'block' : 'none'

@@ -69,6 +69,12 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
     permission_classes=[YearWisePermission]
 
+    def get_queryset(self):
+        sc_id = self.request.query_params.get('section_id')
+        if sc_id is not None:
+            return Questions.objects.filter(section_id=sc_id)
+        return Questions.objects.all()
+
     def get_serializer_class(self):
         if self.action == 'list' or self.action == 'retrieve':
             return QuestionsNestedSerializer

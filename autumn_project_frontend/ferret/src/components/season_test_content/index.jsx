@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
+import { Checkbox } from "@mui/material"
 import './index.css';
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
     return (
         <div className='roundCandidateRow'>
-            <div className={`roundContentCheckbox  singleElementRowFlex`}>C</div>
+            <div className={`roundContentCheckbox  singleElementRowFlex`}><Checkbox size="small" sx={{color: '#00ADB5'}}/></div>
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>

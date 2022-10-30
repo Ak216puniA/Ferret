@@ -11,9 +11,10 @@ import { Navigate } from "react-router-dom";
 
 
 function SeasonDashboard() {
-    const authState = useSelector((state) => state.logout.authenticated)
     const {season_id} = useParams()
+    const authState = useSelector((state) => state.logout.authenticated)
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)
+    const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -21,13 +22,14 @@ function SeasonDashboard() {
     },[])
 
     const seasonDashboardContent = seasonSubHeaderState.open_questions ? <Questions /> : <SeasonTestContent s_id={season_id}/>
+    const round = seasonSubHeaderState.open_questions ? `/ ${seasonTabState.currentTab}` : ''
 
     if(authState){
         return (
             <>
             <Header />
             <NavigationBar />
-            <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`} />
+            <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type}) ${round}`} />
             {seasonDashboardContent}
             </>
         )

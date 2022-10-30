@@ -5,16 +5,21 @@ import HomeTabs from "../home_tabs";
 import SeasonTabs from "../season_tabs";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { listRounds } from "../../features/seasonTab/seasonTabSlice";
+import QuestionSectionTabs from "../question_section_tabs";
 
 function SubHeader(props){
     const {page, initialTabs} = props
 
     const {season_id} = useParams()
+    const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader.open_questions)
+    const seasonTabState = useSelector((state) => state.seasonTab.current_sections)
     const dispatch = useDispatch()
 
-    const tabs = season_id>0 ? <SeasonTabs /> : <HomeTabs homeTabs={initialTabs}/>
+    const tabs = season_id>0 ? 
+    (seasonSubHeaderState ? <QuestionSectionTabs section_tabs={seasonTabState}/> : <SeasonTabs />)  : 
+    <HomeTabs homeTabs={initialTabs}/>
 
     useEffect(() => {
         if(season_id>0) dispatch(listRounds(season_id))
