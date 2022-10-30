@@ -7,6 +7,7 @@ const initialState = {
     current_season_type: '',
     current_season_year: 0,
     current_season_desc: '',
+    open_questions: false
 }
 
 export const fetchCurrentSeason = createAsyncThunk('seasonSubHeader/fetchCurrentSeason', (season_id) => {
@@ -25,6 +26,14 @@ export const fetchCurrentSeason = createAsyncThunk('seasonSubHeader/fetchCurrent
 const seasonSubHeaderSlice = createSlice({
     name: 'seasonSubHeader',
     initialState,
+    reducers: {
+        openQuestions: (state) => {
+            state.open_questions = true
+        },
+        closeQuestions: (state) => {
+            state.open_questions = false
+        }
+    },
     extraReducers: (builder) => {
         builder
         .addCase(fetchCurrentSeason.pending, (state) => {
@@ -45,3 +54,4 @@ const seasonSubHeaderSlice = createSlice({
 })
 
 export default seasonSubHeaderSlice.reducer
+export const { openQuestions, closeQuestions } = seasonSubHeaderSlice.actions

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
+import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import './index.css';
 
 function RoundTableRow(props){
@@ -53,7 +54,7 @@ function SeasonTestContent(props) {
             </div>
             <div className="seasonTestContentButtonDiv">
                 <div className="leftButtonDiv">
-                    <button className="seasonTestContentButton">Question Paper</button>
+                    <button className="seasonTestContentButton" onClick={() => dispatch(openQuestions())}>Questions</button>
                 </div>
                 <div className="rightButtonDiv">
                     <div className="filterButtonDiv">
