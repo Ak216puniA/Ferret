@@ -113,31 +113,11 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()
     serializer_class=CandidateMarksSerializer
-    permission_classes=[YearWisePermission]  
-
-# class getAuthCode(APIView):
-#     permission_classes=[AllowAny]
-#     def get(self, request, format=None):
-#         auth_code_url=env('AUTH_CODE_URL')
-#         params = {
-#             'response_type' : 'code',
-#             'client_id' : env('CLIENT_ID'),
-#             'redirect_uri' : 'http://localhost:8000/auth/login/',
-#             'state' : 'foo_success216'
-#         }
-#         try:
-#             response_auth_code = requests.get(url=auth_code_url, params=params)
-#         except Exception as e:
-#             return Response({'auth_code_status':e})
-#         else:
-#             if response_auth_code.status_code==200:
-#                 return Response({'auth_code_status':response_auth_code.content})
-#             return Response({'auth_code_status':response_auth_code.status_code})    
+    permission_classes=[YearWisePermission]   
 
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
     def get(self, request, format=None):
-        # SITE = env('AUTH_CODE_URL')+'?response_type=code&client_id='+env('CLIENT_ID')+'&redirect_uri='+env('REDIRECT_URL')+'&state=foo_success216'
         SITE = env('AUTH_CODE_URL')+"?response_type=code&client_id="+env('CLIENT_ID')+"&redirect_uri=http://localhost:8000/auth/login/&state=foo_success216"
         return redirect(SITE)
 
@@ -163,18 +143,6 @@ class LoginView(APIView):
     
         try:
             response_token = requests.post(url=token_url, data=request_data)
-        # except exceptions.ConnectionError as e:
-        #     message='Connection error when requesting for auth_token'
-        #     desc=e
-        # except exceptions.Timeout as e:
-        #     message='Timeout when requesting for auth_token'
-        #     desc=e
-        # except exceptions.HTTPError as e:
-        #     message='Invalid response when requesting for auth_token'
-        #     desc=e
-        # except Exception as e:
-        #     message='Error occured when requesting for auth_token:'
-        #     desc=e
         except Exception as e:
             view_response['succesful']=False
             view_response['desc']=e
@@ -202,9 +170,7 @@ class LoginView(APIView):
                         res['Access-Control-Allow-Origin']='http://localhost:3000'
                         res['Access-Control-Allow-Credentials']='true'
                         print(request.user)
-                        # print()
                         return redirect('http://localhost:3000/home')
-                        # return res
 
         return Response(view_response)
 
@@ -214,4 +180,8 @@ class LogoutView(APIView):
         if request.user.is_authenticated:
             logout(request)
             return Response({'logged_out':True})
-        return Response({'logged_out':True})    
+        return Response({'logged_out':True})
+
+class HandleCSV(APIView):
+    def post(self, request, format=None):
+        return Response({'file': request.data})

@@ -2,9 +2,8 @@ import React from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { setCSV, fetchCSV, unfetchCSV } from "../../features/csv/csvSlice";
+import { fetchCSV, uploadCSV } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
-import { styled } from "@mui/system";
 import './index.css';
 
 function RoundTableRow(props){
@@ -22,7 +21,7 @@ function RoundTableRow(props){
 function SeasonTestContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
-    const csvState = useSelector((state) => state.csv)
+    // const csvState = useSelector((state) => state.csv)
     const dispatch = useDispatch()
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
@@ -46,9 +45,8 @@ function SeasonTestContent(props) {
 
     const csvUploadHandler = (event) => {
         console.log(event.target.files[0])
-        dispatch(setCSV(event.target.files[0]))
-        console.log(csvState.csv)
         dispatch(fetchCSV())
+        dispatch(uploadCSV(event.target.files[0]))
     }
     
     let roundTable = (

@@ -1,4 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { CSV } from "../../urls";
+import Cookies from "js-cookie";
 
 const initialState = {
     loading: false,
@@ -7,6 +10,25 @@ const initialState = {
     csv: '',
     csv_uploaded: false,
 }
+
+export const uploadCSV = createAsyncThunk('csv/uploadCSV', (file) => {
+    return axios
+    .post(
+        `${CSV}`,
+        {
+            csv: file
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
 
 const csvSlice = createSlice({
     name: 'csv',

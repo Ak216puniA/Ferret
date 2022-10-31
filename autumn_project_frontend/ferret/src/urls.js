@@ -13,6 +13,7 @@ export const SECTIONS = `${BACKEND_BASE_URL}section/`
 export const QUESTIONS = `${BACKEND_BASE_URL}question/`
 export const CANDIDATE_ROUND = `${BACKEND_BASE_URL}candidate_round/`
 export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
+export const CSV = `${BACKEND_BASE_URL}api/csv/`
 
 
 // Frontend URLs

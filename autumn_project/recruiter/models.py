@@ -46,16 +46,10 @@ class Rounds(models.Model):
 
     type=models.CharField(max_length=16,choices=TypeOfRound.choices,blank=False,default=TypeOfRound.TEST)
 
-    # def __str__(self):
-    #     return self.name
-
 class Sections(models.Model):
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     weightage=models.IntegerField()
-
-    # def __str__(self):
-    #     return self.name
 
 class Questions(models.Model):
     section_id=models.ForeignKey(Sections,on_delete=models.CASCADE)
