@@ -46,16 +46,10 @@ class Rounds(models.Model):
 
     type=models.CharField(max_length=16,choices=TypeOfRound.choices,blank=False,default=TypeOfRound.TEST)
 
-    # def __str__(self):
-    #     return self.name
-
 class Sections(models.Model):
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     weightage=models.IntegerField()
-
-    # def __str__(self):
-    #     return self.name
 
 class Questions(models.Model):
     section_id=models.ForeignKey(Sections,on_delete=models.CASCADE)
@@ -118,6 +112,7 @@ class CandidateRound(models.Model):
     total_marks=models.IntegerField()
 
     class StatusOfRound(models.TextChoices):
+        PENDING = 'pending', _('Pending')
         NOT_NOTIFIED = 'not_notified', _('Not Notified')
         NOTIFIED = 'notified', _('Notified')
         WAITING_ROOM = 'waiting_room', _('In Waiting Room')

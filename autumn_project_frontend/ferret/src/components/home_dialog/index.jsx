@@ -27,7 +27,8 @@ function HomeDialog() {
                             label='Academic Year' 
                             type='number' 
                             placeholder='yyyy' 
-                            variant='outlined' 
+                            variant='outlined'
+                            InputProps={{ inputProps: { min: 2000, max: 2100 } }}
                             fullWidth
                             onChange={(e) => dispatch(handleChangeNewYear(e.target.value))}
                             />
@@ -39,7 +40,7 @@ function HomeDialog() {
                                 required 
                                 labelId='type' 
                                 label="Season type" 
-                                defaultValue={seasonState.new_type}
+                                // defaultValue={seasonState.new_type}
                                 variant='outlined'
                                 onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
                                 >

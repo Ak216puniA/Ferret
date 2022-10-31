@@ -1,0 +1,43 @@
+.pageTab{
+    font-size: 17px;
+    height: 36px;
+    border: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.pageTab:hover{
+    background-color: #E0E0E0;
+}
+
+.pageTabArrowDiv{
+    min-width: 136px;
+}
+
+.currentTabDownArrowDiv{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 0px;
+    z-index: 1;
+}
+
+.currentTabDownArrow{
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #00ADB5;
+    border-width:22px;
+    z-index: 1;
+    display: none;
+}
+
+.addIcon:hover{
+    color: #F5B041
+}
+
+.addRoundDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 4px;
+}

@@ -3,7 +3,7 @@
     margin-left: 44px;
     margin-right: 44px;
     padding-bottom: 44px;
-    height: 62vh;
+    min-height: 62vh;
     margin-top: 12px;
     margin-bottom: 0px;
 }
@@ -105,4 +105,8 @@
     background-color: #F5B041;
     color: black;
     border: none;
+}
+
+.createSeasonButton:hover{
+    background-color: #F7A624;
 }

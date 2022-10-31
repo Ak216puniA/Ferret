@@ -1,0 +1,114 @@
+.seasonTestContent{
+    background-color: #393E46;
+    margin-left: 44px;
+    margin-right: 44px;
+    padding-bottom: 44px;
+    min-height: 62vh;
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+.topRightCornerDark{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.topLeftCornerDark{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.seasonTestContentButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding-left: 56px;
+    padding-right: 56px;
+}
+
+.seasonTestContentButton{
+    height: 24px;
+    padding: 4px 16px;
+    font-size: 15px;
+    background-color: #F5B041;
+    color: black;
+    border: none;
+}
+
+.seasonTestContentButton:hover{
+    background-color: #D39737;
+}
+
+.rightButtonDiv{
+    display: flex;
+    flex-direction: row;
+}
+
+.rightButton{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.csvButton:hover{
+    background-color: #EEEEEE;
+}
+
+.roundContentDiv{
+    padding: 0px 44px;
+}
+
+.roundHeadingRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    background-color: #F5B041;
+    color: black;
+    height: 32px;
+    font-size: 16px;
+}
+
+.roundContentCheckbox{
+    width: 5%;
+}
+
+.roundContentIndex{
+    width: 5%;
+}
+
+.roundContentCandidateName{
+    width: 50%;
+}
+
+.roundContentCandidateNameHeading{
+    width: 50%;
+}
+
+.roundContentCandidateName:hover{
+    color: #00ADB5;
+}
+
+.roundContentCandidateStatus{
+    width: 40%;
+}
+
+.roundCandidateRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+    background-color: #515864;
+    color: white;
+    height: 28px;
+    font-size: 14px;
+}

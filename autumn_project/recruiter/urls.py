@@ -3,7 +3,6 @@ from .views import *
 from rest_framework.routers import DefaultRouter,SimpleRouter
 
 router = DefaultRouter()
-# router = SimpleRouter()
 
 router.register('recruitment_season',RecruitmentSeasonsModelViewSet ,basename='season')
 router.register('round',RoundsModelViewSet ,basename='round')
@@ -21,5 +20,6 @@ urlpatterns =[
     path('api-auth/', include('rest_framework.urls')),
     path('auth/auth_code/', getAuthCode.as_view()),
     path('auth/login/', LoginView.as_view()),
-    path('auth/logout/', LogoutView.as_view())
+    path('auth/logout/', LogoutView.as_view()),
+    path('api/csv/', HandleCSV.as_view())
 ]

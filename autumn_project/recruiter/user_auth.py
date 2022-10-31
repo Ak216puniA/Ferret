@@ -12,24 +12,11 @@ def get_user_data(token):
 
     try:
         response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
-    # except exceptions.HTTPError as e:
-    #     print("Invalid response when requesting for user_data:")
-    #     print(e)
-    # except exceptions.ConnectionError as e:
-    #     print("Connection error when requesting for user_data:")
-    #     print(e)
-    # except exceptions.Timeout as e:
-    #     print("Timeout when requesting for user_data:")
-    #     print(e)
-    # except response_user_data.raise_for_status() as e:
-    #     print("Invalid url when requesting for user_data")
-    #     print(e)
     except Exception as e:
         print("Exception occured when requesting for USER DATA:")
         print(e)
     else:
         if response_user_data.status_code==200:
-            # TO-DO : InvildJSONError handling
             user_data = response_user_data.json()
             is_maintainer = False
 
@@ -78,5 +65,3 @@ def check_and_create_user(user_data):
     user_dict['user']=user
     user.save()
     return user_dict
-
-# TO-DO : Exception handling : InvildJSONError handling in get_user_data function

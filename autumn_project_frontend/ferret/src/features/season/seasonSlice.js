@@ -3,8 +3,6 @@ import axios from 'axios'
 import { SEASONS_BY_TYPE } from '../../urls'
 import Cookies from 'js-cookie';
 
-const csrf_token = Cookies.get('csrftoken')
-
 const initialState = {
     loading : false,
     season_type : '',
@@ -20,14 +18,11 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
     .get(
         `${SEASONS_BY_TYPE}?season_type=${season_type}`,
         {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${csrf_token}`
-            }
+            withCredentials: true
         }
     )
     .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         const payload = {
             type : season_type,
             data : response.data
@@ -38,22 +33,27 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 
 export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
     const state = getState()
-    return axios({
-        method: "post",
-        url: `${SEASONS_BY_TYPE}`,
-        headers: {
-            Authorization: `Token ${csrf_token}`
-        },
-        data: {
+    console.log(state.season.new_type)
+    console.log(state.season.new_year)
+    return axios
+    .post(
+        `${SEASONS_BY_TYPE}`,
+        {
             name: state.season.new_year,
             end: null,
             description: "",
             type: state.season.new_type,
             image: null
-        }
-    })
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
     .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         return response.data
     })
     .catch((error) =>  alert("Cannot create new season! \n"+error.message))
@@ -100,12 +100,11 @@ const seasonSlice = createSlice({
             state.error = ''
             state.new_year = 0
             state.new_type = ''
-            console.log("Season created: \n"+action.payload)
+            console.log("Created new season \n"+action.payload)
         })
         .addCase(createSeason.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log("Season NOT created: \n"+action.error.message)
         })
     }
 })

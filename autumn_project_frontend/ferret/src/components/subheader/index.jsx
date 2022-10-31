@@ -1,42 +1,30 @@
 import React from "react";
-import { useSelector } from 'react-redux'
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import HomeTabs from "../home_tabs";
+import SeasonTabs from "../season_tabs";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { listRounds } from "../../features/seasonTab/seasonTabSlice";
+import QuestionSectionTabs from "../question_section_tabs";
 
 function SubHeader(props){
     const {page, initialTabs} = props
-    // const subHeaderTabs = initialTabs
 
-    const seasonTabState = useSelector((state) => state.seasonTab)
-    // const dispatch = useDispatch()
+    const {season_id} = useParams()
+    const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader.open_questions)
+    const seasonTabState = useSelector((state) => state.seasonTab.current_sections)
+    const dispatch = useDispatch()
 
-    // useEffect(() => {
-    //     if(seasonTabState.currentSeason===-1){
-    //         if(seasonTabState.currentTab===''){
-    //             document.getElementById(`${subHeaderTabs[0]}Arrow`).style.display = 'block'
-    //             dispatch(listSeasons(subHeaderTabs[0]))
-    //         }else{
-    //             subHeaderTabs.forEach(tab => {
-    //                 document.getElementById(`${tab}Arrow`).style.display = (tab===seasonTabState.currentTab) ? 'block' : 'none'
-    //             });
-    //             dispatch(listSeasons(seasonTabState.currentTab))
-    //         }
-    //     }else{
-    //         console.log("yah")
-    //     }
-    // })
+    const tabs = season_id>0 ? 
+    (seasonSubHeaderState ? <QuestionSectionTabs section_tabs={seasonTabState}/> : <SeasonTabs />)  : 
+    <HomeTabs homeTabs={initialTabs}/>
 
-    // let tabs = subHeaderTabs.length>0 ? subHeaderTabs.map(tab => {
-    //     return(
-    //         <div className="pageTabDiv" key={tab}>
-    //             <button className="pageTab" onClick={() => dispatch(tabClicked(tab))}>{tab}</button>
-    //             <div className="currentTabDownArrowDiv"><div className="currentTabDownArrow" id={`${tab}Arrow`}></div></div>
-    //         </div>
-    //     )
-    // }) : []
-
-    const tabs = seasonTabState.currentSeason===-1 ? <HomeTabs homeTabs={initialTabs}/> : []
+    useEffect(() => {
+        if(season_id>0) dispatch(listRounds(season_id))
+    }, [])
+    
     return(
         <div className="inPageBar">
             <div className="topRightCornerLight"></div>
@@ -55,8 +43,7 @@ function SubHeader(props){
             </div>
             <div className="topLeftCornerLight"></div>
         </div>
-    )
-    
+    ) 
 }
 
 export default SubHeader

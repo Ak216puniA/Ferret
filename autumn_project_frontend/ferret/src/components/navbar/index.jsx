@@ -5,8 +5,8 @@ import { MdGroups } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { MdHelpCenter } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import { useDispatch } from "react-redux";
-import { seasonClicked } from "../../features/seasonTab/seasonTabSlice"
 
 function NavigationBar() {
     const dispatch = useDispatch()
@@ -18,7 +18,7 @@ function NavigationBar() {
     }
 
     const homeClickHandler = () => {
-        dispatch(seasonClicked(-1))
+        dispatch(closeQuestions())
         routeChange('home')
     }
 

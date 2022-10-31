@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import login,logout
 from .serializers import UserSerializer
 from django.shortcuts import redirect
+from rest_framework import status
 
 env = environ.Env()
 environ.Env.read_env()
@@ -22,31 +23,62 @@ class UsersModelViewSet(viewsets.ModelViewSet):
     permission_classes=[SuperUserPermission]
 
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
-    # queryset=RecruitmentSeasons.objects.all()
     serializer_class=RecruitmentSeasonsSerializer
-    # permission_classes=[YearWisePermission]
+    permission_classes=[YearWisePermission]
 
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')
+        season_id = self.request.query_params.get('season_id')
+        print(self.request.user)
         if season_type is not None:
             return RecruitmentSeasons.objects.filter(type=season_type)
+        if season_id is not None:
+            return RecruitmentSeasons.objects.filter(id=season_id)
         return RecruitmentSeasons.objects.all()
-        # return RecruitmentSeasons.objects.filter(type=season_type)
         
 class RoundsModelViewSet(viewsets.ModelViewSet):
-    queryset=Rounds.objects.all()
-    serializer_class=RoundsSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        s_id = self.request.query_params.get('season_id')
+        if s_id is not None:
+            return Rounds.objects.filter(season_id=s_id)
+        return Rounds.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return RoundsNestedSerializer
+        return RoundsSerializer
 
 class SectionsModelViewSet(viewsets.ModelViewSet):
     queryset=Sections.objects.all()
-    serializer_class=SectionsSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        if r_id is not None:
+            return Sections.objects.filter(round_id=r_id)
+        return Sections.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return SectionsNestedSerializer
+        return SectionsSerializer
 
 class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
-    serializer_class=QuestionsSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        sc_id = self.request.query_params.get('section_id')
+        if sc_id is not None:
+            return Questions.objects.filter(section_id=sc_id)
+        return Questions.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return QuestionsNestedSerializer
+        return QuestionsSerializer
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     queryset=InterviewPanel.objects.all()
@@ -65,43 +97,35 @@ class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
 
 class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateRound.objects.all()
-    serializer_class=CandidateRoundSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        if r_id is not None:
+            return CandidateRound.objects.filter(round_id=r_id)
+        return CandidateRound.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return CandidateRoundNestedSerializer
+        return CandidateRoundSerializer
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()
     serializer_class=CandidateMarksSerializer
-    permission_classes=[YearWisePermission]  
-
-# class getAuthCode(APIView):
-#     permission_classes=[AllowAny]
-#     def get(self, request, format=None):
-#         auth_code_url=env('AUTH_CODE_URL')
-#         params = {
-#             'response_type' : 'code',
-#             'client_id' : env('CLIENT_ID'),
-#             'redirect_uri' : 'http://localhost:8000/auth/login/',
-#             'state' : 'foo_success216'
-#         }
-#         try:
-#             response_auth_code = requests.get(url=auth_code_url, params=params)
-#         except Exception as e:
-#             return Response({'auth_code_status':e})
-#         else:
-#             if response_auth_code.status_code==200:
-#                 return Response({'auth_code_status':response_auth_code.content})
-#             return Response({'auth_code_status':response_auth_code.status_code})    
+    permission_classes=[YearWisePermission]   
 
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
     def get(self, request, format=None):
-        # SITE = env('AUTH_CODE_URL')+'?response_type=code&client_id='+env('CLIENT_ID')+'&redirect_uri='+env('REDIRECT_URL')+'&state=foo_success216'
         SITE = env('AUTH_CODE_URL')+"?response_type=code&client_id="+env('CLIENT_ID')+"&redirect_uri=http://localhost:8000/auth/login/&state=foo_success216"
         return redirect(SITE)
 
 
 class LoginView(APIView):
+
     permission_classes=[AllowAny]
+
     def get(self, request, format=None):
         view_response={
             'succesful' : False,
@@ -119,18 +143,6 @@ class LoginView(APIView):
     
         try:
             response_token = requests.post(url=token_url, data=request_data)
-        # except exceptions.ConnectionError as e:
-        #     message='Connection error when requesting for auth_token'
-        #     desc=e
-        # except exceptions.Timeout as e:
-        #     message='Timeout when requesting for auth_token'
-        #     desc=e
-        # except exceptions.HTTPError as e:
-        #     message='Invalid response when requesting for auth_token'
-        #     desc=e
-        # except Exception as e:
-        #     message='Error occured when requesting for auth_token:'
-        #     desc=e
         except Exception as e:
             view_response['succesful']=False
             view_response['desc']=e
@@ -154,6 +166,10 @@ class LoginView(APIView):
                         view_response['succesful']=True
                         serializer=UserSerializer(user_dict['user'])
                         view_response['desc']=serializer.data
+                        res = Response(status=status.HTTP_202_ACCEPTED)
+                        res['Access-Control-Allow-Origin']='http://localhost:3000'
+                        res['Access-Control-Allow-Credentials']='true'
+                        print(request.user)
                         return redirect('http://localhost:3000/home')
 
         return Response(view_response)
@@ -164,4 +180,8 @@ class LogoutView(APIView):
         if request.user.is_authenticated:
             logout(request)
             return Response({'logged_out':True})
-        return Response({'logged_out':True})    
+        return Response({'logged_out':True})
+
+class HandleCSV(APIView):
+    def post(self, request, format=None):
+        return Response({'file': request.data})

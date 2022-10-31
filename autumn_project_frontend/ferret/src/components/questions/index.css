@@ -1,0 +1,112 @@
+.questionPaper{
+    background-color: #393E46;
+    margin-left: 44px;
+    margin-right: 44px;
+    padding-bottom: 44px;
+    min-height: 62vh;
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+.topRightCornerDark{
+    width: 0;
+    height: 0;
+    border-left: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.topLeftCornerDark{
+    width: 0;
+    height: 0;
+    border-right: 44px solid transparent;
+    border-top: 44px solid #222831;
+}
+
+.backButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.backButtonText:hover{
+    color: #00ADB5;
+}
+
+.backButtonText{
+    font-size: 16px;
+}
+
+.questionsContent{
+    margin-left: 44px;
+    margin-right: 44px;
+}
+
+.questionsHeading{
+    color: white;
+    font-size: 20px;
+}
+
+.questionSectionHeading{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    background-color: #F5B041;
+    color: black;
+    height: 32px;
+    font-size: 18px;
+}
+
+.questionSectionHeadingLeft{
+    width: 50%;
+    padding-left: 24px;
+    justify-content: flex-start;
+}
+
+.questionSectionHeadingRight{
+    width: 50%;
+    padding: 24px;
+    justify-content: flex-end;
+}
+
+.rowFlex{
+    display: flex;
+    flex-direction: row;
+}
+
+.questionSegment{
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.questionNumber{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    color: white;
+    font-size: 18px;
+}
+
+.questionText{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    color: #EEEEEE;
+    margin-top: 8px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.questionDesc{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 15px;
+    margin-top: 4px;
+    color: #EEEEEE;
+}

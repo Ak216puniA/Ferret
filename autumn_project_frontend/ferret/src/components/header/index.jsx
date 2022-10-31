@@ -6,21 +6,21 @@ import { useDispatch } from "react-redux"
 import { logoutUser } from "../../features/logout/logoutSlice"
 
 function Header() {
-        const dispatch = useDispatch()
-        return(
-            <div className="header">
-                <div className="headerDiv1">
-                    <div className="smallIcon"><BsFillSquareFill size={24} color='#BABABA'/></div>
-                    <div className="appName">Ferret</div>
-                </div>
-                <div className="headerDiv2">
-                    <div className="smallText">
-                        <button className="logoutButton" onClick={() => dispatch(logoutUser())}>Logout</button>
-                    </div>
-                    <div className="smallIcon"><FaUserCircle size={24} /></div>
-                </div>
+    const dispatch = useDispatch()
+    return(
+        <div className="header">
+            <div className="headerDiv1">
+                <div className="smallIcon"><BsFillSquareFill size={24} color='#BABABA'/></div>
+                <div className="appName">Ferret</div>
             </div>
-        )
+            <div className="headerDiv2">
+                <div className="smallText">
+                    <button className="logoutButton" onClick={() => dispatch(logoutUser())}>Logout</button>
+                </div>
+                <div className="smallIcon"><FaUserCircle size={24} /></div>
+            </div>
+        </div>
+    )
 }
 
 export default Header

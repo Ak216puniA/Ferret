@@ -1,14 +1,14 @@
 import React, {useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import "./index.css";
-import {tabClicked} from "../../features/seasonTab/seasonTabSlice"
+import {tabClicked} from "../../features/homeTab/homeTabSlice"
 import {listSeasons} from "../../features/season/seasonSlice"
 
 function HomeTabs(props) {
     const { homeTabs } = props
     const season_types = homeTabs
 
-    const homeTabState = useSelector((state) => state.seasonTab.currentTab)
+    const homeTabState = useSelector((state) => state.homeTab.currentTab)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -26,8 +26,8 @@ function HomeTabs(props) {
     let tabs = season_types.map(tab => {
         return(
             <div className="pageTabDiv" key={tab}>
-                <button className="pageTab" onClick={() => dispatch(tabClicked(tab))}>{tab}</button>
-                <div className="currentTabDownArrowDiv"><div className="currentTabDownArrow" id={`${tab}Arrow`}></div></div>
+                <button className={"pageTab pageTabArrowDiv"} onClick={() => dispatch(tabClicked(tab))}>{tab}</button>
+                <div className={"currentTabDownArrowDiv pageTabArrowDiv"}><div className="currentTabDownArrow" id={`${tab}Arrow`}></div></div>
             </div>
         )
     })
