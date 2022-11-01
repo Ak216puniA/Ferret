@@ -1,4 +1,6 @@
 from cmath import exp
+import csv
+from urllib import response
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
@@ -13,6 +15,7 @@ from django.contrib.auth import login,logout
 from .serializers import UserSerializer
 from django.shortcuts import redirect
 from rest_framework import status
+import pandas
 
 env = environ.Env()
 environ.Env.read_env()
@@ -182,6 +185,24 @@ class LogoutView(APIView):
             return Response({'logged_out':True})
         return Response({'logged_out':True})
 
-class HandleCSV(APIView):
+class UploadCSV(APIView):
     def post(self, request, format=None):
-        return Response({'file': request.data})
+        # serializer =  CSVFileSerializer(data=request.data['file'])
+        serializer =  CSVFileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        csv_file = serializer.validated_data['csv_file']
+        csv_reader = pandas.read_csv(csv_file)
+        for _, row in csv_reader.iterrows():
+            print(row['name'])
+            print(row['email'])
+            print(request.data['round_id'])
+        # print(request.data['round_id'])
+            # candidate = Candidates(
+            #     name=row['name'],
+            #     email=row['email'],
+            #     enrollment_no=row['enrollment_no'],
+            #     mobile_no=row['mobile_no'],
+            #     cg=row['cg'],
+            #     current_round_id=
+            # )
+        return Response({'file': 'csvFile'})

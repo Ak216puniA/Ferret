@@ -21,7 +21,7 @@ function RoundTableRow(props){
 function SeasonTestContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
-    // const csvState = useSelector((state) => state.csv)
+    const seasonTabState = useSelector((state) => state.seasonTab.currentTabId)
     const dispatch = useDispatch()
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
@@ -46,7 +46,13 @@ function SeasonTestContent(props) {
     const csvUploadHandler = (event) => {
         console.log(event.target.files[0])
         dispatch(fetchCSV())
-        dispatch(uploadCSV(event.target.files[0]))
+        // dispatch(uploadCSV(event.target.files[0]))
+        dispatch(
+            uploadCSV({
+                'file': event.target.files[0],
+                'round_id': seasonTabState
+            })
+        )
     }
     
     let roundTable = (

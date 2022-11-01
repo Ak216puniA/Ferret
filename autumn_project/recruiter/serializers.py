@@ -166,3 +166,8 @@ class CandidateProjectLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateProjectLink
         fields = '__all__'
+
+# CSV File serializer
+
+class CSVFileSerializer(serializers.Serializer):
+    csv_file = serializers.FileField()
