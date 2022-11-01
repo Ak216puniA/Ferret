@@ -1,5 +1,6 @@
 from cmath import exp
 import csv
+import email
 from urllib import response
 from rest_framework.response import Response
 from .serializers import *
@@ -16,6 +17,7 @@ from .serializers import UserSerializer
 from django.shortcuts import redirect
 from rest_framework import status
 import pandas
+from django.core.exceptions import ObjectDoesNotExist
 
 env = environ.Env()
 environ.Env.read_env()
@@ -187,22 +189,32 @@ class LogoutView(APIView):
 
 class UploadCSV(APIView):
     def post(self, request, format=None):
-        # serializer =  CSVFileSerializer(data=request.data['file'])
         serializer =  CSVFileSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
-            print(row['name'])
-            print(row['email'])
-            print(request.data['round_id'])
-        # print(request.data['round_id'])
-            # candidate = Candidates(
-            #     name=row['name'],
-            #     email=row['email'],
-            #     enrollment_no=row['enrollment_no'],
-            #     mobile_no=row['mobile_no'],
-            #     cg=row['cg'],
-            #     current_round_id=
-            # )
-        return Response({'file': 'csvFile'})
+            try:
+                candidate=Candidates.objects.get(enrollment_no=row['enrollment_no'])
+            except ObjectDoesNotExist:
+                candidate = Candidates(
+                    name=row['name'],
+                    email=row['email'],
+                    enrollment_no=row['enrollment_no'],
+                    year=row['year'],
+                    mobile_no=row['mobile_no'],
+                    cg=row['cg'],
+                    current_round_id=Rounds.objects.get(id=request.data['round_id'])
+                )
+            else:
+                candidate.name=row['name']
+                candidate.email=row['email']
+                candidate.year=row['year']
+                candidate.mobile_no=row['mobile_no'],
+                candidate.cg=row['cg'],
+                candidate.current_round_id=Rounds.objects.get(id=request.data['round_id'])
+            candidate.save()
+
+            # try:
+            #     candidate_round=CandidateRound.objects.get()
+        return Response({"status": "success"},status.HTTP_201_CREATED)

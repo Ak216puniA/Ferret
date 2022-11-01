@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, fetchRoundCandidates, uploadCSV, resetCSVUpload } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 
@@ -23,6 +23,11 @@ function SeasonTestContent(props) {
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const seasonTabState = useSelector((state) => state.seasonTab.currentTabId)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchRoundCandidates(seasonTabState))
+        dispatch(resetCSVUpload())
+    },[])
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
     seasonRoundContentState.candidate_list :

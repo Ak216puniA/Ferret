@@ -1,3 +1,5 @@
+from email.policy import default
+from operator import mod
 from tkinter import N
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -63,9 +65,12 @@ class Questions(models.Model):
 class Candidates(models.Model):
     name=models.CharField(max_length=255)
     email=models.EmailField(max_length=255)
-    enrollment_no=models.IntegerField()
+    enrollment_no=models.IntegerField(unique=True)
+    year=models.IntegerField(default=1)
     mobile_no=models.CharField(max_length=16)
-    cg=models.DecimalField(max_digits=2,decimal_places=2)
+    # cg=models.DecimalField(max_digits=2,decimal_places=2)
+    # cg=models.CharField(max_length=5)
+    cg=models.IntegerField()
     current_round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
 
     def __str__(self):

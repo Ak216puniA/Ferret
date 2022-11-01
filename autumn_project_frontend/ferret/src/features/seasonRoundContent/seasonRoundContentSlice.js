@@ -46,9 +46,6 @@ export const uploadCSV = createAsyncThunk('csv/uploadCSV', (candidate_data) => {
         alert("CSV uploaded!")
         return response.data
     })
-    // .catch((error) => {
-    //     alert(error.message)
-    // })
 })
 
 
@@ -62,6 +59,9 @@ const seasonRoundContentSlice = createSlice({
         unfetchCSV: (state) => {
             state.csv_fetched = false
         },
+        resetCSVUpload: (state) => {
+            state.csv_uploaded = false
+        }
     },
     extraReducers: builder => {
         builder
@@ -92,11 +92,11 @@ const seasonRoundContentSlice = createSlice({
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            state.candidate_list = []
+            // state.candidate_list = []
             state.csv_uploaded = false
         })
     }
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload } = seasonRoundContentSlice.actions
