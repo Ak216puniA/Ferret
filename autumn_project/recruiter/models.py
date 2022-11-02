@@ -68,8 +68,6 @@ class Candidates(models.Model):
     enrollment_no=models.IntegerField(unique=True)
     year=models.IntegerField(default=1)
     mobile_no=models.CharField(max_length=16)
-    # cg=models.DecimalField(max_digits=2,decimal_places=2)
-    # cg=models.CharField(max_length=5)
     cg=models.IntegerField()
     current_round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
 
@@ -111,10 +109,10 @@ class CandidateMarks(models.Model):
 class CandidateRound(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
-    remark=models.TextField()
-    interview_panel=models.ForeignKey(InterviewPanel,on_delete=models.CASCADE)
-    time_slot=models.CharField(max_length=64)
-    total_marks=models.IntegerField()
+    remark=models.TextField(null=True, blank=True)
+    interview_panel=models.ForeignKey(InterviewPanel,on_delete=models.CASCADE,null=True, blank=True)
+    time_slot=models.CharField(max_length=64,null=True, blank=True)
+    total_marks=models.IntegerField(null=True, blank=True)
 
     class StatusOfRound(models.TextChoices):
         PENDING = 'pending', _('Pending')
@@ -124,10 +122,7 @@ class CandidateRound(models.Model):
         INTERVIEW = 'interview', _('In Interview')
         DONE = 'done', _('Done')
 
-    status=models.CharField(max_length=16,choices=StatusOfRound.choices,null=True)
-
-    def __str__(self):
-        return self.candidate_id
+    status=models.CharField(max_length=16,choices=StatusOfRound.choices,default=StatusOfRound.PENDING)
 
 class CandidateProjectLink(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)

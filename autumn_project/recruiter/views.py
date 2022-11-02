@@ -3,6 +3,7 @@ import csv
 import email
 from urllib import response
 from rest_framework.response import Response
+from .csv import create_candidate_round, create_or_update_candidates
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -194,27 +195,19 @@ class UploadCSV(APIView):
         csv_file = serializer.validated_data['csv_file']
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
-            try:
-                candidate=Candidates.objects.get(enrollment_no=row['enrollment_no'])
-            except ObjectDoesNotExist:
-                candidate = Candidates(
-                    name=row['name'],
-                    email=row['email'],
-                    enrollment_no=row['enrollment_no'],
-                    year=row['year'],
-                    mobile_no=row['mobile_no'],
-                    cg=row['cg'],
-                    current_round_id=Rounds.objects.get(id=request.data['round_id'])
-                )
-            else:
-                candidate.name=row['name']
-                candidate.email=row['email']
-                candidate.year=row['year']
-                candidate.mobile_no=row['mobile_no'],
-                candidate.cg=row['cg'],
-                candidate.current_round_id=Rounds.objects.get(id=request.data['round_id'])
-            candidate.save()
-
-            # try:
-            #     candidate_round=CandidateRound.objects.get()
+            candidate_data = {
+                'name': row['name'],
+                'email': row['email'],
+                'enrollment_no':row['enrollment_no'],
+                'year':row['year'],
+                'mobile_no':row['mobile_no'],
+                'cg':row['cg'],
+                'round_id':request.data['round_id']
+            }
+            candidate_id=create_or_update_candidates(candidate_data)
+            candidate_round_data = {
+                'candidate_id':candidate_id,
+                'round_id':request.data['round_id']
+            }
+            create_candidate_round(candidate_round_data)
         return Response({"status": "success"},status.HTTP_201_CREATED)
