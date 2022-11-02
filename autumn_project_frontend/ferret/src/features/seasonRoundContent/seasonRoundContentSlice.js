@@ -86,12 +86,14 @@ const seasonRoundContentSlice = createSlice({
             state.error = ''
             state.candidate_list = action.payload['data']
             state.csv_uploaded = true
+            console.log("CSV upload successful!")
         })
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
             state.csv_uploaded = false
+            console.log("CSV upload unsuccessful!")
         })
     }
 })

@@ -40,7 +40,6 @@ function HomeDialog() {
                                 required 
                                 labelId='type' 
                                 label="Season type" 
-                                // defaultValue={seasonState.new_type}
                                 variant='outlined'
                                 onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
                                 >

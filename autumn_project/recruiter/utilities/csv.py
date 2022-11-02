@@ -31,27 +31,14 @@ def create_csv_candidate_round(candidate_data):
         candidate_round = CandidateRound(
             candidate_id=Candidates.objects.get(id=candidate_data['candidate_id']),
             round_id=Rounds.objects.get(id=candidate_data['round_id'])
-            # remark=candidate_data['remark'],
-            # interview_Panel=candidate_data['interview_panel'],
-            # time_slot=candidate_data['time_slot'],
-            # total_marks=candidate_data['total_marks'],
-            # status=candidate_data['status']
             )
-    # else:
-        # candidate_round.remark=candidate_data['remark']
-        # candidate_round.interview_panel=InterviewPanel.objects.get(id=candidate_data['interview_panel']) 
-        # candidate_round.time_slot=candidate_data['time_slot']
-        # candidate_round.total_marks=candidate_data['total_marks']
-        # candidate_round.status=candidate_data['status']
     candidate_round.save()
 
 def create_csv_candidate_marks(candidate_data):
     round = Rounds.objects.get(id=candidate_data['round_id'])
     if round.type=='test':
-        # print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         round_questions = Questions.objects.filter(section_id__round_id=candidate_data['round_id'])
         for question in round_questions:
-            # print(question.text)
             try:
                 candidate = CandidateMarks.objects.get(candidate_id=candidate_data['candidate_id'],question_id=question.id)
             except ObjectDoesNotExist:
@@ -60,10 +47,3 @@ def create_csv_candidate_marks(candidate_data):
                     question_id=Questions.objects.get(id=question.id)
                 )
             candidate.save()
-            # print(candidate.candidate_id)
-        # try:
-        #     candidate_marks = CandidateMarks.objects.get(candidate_id=candidate_marks_data['candidate_id'])
-        # except ObjectDoesNotExist:
-        #     candidate_marks = CandidateMarks(
-        #         candidate_id=Candidates.objects.get(id=candidate_marks_data['candidate_id'])
-        #     )

@@ -22,7 +22,6 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
         }
     )
     .then((response) => {
-        // console.log(response.data)
         const payload = {
             type : season_type,
             data : response.data
@@ -53,7 +52,6 @@ export const createSeason = createAsyncThunk('season/createSeason', (payload,{ge
         },
     )
     .then((response) => {
-        // console.log(response.data)
         return response.data
     })
     .catch((error) =>  alert("Cannot create new season! \n"+error.message))

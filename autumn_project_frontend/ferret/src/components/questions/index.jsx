@@ -21,7 +21,6 @@ function QuestionSegment(props) {
 function Questions() {
     const questionSectionTabState = useSelector((state) => state.questionSectionTab.currentTab)
     const questionState = useSelector((state) => state.question.questions)
-    // const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader.open_questions)
     const dispatch = useDispatch()
 
     let questions = (

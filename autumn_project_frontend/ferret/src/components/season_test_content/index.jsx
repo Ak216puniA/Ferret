@@ -24,34 +24,12 @@ function SeasonTestContent(props) {
     const seasonTabState = useSelector((state) => state.seasonTab.currentTabId)
     const dispatch = useDispatch()
 
-    // useEffect(() => {
-    //     dispatch(fetchRoundCandidates(seasonTabState))
-    //     dispatch(resetCSVUpload())
-    // },[])
-
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
     seasonRoundContentState.candidate_list : []
-    // [
-    //     {
-    //         id: 1,
-    //         candidate_id: {
-    //             name: "Harry Potter"
-    //         },
-    //         status: "Pending"
-    //     },
-    //     {
-    //         id: 2,
-    //         candidate_id: {
-    //             name: "Hermione Granger"
-    //         },
-    //         status: "Done"
-    //     }
-    // ]
 
     const csvUploadHandler = (event) => {
         console.log(event.target.files[0])
         dispatch(fetchCSV())
-        // dispatch(uploadCSV(event.target.files[0]))
         dispatch(
             uploadCSV({
                 'file': event.target.files[0],
@@ -65,17 +43,6 @@ function SeasonTestContent(props) {
         candidates.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
         <div></div>
     )
-
-    // const CSVTextField = styled(TextField)`
-    //     & label.Mui-focused {
-    //         color: #00ADB5;
-    //     }
-    //     & .MuiOutlinedInput-root {
-    //         &.Mui-focused fieldset {
-    //         border-color: #00ADB5;
-    //         }
-    //     }
-    //     `;
 
     return (
         <div className="seasonTestContent">
