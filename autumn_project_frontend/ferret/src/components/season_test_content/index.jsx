@@ -24,29 +24,29 @@ function SeasonTestContent(props) {
     const seasonTabState = useSelector((state) => state.seasonTab.currentTabId)
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(fetchRoundCandidates(seasonTabState))
-        dispatch(resetCSVUpload())
-    },[])
+    // useEffect(() => {
+    //     dispatch(fetchRoundCandidates(seasonTabState))
+    //     dispatch(resetCSVUpload())
+    // },[])
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
-    seasonRoundContentState.candidate_list :
-    [
-        {
-            id: 1,
-            candidate_id: {
-                name: "Harry Potter"
-            },
-            status: "Pending"
-        },
-        {
-            id: 2,
-            candidate_id: {
-                name: "Hermione Granger"
-            },
-            status: "Done"
-        }
-    ]
+    seasonRoundContentState.candidate_list : []
+    // [
+    //     {
+    //         id: 1,
+    //         candidate_id: {
+    //             name: "Harry Potter"
+    //         },
+    //         status: "Pending"
+    //     },
+    //     {
+    //         id: 2,
+    //         candidate_id: {
+    //             name: "Hermione Granger"
+    //         },
+    //         status: "Done"
+    //     }
+    // ]
 
     const csvUploadHandler = (event) => {
         console.log(event.target.files[0])

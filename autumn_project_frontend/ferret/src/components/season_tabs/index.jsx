@@ -23,6 +23,7 @@ function SeasonTabs(props) {
                         tab_id: roundList[0]['id']
                     })
                 )
+                dispatch(fetchRoundCandidates(roundList[0]['id']))
                 dispatch(fetchSections(roundList[0]['id']))
             }else{
                 roundList.forEach(tab => {

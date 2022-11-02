@@ -42,8 +42,6 @@ export const uploadCSV = createAsyncThunk('csv/uploadCSV', (candidate_data) => {
         },
     )
     .then((response) => {
-        console.log(response.data)
-        alert("CSV uploaded!")
         return response.data
     })
 })
@@ -86,13 +84,13 @@ const seasonRoundContentSlice = createSlice({
         .addCase(uploadCSV.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
-            // state.candidate_list = action.payload
+            state.candidate_list = action.payload['data']
             state.csv_uploaded = true
         })
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            // state.candidate_list = []
+            state.candidate_list = []
             state.csv_uploaded = false
         })
     }

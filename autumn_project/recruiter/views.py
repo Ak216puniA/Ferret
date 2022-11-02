@@ -216,4 +216,12 @@ class UploadCSV(APIView):
             create_csv_candidate_round(candidate_data)
             create_csv_candidate_marks(candidate_data)
 
-        return Response({"status": "success"},status.HTTP_201_CREATED)
+            candidates = CandidateRound.objects.filter(round_id=request.data['round_id'])
+            serializer = CandidateRoundNestedSerializer(candidates, many=True)
+
+            response_data = {
+                "status":"success",
+                "data":serializer.data
+            }
+
+        return Response(response_data,status.HTTP_201_CREATED)
