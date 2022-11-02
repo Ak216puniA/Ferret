@@ -2,25 +2,16 @@ import React from 'react'
 import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { openCreateSeasonDialog } from '../../features/season/seasonSlice'
-// import { seasonClicked } from '../../features/seasonTab/seasonTabSlice';
 import { useNavigate } from "react-router-dom";
 import HomeDialog from '../home_dialog';
 
 function SeasonTableRow(props){
-    // const dispatch = useDispatch()
-    // const homeTabstate = useSelector((state) => state.homeTab.currentTab)
     let navigate = useNavigate()
     
     const routeChange = (season_id) => {
         const url = `/season/${season_id}`
         navigate(url)
     }
-
-    // const seasonClickHandler = (season_id) => {
-    //     console.log(homeTabstate)
-    //     alert("Stop once")
-    //     routeChange(season_id)
-    // }
 
     const {season, index} = props
     return (

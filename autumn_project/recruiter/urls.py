@@ -21,5 +21,5 @@ urlpatterns =[
     path('auth/auth_code/', getAuthCode.as_view()),
     path('auth/login/', LoginView.as_view()),
     path('auth/logout/', LogoutView.as_view()),
-    path('api/csv/', HandleCSV.as_view())
+    path('api/csv/', UploadCSV.as_view())
 ]

@@ -18,19 +18,9 @@ let config = {
     }
 }
 
-// export const loginUser = createAsyncThunk('login/loginUser', () => {
-//     return axios
-//     .get(`${OAUTH_AUTH}`,config={config})
-//     .then((response) => response.data)
-//     .catch((error) => {
-//         console.log(error.message)
-//     })
-// })
-
 export const loginUser = createAsyncThunk('login/loginUser', () => {
     return axios
     .get(`${OAUTH_AUTH}`,config={config})
-    // .get('http://localhost:8000/auth/auth_code')
     .then((response) => console.log(response.data))
     .catch((error) => {
         console.log(error)

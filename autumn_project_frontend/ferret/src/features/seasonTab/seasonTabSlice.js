@@ -26,7 +26,6 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
         }
     )
     .then((response) => {
-        // console.log(response.data)
         return response.data
     })
 })
@@ -49,7 +48,6 @@ export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {get
         },
     )
     .then((response) => {
-        // console.log(response.data)
         return response.data
     })
     .catch((error) => alert("New round not created! \n"+error.message))

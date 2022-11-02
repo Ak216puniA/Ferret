@@ -1,18 +1,24 @@
 from cmath import exp
+import csv
+import email
+from urllib import response
 from rest_framework.response import Response
+from .utilities.csv import create_csv_candidate_round, create_or_update_csv_candidates, create_csv_candidate_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
 from rest_framework.views import APIView
 import environ
 import requests
-from .user_auth import get_user_data,check_and_create_user
+from .utilities.user_auth import get_user_data,check_and_create_user
 from .permissions import YearWisePermission, SuperUserPermission
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login,logout
 from .serializers import UserSerializer
 from django.shortcuts import redirect
 from rest_framework import status
+import pandas
+from django.core.exceptions import ObjectDoesNotExist
 
 env = environ.Env()
 environ.Env.read_env()
@@ -182,6 +188,40 @@ class LogoutView(APIView):
             return Response({'logged_out':True})
         return Response({'logged_out':True})
 
-class HandleCSV(APIView):
+class UploadCSV(APIView):
     def post(self, request, format=None):
-        return Response({'file': request.data})
+
+        serializer =  CSVFileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        csv_file = serializer.validated_data['csv_file']
+
+        csv_reader = pandas.read_csv(csv_file)
+        for _, row in csv_reader.iterrows():
+
+            candidate_data = {
+                'name': row['name'],
+                'email': row['email'],
+                'enrollment_no':row['enrollment_no'],
+                'year':row['year'],
+                'mobile_no':row['mobile_no'],
+                'cg':row['cg'],
+                'round_id':request.data['round_id']
+            }
+            candidate_id=create_or_update_csv_candidates(candidate_data)
+
+            candidate_data = {
+                'candidate_id':candidate_id,
+                'round_id':request.data['round_id']
+            }
+            create_csv_candidate_round(candidate_data)
+            create_csv_candidate_marks(candidate_data)
+
+            candidates = CandidateRound.objects.filter(round_id=request.data['round_id'])
+            serializer = CandidateRoundNestedSerializer(candidates, many=True)
+
+            response_data = {
+                "status":"success",
+                "data":serializer.data
+            }
+
+        return Response(response_data,status.HTTP_201_CREATED)

@@ -25,27 +25,24 @@ export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRo
     })
 })
 
-export const uploadCSV = createAsyncThunk('csv/uploadCSV', (file) => {
+export const uploadCSV = createAsyncThunk('csv/uploadCSV', (candidate_data) => {
+    let formdata = new FormData()
+    formdata.append('csv_file',candidate_data['file'])
+    formdata.append('round_id',candidate_data['round_id'])
     return axios
     .post(
         `${CSV}`,
-        {
-            csv: file
-        },
+        formdata,
         {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
             },
             withCredentials:true
         },
     )
     .then((response) => {
-        console.log(response.data)
-        alert("CSV uploaded!")
         return response.data
-    })
-    .catch((error) => {
-        alert(error.message)
     })
 })
 
@@ -60,6 +57,9 @@ const seasonRoundContentSlice = createSlice({
         unfetchCSV: (state) => {
             state.csv_fetched = false
         },
+        resetCSVUpload: (state) => {
+            state.csv_uploaded = false
+        }
     },
     extraReducers: builder => {
         builder
@@ -84,17 +84,19 @@ const seasonRoundContentSlice = createSlice({
         .addCase(uploadCSV.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
-            state.candidate_list = action.payload
+            state.candidate_list = action.payload['data']
             state.csv_uploaded = true
+            console.log("CSV upload successful!")
         })
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
             state.csv_uploaded = false
+            console.log("CSV upload unsuccessful!")
         })
     }
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload } = seasonRoundContentSlice.actions
