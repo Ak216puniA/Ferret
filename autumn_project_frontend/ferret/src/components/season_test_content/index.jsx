@@ -71,13 +71,13 @@ function SeasonTestContent(props) {
                                 variant="contained" 
                                 component="span"
                                 sx={{
-                                    "backgroundColor": "#F5B041",
+                                    "backgroundColor": "#00ADB5",
                                     "height": "24px",
                                     "fontSize": "15px",
                                     "color": "black",
                                     "borderRadius": "0px",
                                     ":hover": {
-                                        "backgroundColor": "#D39737"
+                                        "backgroundColor": "#0099A0"
                                     }
                                 }}
                             >

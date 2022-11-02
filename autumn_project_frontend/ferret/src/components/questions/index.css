@@ -34,7 +34,7 @@
 }
 
 .backButtonText{
-    font-size: 16px;
+    font-size: 17px;
 }
 
 .questionsContent{
@@ -109,4 +109,39 @@
     font-size: 15px;
     margin-top: 4px;
     color: #EEEEEE;
+}
+
+.questionContentButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 16px;
+}
+
+.questionContentButton{
+    height: 24px;
+    padding: 4px 16px;
+    font-size: 15px;
+    background-color: #00ADB5;
+    color: black;
+    border: none;
+}
+
+.questionContentButton:hover{
+    background-color: #0099A0;
+}
+
+.editQuestionDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editQuestionField{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 }

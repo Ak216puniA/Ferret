@@ -73,6 +73,7 @@ class SectionsNameSerializer(serializers.ModelSerializer):
 
 class QuestionsNestedSerializer(serializers.ModelSerializer):
     section_id = SectionsNameSerializer()
+    assignee = UserSerializer()
     class Meta:
         model = Questions
         fields = '__all__'
