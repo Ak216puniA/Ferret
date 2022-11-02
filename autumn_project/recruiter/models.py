@@ -95,7 +95,7 @@ class CandidateMarks(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     question_id=models.ForeignKey(Questions,on_delete=models.CASCADE)
     marks=models.IntegerField(default=0)
-    remarks=models.TextField()
+    remarks=models.TextField(null=True,blank=True)
 
     class StatusOfQuestion(models.TextChoices):
         CHECKED = 'checked', _('Checked')

@@ -3,7 +3,7 @@ import csv
 import email
 from urllib import response
 from rest_framework.response import Response
-from .csv import create_candidate_round, create_or_update_candidates
+from .csv import create_csv_candidate_round, create_or_update_csv_candidates, create_csv_candidate_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -190,11 +190,14 @@ class LogoutView(APIView):
 
 class UploadCSV(APIView):
     def post(self, request, format=None):
+
         serializer =  CSVFileSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
+
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
+
             candidate_data = {
                 'name': row['name'],
                 'email': row['email'],
@@ -204,10 +207,13 @@ class UploadCSV(APIView):
                 'cg':row['cg'],
                 'round_id':request.data['round_id']
             }
-            candidate_id=create_or_update_candidates(candidate_data)
-            candidate_round_data = {
+            candidate_id=create_or_update_csv_candidates(candidate_data)
+
+            candidate_data = {
                 'candidate_id':candidate_id,
                 'round_id':request.data['round_id']
             }
-            create_candidate_round(candidate_round_data)
+            create_csv_candidate_round(candidate_data)
+            create_csv_candidate_marks(candidate_data)
+
         return Response({"status": "success"},status.HTTP_201_CREATED)
