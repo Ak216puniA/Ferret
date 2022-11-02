@@ -1,4 +1,4 @@
-from .models import *
+from recruiter.models import *
 from django.core.exceptions import ObjectDoesNotExist
 
 def create_or_update_csv_candidates(candidate_data):
@@ -60,7 +60,7 @@ def create_csv_candidate_marks(candidate_data):
                     question_id=Questions.objects.get(id=question.id)
                 )
             candidate.save()
-            print(candidate.candidate_id)
+            # print(candidate.candidate_id)
         # try:
         #     candidate_marks = CandidateMarks.objects.get(candidate_id=candidate_marks_data['candidate_id'])
         # except ObjectDoesNotExist:

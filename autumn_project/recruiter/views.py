@@ -3,14 +3,14 @@ import csv
 import email
 from urllib import response
 from rest_framework.response import Response
-from .csv import create_csv_candidate_round, create_or_update_csv_candidates, create_csv_candidate_marks
+from .utilities.csv import create_csv_candidate_round, create_or_update_csv_candidates, create_csv_candidate_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
 from rest_framework.views import APIView
 import environ
 import requests
-from .user_auth import get_user_data,check_and_create_user
+from .utilities.user_auth import get_user_data,check_and_create_user
 from .permissions import YearWisePermission, SuperUserPermission
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login,logout

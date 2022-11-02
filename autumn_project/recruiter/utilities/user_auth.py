@@ -1,6 +1,6 @@
 import requests
 import environ
-from .models import Users
+from recruiter.models import Users
 from django.core.exceptions import ObjectDoesNotExist
 
 env = environ.Env()
