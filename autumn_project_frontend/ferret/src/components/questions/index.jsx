@@ -25,6 +25,13 @@ function QuestionSegment(props) {
     }
 
     let question_assignee = question['assignee']!=null ? question['assignee']['username'] : ''
+    let marks = question['marks']
+
+    const saveClickHandler = () => {
+        dispatch(updateQuestion(question['id']))
+        marks = questionState.new_marks
+        question_assignee = questionState.new_assignee
+    }
 
     let assignee_list = userState.users.length>0 ?
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
@@ -75,12 +82,12 @@ function QuestionSegment(props) {
         </div>
     </> :
     <>
-        <div className="questionMarks">{`(${question['marks']} marks)`}</div>
+        <div className="questionMarks">{`(${marks} marks)`}</div>
         <div className="questionAssignee">Assignee: {question_assignee}</div>
     </>
 
     let edit_button = question['id']===questionState.edit_question_id && questionState.edit ?
-    <button className="questionContentButton" onClick={() =>  dispatch(updateQuestion(question['id']))}>Save</button> :
+    <button className="questionContentButton" onClick={saveClickHandler}>Save</button> :
     <button className="questionContentButton" onClick={editClickhandler}>Edit</button>
 
     return (
@@ -107,7 +114,7 @@ function Questions() {
 
     let questions = (
         questionState.questions.length>0 ? 
-        questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1}/>) : 
+        questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1} />) : 
         [])
 
     return (

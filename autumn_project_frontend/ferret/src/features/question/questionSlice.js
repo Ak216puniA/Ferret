@@ -75,6 +75,25 @@ export const updateQuestion = createAsyncThunk('question/updateQuestion', (quest
     })
 })
 
+// export const updateQuestion = createAsyncThunk('question/updateQuestion', async (question_id,{getState}) => {
+//     const state = getState()
+//     const response = await axios
+//         .patch(
+//             `${QUESTIONS}${question_id}/`,
+//             {
+//                 marks: state.question.new_marks,
+//                 assignee: state.question.new_assignee
+//             },
+//             {
+//                 headers: {
+//                     "X-CSRFToken": Cookies.get('ferret_csrftoken'),
+//                 },
+//                 withCredentials: true
+//             });
+//     console.log("Question patch successful!");
+//     return response.data;
+// })
+
 const questionSlice = createSlice({
     name: 'question',
     initialState,
@@ -85,6 +104,9 @@ const questionSlice = createSlice({
             state.new_marks = action.payload['marks']
             state.new_assignee = action.payload['assignee']
         },
+        // questionSaves: (state) => {
+        //     state.edit = false
+        // },
         handleChangeNewMarks: (state,action) => {
             state.new_marks = action.payload
         },
