@@ -1,16 +1,33 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, fetchRoundCandidates, uploadCSV, resetCSVUpload } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
+    const dispatch = useDispatch()
+
+    const checkboxClcikHandler = (event) => {
+        if (event.target.checked){
+            dispatch(appendCandidateToMove(candidate['id']))
+        }
+        if (!event.target.checked){
+            dispatch(removeCandidateFromMove(candidate['id']))
+        }
+    }
+
     return (
         <div className='roundCandidateRow'>
-            <div className={`roundContentCheckbox  singleElementRowFlex`}><Checkbox size="small" sx={{color: '#00ADB5'}}/></div>
+            <div className={`roundContentCheckbox  singleElementRowFlex`}>
+                <Checkbox 
+                size="small" 
+                sx={{color: '#00ADB5'}}
+                onChange={checkboxClcikHandler}
+                />
+            </div>
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
@@ -97,6 +114,7 @@ function SeasonTestContent(props) {
                 {roundTable}
             </div>
             <SeasonTabDialog season_id={s_id}/>
+            <button id="moveCandidateButton" className="seasonTestContentButton">Move</button>
         </div>
     )
 }
