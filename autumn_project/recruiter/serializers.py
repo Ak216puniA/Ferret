@@ -172,3 +172,10 @@ class CandidateProjectLinkSerializer(serializers.ModelSerializer):
 
 class CSVFileSerializer(serializers.Serializer):
     csv_file = serializers.FileField()
+
+#  Move candidate list serializer
+
+class MoveCandidateListSerializer(serializers.Serializer):
+    candidate_list = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)
+    next_round_id = serializers.IntegerField()
+    current_round_id = serializers.IntegerField()

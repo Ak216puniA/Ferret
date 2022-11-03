@@ -2,7 +2,7 @@ import React from "react";
 import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 
@@ -10,7 +10,7 @@ function RoundTableRow(props){
     const {candidate, status, index} = props
     const dispatch = useDispatch()
 
-    const checkboxClcikHandler = (event) => {
+    const checkboxClickHandler = (event) => {
         if (event.target.checked){
             dispatch(appendCandidateToMove(candidate['id']))
         }
@@ -25,7 +25,7 @@ function RoundTableRow(props){
                 <Checkbox 
                 size="small" 
                 sx={{color: '#00ADB5'}}
-                onChange={checkboxClcikHandler}
+                onChange={checkboxClickHandler}
                 />
             </div>
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
@@ -38,11 +38,24 @@ function RoundTableRow(props){
 function SeasonTestContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
-    const seasonTabState = useSelector((state) => state.seasonTab.currentTabId)
+    const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
     seasonRoundContentState.candidate_list : []
+
+    let next_round_id = -1
+    let current_round_index = -1
+    for(let index=0; index<seasonTabState.round_list.length; index++){
+        if(seasonTabState.round_list[index]['id']===seasonTabState.currentTabId){
+            current_round_index = index
+            if(index>=seasonTabState.round_list.length-1){
+                next_round_id = -1
+            }else{
+                next_round_id = seasonTabState.round_list[index+1]['id']
+            }
+        }
+    }
 
     const csvUploadHandler = (event) => {
         console.log(event.target.files[0])
@@ -50,10 +63,54 @@ function SeasonTestContent(props) {
         dispatch(
             uploadCSV({
                 'file': event.target.files[0],
-                'round_id': seasonTabState
+                'round_id': seasonTabState.currentTabId
             })
         )
     }
+
+    const moveClickHandler = (() => {
+        dispatch(
+            moveCandidates({
+                'candidate_list': seasonRoundContentState.move_candidate_list,
+                'next_round_id': next_round_id,
+                'current_round_id': seasonTabState.currentTabId
+            })
+        )
+    })
+
+    const move_button = next_round_id>0 ? 
+    <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
+    <></>
+
+    const csv_button = current_round_index===0 ?
+    <div className="rightButton">
+        <label htmlFor="uploadCSV">
+            <input
+                style={{ display: 'none' }}
+                id="uploadCSV"
+                name="uploadCSV"
+                type="file"
+                onChange={csvUploadHandler}
+            />
+            <Button 
+                variant="contained" 
+                component="span"
+                sx={{
+                    "backgroundColor": "#00ADB5",
+                    "height": "24px",
+                    "fontSize": "15px",
+                    "color": "black",
+                    "borderRadius": "0px",
+                    ":hover": {
+                        "backgroundColor": "#0099A0"
+                    }
+                }}
+            >
+                csv
+            </Button>
+        </label>
+    </div> :
+    <></>
     
     let roundTable = (
         candidates.length>0 ? 
@@ -75,33 +132,7 @@ function SeasonTestContent(props) {
                     <div className="rightButton">
                         <button className="seasonTestContentButton">Filter</button>
                     </div>
-                    <div className="rightButton">
-                        <label htmlFor="uploadCSV">
-                            <input
-                                style={{ display: 'none' }}
-                                id="uploadCSV"
-                                name="uploadCSV"
-                                type="file"
-                                onChange={csvUploadHandler}
-                            />
-                            <Button 
-                                variant="contained" 
-                                component="span"
-                                sx={{
-                                    "backgroundColor": "#00ADB5",
-                                    "height": "24px",
-                                    "fontSize": "15px",
-                                    "color": "black",
-                                    "borderRadius": "0px",
-                                    ":hover": {
-                                        "backgroundColor": "#0099A0"
-                                    }
-                                }}
-                            >
-                                csv
-                            </Button>
-                        </label>
-                    </div>
+                    {csv_button}
                 </div>
             </div>
             <div className="roundContentDiv">
@@ -114,7 +145,7 @@ function SeasonTestContent(props) {
                 {roundTable}
             </div>
             <SeasonTabDialog season_id={s_id}/>
-            <button id="moveCandidateButton" className="seasonTestContentButton">Move</button>
+            {move_button}
         </div>
     )
 }

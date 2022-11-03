@@ -13,20 +13,22 @@ function QuestionSectionTabs(props) {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if(questionSectionTabState.currentTab===''){
-            document.getElementById(`${sections[0]['name']}Arrow`).style.display = 'block'
-            dispatch(tabClicked(
-                {
-                    tab_name: sections[0]['name'],
-                    tab_id: sections[0]['id']
-                }
-            ))
-            dispatch(fetchQuestions(sections[0]['id']))
-        }else{
-            sections.forEach(tab => {
-                document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===questionSectionTabState.currentTab) ? 'block' : 'none'
-            });
-            dispatch(fetchQuestions(questionSectionTabState.currentTabId))
+        if(sections.length>0){
+            if(questionSectionTabState.currentTab===''){
+                document.getElementById(`${sections[0]['name']}Arrow`).style.display = 'block'
+                dispatch(tabClicked(
+                    {
+                        tab_name: sections[0]['name'],
+                        tab_id: sections[0]['id']
+                    }
+                ))
+                dispatch(fetchQuestions(sections[0]['id']))
+            }else{
+                sections.forEach(tab => {
+                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===questionSectionTabState.currentTab) ? 'block' : 'none'
+                });
+                dispatch(fetchQuestions(questionSectionTabState.currentTabId))
+            }
         }
     })
 

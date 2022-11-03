@@ -117,6 +117,10 @@ function Questions() {
         questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1} />) : 
         [])
 
+    const add_question_button = seasonTabState.current_sections.length>0 ?
+    <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button> :
+    <></>
+
     return (
         <div className="questionPaper">
             <div className='contentTriangleDiv'>
@@ -130,7 +134,7 @@ function Questions() {
                         <div className="backButtonText" onClick={() => dispatch(closeQuestions())}>Back</div>
                     </div>
                     <div>
-                        <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button>
+                        {add_question_button}
                     </div>
                 </div>
                 <div className="questionsHeading">Questions</div>

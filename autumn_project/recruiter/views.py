@@ -1,9 +1,8 @@
 from cmath import exp
-import csv
-import email
 from urllib import response
 from rest_framework.response import Response
-from .utilities.csv import create_csv_candidate_round, create_or_update_csv_candidates, create_csv_candidate_marks
+from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
+from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -121,6 +120,30 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
             return CandidateRoundNestedSerializer
         return CandidateRoundSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = MoveCandidateListSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        move_data = serializer.validated_data
+
+        for candidate_id in move_data['candidate_list']:
+            candidate_data = {
+                'candidate_id': candidate_id,
+                'round_id': move_data['next_round_id']
+            }
+            create_candidate_round(candidate_data)
+
+            candidate_data = {
+                'candidate_id': candidate_id,
+                'round_id': move_data['current_round_id']
+            }
+            update_previous_candidate_round_status(candidate_data)
+
+        response_data = {
+            "status":"success",
+        }
+
+        return Response(response_data,status.HTTP_201_CREATED)
+
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()
     serializer_class=CandidateMarksSerializer
@@ -218,15 +241,15 @@ class UploadCSV(APIView):
                 'candidate_id':candidate_id,
                 'round_id':request.data['round_id']
             }
-            create_csv_candidate_round(candidate_data)
+            create_candidate_round(candidate_data)
             create_csv_candidate_marks(candidate_data)
 
-            candidates = CandidateRound.objects.filter(round_id=request.data['round_id'])
-            serializer = CandidateRoundNestedSerializer(candidates, many=True)
+        candidates = CandidateRound.objects.filter(round_id=request.data['round_id'])
+        serializer = CandidateRoundNestedSerializer(candidates, many=True)
 
-            response_data = {
-                "status":"success",
-                "data":serializer.data
-            }
+        response_data = {
+            "status":"success",
+            "data":serializer.data
+        }
 
         return Response(response_data,status.HTTP_201_CREATED)
