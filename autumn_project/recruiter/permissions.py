@@ -13,8 +13,9 @@ class YearWisePermission(permissions.BasePermission):
                 return True
         
             # print("Hello3.")
-            if request.user.year > 2:
-                return True
+            # if request.user.year > 2:
+            #     return True
+            return True
 
             # print("Hello4.")
 

@@ -5,6 +5,7 @@ import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSl
 import { editQuestions, handleChangeNewAssignee, handleChangeNewMarks, updateQuestion } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import './index.css';
+import QuestionSectionTabDialog from "../question_section_tab_dialog";
 
 function QuestionSegment(props) {
     const { question, index } = props
@@ -25,7 +26,7 @@ function QuestionSegment(props) {
     let question_assignee = question['assignee']!=null ? question['assignee']['username'] : ''
 
     let assignee_list = userState.users.length>0 ?
-    userState.users.map(user => <MenuItem value={user['id']}>{user['username']}</MenuItem>) : 
+    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
     []
 
     let question_desc = question['id']===questionState.edit_question_id && questionState.edit ?
@@ -57,7 +58,7 @@ function QuestionSegment(props) {
             <div className="questionMarks">{`Assignee: `}</div>
             <Select 
             required 
-            defaultValue={question.assignee}
+            defaultValue={question_assignee}
             variant='outlined'
             sx={{
                 "color":"#EEEEEE",
@@ -98,7 +99,7 @@ function QuestionSegment(props) {
 }
 
 function Questions() {
-    const questionSectionTabState = useSelector((state) => state.questionSectionTab.currentTab)
+    const questionSectionTabState = useSelector((state) => state.questionSectionTab)
     const questionState = useSelector((state) => state.question)
     const dispatch = useDispatch()
 
@@ -126,12 +127,13 @@ function Questions() {
                 <div className="questionsHeading">Questions</div>
                 <div className='questionSectionHeading'>
                     <div className={`questionSectionHeadingLeft rowFlex`}>Section</div>
-                    <div className={`questionSectionHeadingRight rowFlex`}>{questionSectionTabState}</div>
+                    <div className={`questionSectionHeadingRight rowFlex`}>{questionSectionTabState.currentTab}</div>
                 </div>
                 <div>
                     {questions}
                 </div>
             </div>
+            <QuestionSectionTabDialog round_id={questionSectionTabState.currentTabId} />
         </div>
     )
 }
