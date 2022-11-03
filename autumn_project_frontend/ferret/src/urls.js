@@ -7,6 +7,7 @@ export const STATE = 'foo_success216'
 export const OAUTH_AUTH = `${OAUTH_AUTH_ROOT}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`
 
 export const BACKEND_BASE_URL = 'http://localhost:8000/'
+export const USERS = `${BACKEND_BASE_URL}user/`
 export const SEASONS_BY_TYPE = `${BACKEND_BASE_URL}recruitment_season/`
 export const ROUNDS = `${BACKEND_BASE_URL}round/`
 export const SECTIONS = `${BACKEND_BASE_URL}section/`

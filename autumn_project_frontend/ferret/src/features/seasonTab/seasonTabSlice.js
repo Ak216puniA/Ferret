@@ -50,7 +50,7 @@ export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {get
     .then((response) => {
         return response.data
     })
-    .catch((error) => alert("New round not created! \n"+error.message))
+    // .catch((error) => alert("New round not created! \n"+error.message))
 })
 
 export const fetchSections = createAsyncThunk('question/fetchSections', (round_id) => {

@@ -24,9 +24,14 @@ env = environ.Env()
 environ.Env.read_env()
 
 class UsersModelViewSet(viewsets.ModelViewSet):
-    queryset=Users.objects.all()
     serializer_class=UserSerializer
     permission_classes=[SuperUserPermission]
+
+    def get_queryset(self):
+        year = self.request.query_params.get('year')
+        if year is not None:
+            return Users.objects.filter(year__gte=year)
+        return Users.objects.all()
 
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     serializer_class=RecruitmentSeasonsSerializer
@@ -190,7 +195,7 @@ class LogoutView(APIView):
 
 class UploadCSV(APIView):
     def post(self, request, format=None):
-
+        
         serializer =  CSVFileSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']

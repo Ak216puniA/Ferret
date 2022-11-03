@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import "./index.css";
-import {tabClicked} from "../../features/questionSectionTab/questionSectionTabSlice"
+import { MdAddBox } from "react-icons/md"
+import {tabClicked, openCreateSectionDialog} from "../../features/questionSectionTab/questionSectionTabSlice"
 import { fetchQuestions } from "../../features/question/questionSlice"
+import "./index.css";
 
 function QuestionSectionTabs(props) {
     const { section_tabs } = props
@@ -38,7 +39,12 @@ function QuestionSectionTabs(props) {
         )
     })
 
-    return <>{tabs}</>
+    return (
+        <>
+            {tabs}
+            <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateSectionDialog())} size={28}/></div>
+        </>
+    )
 }
 
 export default QuestionSectionTabs
