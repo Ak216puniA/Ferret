@@ -2,10 +2,11 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
 import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
-import { editQuestions, handleChangeNewAssignee, handleChangeNewMarks, updateQuestion } from "../../features/question/questionSlice";
+import { editQuestions, handleChangeNewAssignee, handleChangeNewMarks, updateQuestion, openCreateQuestionDialog } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
-import './index.css';
 import QuestionSectionTabDialog from "../question_section_tab_dialog";
+import CreateQuestionDialog from "../create_question_dialog";
+import './index.css';
 
 function QuestionSegment(props) {
     const { question, index } = props
@@ -101,6 +102,7 @@ function QuestionSegment(props) {
 function Questions() {
     const questionSectionTabState = useSelector((state) => state.questionSectionTab)
     const questionState = useSelector((state) => state.question)
+    const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
 
     let questions = (
@@ -120,9 +122,9 @@ function Questions() {
                         <IoMdArrowDropleft size={24}/>
                         <div className="backButtonText" onClick={() => dispatch(closeQuestions())}>Back</div>
                     </div>
-                    {/* <div>
-                        <button className="questionContentButton">Edit</button>
-                    </div> */}
+                    <div>
+                        <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button>
+                    </div>
                 </div>
                 <div className="questionsHeading">Questions</div>
                 <div className='questionSectionHeading'>
@@ -133,7 +135,8 @@ function Questions() {
                     {questions}
                 </div>
             </div>
-            <QuestionSectionTabDialog round_id={questionSectionTabState.currentTabId} />
+            <QuestionSectionTabDialog round_id={seasonTabState.currentTabId} />
+            <CreateQuestionDialog section_id={questionSectionTabState.currentTabId} />
         </div>
     )
 }

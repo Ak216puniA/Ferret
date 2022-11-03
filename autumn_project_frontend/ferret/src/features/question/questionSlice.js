@@ -10,8 +10,35 @@ const initialState = {
     edit: false,
     edit_question_id: 0,
     new_marks: 0,
-    new_assignee: 0
+    new_assignee: 0,
+    open: false,
+    new_text: '',
 }
+
+export const createQuestion = createAsyncThunk('question/createQuestion', (section_id, {getState}) => {
+    const state = getState()
+    return axios
+    .post(
+        `${QUESTIONS}`,
+        {
+            section_id: section_id,
+            text: state.question.new_text,
+            marks: state.question.new_marks,
+            assignee: state.question.new_assignee
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        console.log("Question created successful!")
+        return response.data
+    })
+    .catch((error) => alert(error.message))
+})
 
 export const fetchQuestions = createAsyncThunk('question/fetchQuestions', (section_id) => {
     return axios
@@ -60,11 +87,18 @@ const questionSlice = createSlice({
         },
         handleChangeNewMarks: (state,action) => {
             state.new_marks = action.payload
-            console.log(state.new_marks)
         },
         handleChangeNewAssignee: (state,action) => {
             state.new_assignee = action.payload
-            console.log(state.new_assignee)
+        },
+        handleChangeNewText: (state,action) => {
+            state.new_text = action.payload
+        },
+        openCreateQuestionDialog: (state) => {
+            state.open = true
+        },
+        closeCreateQuestionDialog: (state) => {
+            state.open = false
         }
     },
     extraReducers: builder => {
@@ -100,8 +134,23 @@ const questionSlice = createSlice({
             state.error = action.error.message
             console.log(state.error)
         })
+        .addCase(createQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createQuestion.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.new_marks = 0
+            state.new_assignee = 0
+            state.new_text = ''
+        })
+        .addCase(createQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log(state.error)
+        })
     }
 })
 
 export default questionSlice.reducer
-export const { editQuestions, handleChangeNewMarks, handleChangeNewAssignee } = questionSlice.actions
+export const { editQuestions, handleChangeNewMarks, handleChangeNewAssignee, handleChangeNewText, openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions
