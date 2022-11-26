@@ -9,22 +9,18 @@ const initialState = {
     questions: [],
     edit: false,
     edit_question_id: 0,
-    new_marks: 0,
-    new_assignee: 0,
     open: false,
-    new_text: '',
 }
 
-export const createQuestion = createAsyncThunk('question/createQuestion', (section_id, {getState}) => {
-    const state = getState()
+export const createQuestion = createAsyncThunk('question/createQuestion', (questionData) => {
     return axios
     .post(
         `${QUESTIONS}`,
         {
-            section_id: section_id,
-            text: state.question.new_text,
-            marks: state.question.new_marks,
-            assignee: state.question.new_assignee
+            section_id: questionData['section_id'],
+            text: questionData['questionText'],
+            marks: questionData['questionMarks'],
+            assignee: questionData['questionAssignee']
         },
         {
             headers: {
@@ -75,25 +71,6 @@ export const updateQuestion = createAsyncThunk('question/updateQuestion', (quest
     })
 })
 
-// export const updateQuestion = createAsyncThunk('question/updateQuestion', async (question_id,{getState}) => {
-//     const state = getState()
-//     const response = await axios
-//         .patch(
-//             `${QUESTIONS}${question_id}/`,
-//             {
-//                 marks: state.question.new_marks,
-//                 assignee: state.question.new_assignee
-//             },
-//             {
-//                 headers: {
-//                     "X-CSRFToken": Cookies.get('ferret_csrftoken'),
-//                 },
-//                 withCredentials: true
-//             });
-//     console.log("Question patch successful!");
-//     return response.data;
-// })
-
 const questionSlice = createSlice({
     name: 'question',
     initialState,
@@ -103,18 +80,6 @@ const questionSlice = createSlice({
             state.edit_question_id = action.payload['question_id']
             state.new_marks = action.payload['marks']
             state.new_assignee = action.payload['assignee']
-        },
-        // questionSaves: (state) => {
-        //     state.edit = false
-        // },
-        handleChangeNewMarks: (state,action) => {
-            state.new_marks = action.payload
-        },
-        handleChangeNewAssignee: (state,action) => {
-            state.new_assignee = action.payload
-        },
-        handleChangeNewText: (state,action) => {
-            state.new_text = action.payload
         },
         openCreateQuestionDialog: (state) => {
             state.open = true
@@ -175,4 +140,4 @@ const questionSlice = createSlice({
 })
 
 export default questionSlice.reducer
-export const { editQuestions, handleChangeNewMarks, handleChangeNewAssignee, handleChangeNewText, openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions
+export const { editQuestions, openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions

@@ -3,22 +3,38 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { closeCreateQuestionDialog, handleChangeNewMarks, handleChangeNewAssignee, handleChangeNewText, createQuestion } from "../../features/question/questionSlice";
+import { closeCreateQuestionDialog, createQuestion } from "../../features/question/questionSlice";
 import { GrClose } from "react-icons/gr";
+import { useState } from "react";
 
 function CreateQuestionDialog(props) {
     const { section_id } = props
-    const questionState = useSelector((state) => state.question)
+    const questionState = useSelector((state) => state.question.open)
     const userState = useSelector((state) => state.user)
     const dispatch = useDispatch()
+
+    const [questionText, setQuestionText] = useState('')
+    const [questionAssignee, setQuestionAssignee] = useState('')
+    const [questionMarks, setQuestionMarks] = useState('')
 
     let assignee_list = userState.users.length>0 ?
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
     []
 
+    const createQuestion = (section_id) => {
+        dispatch(
+            createQuestion({
+                'section_id':section_id,
+                'questionText':questionText,
+                'questionMarks':questionMarks,
+                'questionAssignee':questionAssignee
+            })
+        )
+    }
+
     return (
         <Dialog 
-        open={questionState.open} 
+        open={questionState} 
         onClose={() => dispatch(closeCreateQuestionDialog())}
         className='dialog'
         PaperProps={{ sx: { width: "40%" } }}
@@ -38,7 +54,7 @@ function CreateQuestionDialog(props) {
                             fullWidth
                             multiline='true'
                             rows='3'
-                            onChange={(e) => dispatch(handleChangeNewText(e.target.value))}
+                            onChange={setQuestionText(e.target.value)}
                             />
                         </div>
                         <div className='field'>
@@ -50,7 +66,7 @@ function CreateQuestionDialog(props) {
                             variant='outlined'
                             InputProps={{ inputProps: { min: 0 } }}
                             fullWidth
-                            onChange={(e) => dispatch(handleChangeNewMarks(e.target.value))}
+                            onChange={setQuestionMarks(e.target.value)}
                             />
                         </div>
                         <div className='field'>
@@ -61,7 +77,7 @@ function CreateQuestionDialog(props) {
                                 labelId='assignee' 
                                 label="Assignee" 
                                 variant='outlined'
-                                onChange={(e) => dispatch(handleChangeNewAssignee(e.target.value))}
+                                onChange={setQuestionAssignee(e.target.value)}
                                 >
                                     {assignee_list}
                                 </Select>
@@ -76,7 +92,7 @@ function CreateQuestionDialog(props) {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={() => dispatch(createQuestion(section_id))}
+                    onClick={createQuestion(section_id)}
                     >
                         Create
                     </button>
