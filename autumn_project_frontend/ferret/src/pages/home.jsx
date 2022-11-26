@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/header/index";
 import HomepageContent from "../components/home_page_content/index";
 import NavigationBar from "../components/navbar/index";
 import SubHeader from "../components/subheader/index";
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
 
 function Home() {
-  const authState = useSelector((state) => state.logout.authenticated)
-  if(authState){
+  const logoutState = useSelector((state) => state.logout.authenticated)
+  const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated');
+
+  if(userAuthenticated && logoutState){
     return (
       <>
         <Header />

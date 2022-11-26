@@ -20,6 +20,7 @@ urlpatterns =[
     path('api-auth/', include('rest_framework.urls')),
     path('auth/auth_code/', getAuthCode.as_view()),
     path('auth/login/', LoginView.as_view()),
+    path('api/is_user_authenticated/', isUserAuthenticated.as_view()),
     path('auth/logout/', LogoutView.as_view()),
     path('api/csv/', UploadCSV.as_view())
 ]

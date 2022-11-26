@@ -204,10 +204,14 @@ class LoginView(APIView):
                         res['Access-Control-Allow-Origin']='http://localhost:3000'
                         res['Access-Control-Allow-Credentials']='true'
                         print(request.user)
-                        return redirect('http://localhost:3000/home')
+                        # return redirect('http://localhost:3000/home')
+        return redirect('http://localhost:3000/logging')
+        # return Response(view_response)
 
-        return Response(view_response)
-
+class isUserAuthenticated(APIView):
+    def get(self, request):
+        print(request.user)
+        return Response({'authenticated': request.user.is_authenticated})
 
 class LogoutView(APIView):
     def get(self, request, format=None):

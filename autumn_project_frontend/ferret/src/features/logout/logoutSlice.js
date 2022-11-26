@@ -12,11 +12,12 @@ export const logoutUser = createAsyncThunk('logout/logoutUser', () => {
     return axios
     .get(`${LOGOUT}`)
     .then((response) => {
-        console.log(response.data)
+        localStorage.setItem('authenticated',!response.data['logged_out'])
         return response.data
     })
     .catch((error) => console.log(error))
 })
+
 const logoutSlice = createSlice({
     name: 'logout',
     initialState,
