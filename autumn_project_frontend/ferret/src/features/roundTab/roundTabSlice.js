@@ -17,7 +17,7 @@ const initialState = {
 }
 
 
-export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) => {
+export const listRounds = createAsyncThunk('roundTab/listRounds', (season_id) => {
     return axios
     .get(
         `${ROUNDS}?season_id=${season_id}`,
@@ -30,15 +30,15 @@ export const listRounds = createAsyncThunk('seasonTab/listRounds', (season_id) =
     })
 })
 
-export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {getState}) => {
+export const createRound = createAsyncThunk('roundTab/createRound', (s_id, {getState}) => {
     const state = getState()
     return axios
     .post(
         `${ROUNDS}`,
         {
             season_id: s_id,
-            name: state.seasonTab.new_title,
-            type: state.seasonTab.new_type
+            name: state.roundTab.new_title,
+            type: state.roundTab.new_type
         },
         {
             headers: {
@@ -50,7 +50,6 @@ export const createRound = createAsyncThunk('seasonTab/createRound', (s_id, {get
     .then((response) => {
         return response.data
     })
-    // .catch((error) => alert("New round not created! \n"+error.message))
 })
 
 export const fetchSections = createAsyncThunk('question/fetchSections', (round_id) => {
@@ -68,8 +67,8 @@ export const fetchSections = createAsyncThunk('question/fetchSections', (round_i
 })
 
 
-const seasonTabSlice = createSlice({
-    name : 'seasonTab',
+const roundTabSlice = createSlice({
+    name : 'roundTab',
     initialState,
     reducers: {
         tabClicked: (state,action) => {
@@ -142,5 +141,5 @@ const seasonTabSlice = createSlice({
     }
 })
 
-export default seasonTabSlice.reducer
-export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } = seasonTabSlice.actions
+export default roundTabSlice.reducer
+export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } = roundTabSlice.actions

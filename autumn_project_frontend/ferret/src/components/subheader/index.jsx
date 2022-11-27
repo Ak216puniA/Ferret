@@ -6,7 +6,7 @@ import RoundTabs from "../round_tabs";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { listRounds } from "../../features/seasonTab/seasonTabSlice";
+import { listRounds } from "../../features/roundTab/roundTabSlice";
 import SectionTabs from "../section_tabs";
 
 function SubHeader(props){
@@ -14,11 +14,11 @@ function SubHeader(props){
 
     const {season_id} = useParams()
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader.open_questions)
-    const seasonTabState = useSelector((state) => state.seasonTab.current_sections)
+    const roundTabState = useSelector((state) => state.roundTab.current_sections)
     const dispatch = useDispatch()
 
     const tabs = season_id>0 ? 
-    (seasonSubHeaderState ? <SectionTabs section_tabs={seasonTabState}/> : <RoundTabs />)  : 
+    (seasonSubHeaderState ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
     <HomeTabs homeTabs={initialTabs}/>
 
     useEffect(() => {

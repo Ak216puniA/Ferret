@@ -14,7 +14,7 @@ function SeasonDashboard() {
     const {season_id} = useParams()
     const authState = useSelector((state) => state.logout.authenticated)
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -22,7 +22,7 @@ function SeasonDashboard() {
     },[])
 
     const seasonDashboardContent = localStorage.getItem('openQuestions')=='true' ? <Questions /> : <RoundContent s_id={season_id}/>
-    const round = localStorage.getItem('openQuestions')=='true' ? `/ ${seasonTabState.currentTab}` : ''
+    const round = localStorage.getItem('openQuestions')=='true' ? `/ ${roundTabState.currentTab}` : ''
 
     if(authState){
         return (

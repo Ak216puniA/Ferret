@@ -117,7 +117,7 @@ function QuestionSegment(props) {
 function Questions() {
     const sectionTabState = useSelector((state) => state.sectionTab)
     const questionState = useSelector((state) => state.question)
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const closeQuestionsHandler = () => {
@@ -130,7 +130,7 @@ function Questions() {
         questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1} />) : 
         [])
 
-    const add_question_button = seasonTabState.current_sections.length>0 ?
+    const add_question_button = roundTabState.current_sections.length>0 ?
     <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button> :
     <></>
 
@@ -159,7 +159,7 @@ function Questions() {
                     {questions}
                 </div>
             </div>
-            <CreateSectionDialog round_id={seasonTabState.currentTabId} />
+            <CreateSectionDialog round_id={roundTabState.currentTabId} />
             <CreateQuestionDialog section_id={sectionTabState.currentTabId} />
         </div>
     )

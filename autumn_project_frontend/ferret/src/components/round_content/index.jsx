@@ -38,7 +38,7 @@ function RoundTableRow(props){
 function RoundContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
@@ -46,13 +46,13 @@ function RoundContent(props) {
 
     let next_round_id = -1
     let current_round_index = -1
-    for(let index=0; index<seasonTabState.round_list.length; index++){
-        if(seasonTabState.round_list[index]['id']===seasonTabState.currentTabId){
+    for(let index=0; index<roundTabState.round_list.length; index++){
+        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId){
             current_round_index = index
-            if(index>=seasonTabState.round_list.length-1){
+            if(index>=roundTabState.round_list.length-1){
                 next_round_id = -1
             }else{
-                next_round_id = seasonTabState.round_list[index+1]['id']
+                next_round_id = roundTabState.round_list[index+1]['id']
             }
         }
     }
@@ -63,7 +63,7 @@ function RoundContent(props) {
         dispatch(
             uploadCSV({
                 'file': event.target.files[0],
-                'round_id': seasonTabState.currentTabId
+                'round_id': roundTabState.currentTabId
             })
         )
     }
@@ -73,7 +73,7 @@ function RoundContent(props) {
             moveCandidates({
                 'candidate_list': seasonRoundContentState.move_candidate_list,
                 'next_round_id': next_round_id,
-                'current_round_id': seasonTabState.currentTabId
+                'current_round_id': roundTabState.currentTabId
             })
         )
     })
