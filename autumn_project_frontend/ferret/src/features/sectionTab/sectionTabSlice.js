@@ -11,7 +11,7 @@ const initialState = {
     open: false,
 }
 
-export const createSection = createAsyncThunk('questionSectionTab/createSection', (sectionData) => {
+export const createSection = createAsyncThunk('sectionTab/createSection', (sectionData) => {
     return axios
     .post(
         `${SECTIONS}`,
@@ -32,8 +32,8 @@ export const createSection = createAsyncThunk('questionSectionTab/createSection'
     })
 })
 
-const questionSectionTabSlice = createSlice({
-    name: 'questionSectionTab',
+const sectionTabSlice = createSlice({
+    name: 'sectionTab',
     initialState,
     reducers: {
         tabClicked: (state,action) => {
@@ -66,5 +66,5 @@ const questionSectionTabSlice = createSlice({
     }
 })
 
-export default questionSectionTabSlice.reducer
-export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog } = questionSectionTabSlice.actions
+export default sectionTabSlice.reducer
+export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog } = sectionTabSlice.actions

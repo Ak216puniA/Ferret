@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom"
 import Header from "../components/header";
 import NavigationBar from "../components/navbar";
-import SeasonTestContent from "../components/season_test_content";
+import RoundContent from "../components/round_content";
 import SubHeader from "../components/subheader";
 import Questions from "../components/questions"
 import { fetchCurrentSeason } from "../features/seasonSubHeader/seasonSubHeaderSlice"
@@ -21,8 +21,8 @@ function SeasonDashboard() {
         dispatch(fetchCurrentSeason(season_id))
     },[])
 
-    const seasonDashboardContent = seasonSubHeaderState.open_questions ? <Questions /> : <SeasonTestContent s_id={season_id}/>
-    const round = seasonSubHeaderState.open_questions ? `/ ${seasonTabState.currentTab}` : ''
+    const seasonDashboardContent = localStorage.getItem('openQuestions')=='true' ? <Questions /> : <RoundContent s_id={season_id}/>
+    const round = localStorage.getItem('openQuestions')=='true' ? `/ ${seasonTabState.currentTab}` : ''
 
     if(authState){
         return (

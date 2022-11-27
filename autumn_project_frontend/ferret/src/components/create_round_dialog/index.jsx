@@ -6,7 +6,7 @@ import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/mater
 import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType, createRound } from "../../features/seasonTab/seasonTabSlice";
 import { GrClose } from "react-icons/gr";
 
-function SeasonTabDialog(props) {
+function CreateRoundDialog(props) {
     const { season_id } = props
     const seasonTabState = useSelector((state) => state.seasonTab)
     const dispatch = useDispatch()
@@ -70,4 +70,4 @@ function SeasonTabDialog(props) {
     )
 }
 
-export default SeasonTabDialog
+export default CreateRoundDialog

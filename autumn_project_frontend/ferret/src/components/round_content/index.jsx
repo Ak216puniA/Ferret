@@ -1,10 +1,10 @@
 import React from "react";
-import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
+import CreateRoundDialog from "../create_round_dialog";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -35,7 +35,7 @@ function RoundTableRow(props){
     )
 }
 
-function SeasonTestContent(props) {
+function RoundContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const seasonTabState = useSelector((state) => state.seasonTab)
@@ -77,6 +77,11 @@ function SeasonTestContent(props) {
             })
         )
     })
+
+    const openQuestionsHandler = () => {
+        dispatch(openQuestions())
+        localStorage.setItem('openQuestions',true)
+    }
 
     const move_button = next_round_id>0 ? 
     <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
@@ -126,7 +131,7 @@ function SeasonTestContent(props) {
             </div>
             <div className="seasonTestContentButtonDiv">
                 <div className="leftButtonDiv">
-                    <button className="seasonTestContentButton" onClick={() => dispatch(openQuestions())}>Questions</button>
+                    <button className="seasonTestContentButton" onClick={openQuestionsHandler}>Questions</button>
                 </div>
                 <div className="rightButtonDiv">
                     <div className="rightButton">
@@ -144,10 +149,10 @@ function SeasonTestContent(props) {
                 </div>
                 {roundTable}
             </div>
-            <SeasonTabDialog season_id={s_id}/>
+            <CreateRoundDialog season_id={s_id}/>
             {move_button}
         </div>
     )
 }
 
-export default SeasonTestContent
+export default RoundContent

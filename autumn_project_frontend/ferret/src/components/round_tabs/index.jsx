@@ -1,14 +1,12 @@
 import React from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { tabClicked } from "../../features/seasonTab/seasonTabSlice";
+import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/seasonTab/seasonTabSlice";
 import { MdAddBox } from "react-icons/md"
-import { openCreateRoundDialog, fetchSections } from "../../features/seasonTab/seasonTabSlice";
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
-import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import "./index.css";
 
-function SeasonTabs(props) {
+function RoundTabs(props) {
     const seasonTabState = useSelector((state) => state.seasonTab)
     const roundList = seasonTabState.round_list
     const dispatch = useDispatch()
@@ -42,7 +40,6 @@ function SeasonTabs(props) {
         )
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
-        dispatch(closeQuestions())
     }
 
     let tabs = seasonTabState.round_list.length>0 ? roundList.map(tab => {
@@ -62,4 +59,4 @@ function SeasonTabs(props) {
     )
 }
 
-export default SeasonTabs
+export default RoundTabs

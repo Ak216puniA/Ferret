@@ -2,13 +2,13 @@ import React from "react";
 import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { closeCreateSectionDialog, createSection } from "../../features/questionSectionTab/questionSectionTabSlice";
+import { closeCreateSectionDialog, createSection } from "../../features/sectionTab/sectionTabSlice";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
 
-function QuestionSectionTabDialog(props) {
+function CreateSectionDialog(props) {
     const { round_id } = props
-    const questionSectionTabState = useSelector((state) => state.questionSectionTab)
+    const sectionTabState = useSelector((state) => state.sectionTab)
     const dispatch = useDispatch()
 
     const [sectionName, setSectionName] = useState('')
@@ -34,7 +34,7 @@ function QuestionSectionTabDialog(props) {
 
     return (
         <Dialog 
-        open={questionSectionTabState.open} 
+        open={sectionTabState.open} 
         onClose={() => dispatch(closeCreateSectionDialog())}
         className='dialog'
         >
@@ -87,4 +87,4 @@ function QuestionSectionTabDialog(props) {
     )
 }
 
-export default QuestionSectionTabDialog
+export default CreateSectionDialog

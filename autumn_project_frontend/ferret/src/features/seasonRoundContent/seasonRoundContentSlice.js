@@ -47,30 +47,6 @@ export const uploadCSV = createAsyncThunk('seasonRoundContent/uploadCSV', (candi
     })
 })
 
-// export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
-//     const res = move_data['candidate_list'].map((candidate) => {
-//         axios
-//         .post(
-//             `${CANDIDATE_ROUND}`,
-//             {
-//                 candidate_id: candidate,
-//                 round_id: move_data['next_round_id'],
-//             },
-//             {
-//                 headers: {
-//                     "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-//                 },
-//                 withCredentials:true
-//             },
-//         )
-//         .then((response) => {
-//             console.log(response.data)
-//             return response.data
-//         })
-//     })
-//     return res
-// })
-
 export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
     console.log(move_data)
     return axios

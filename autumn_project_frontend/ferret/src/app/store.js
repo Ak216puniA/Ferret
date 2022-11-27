@@ -6,7 +6,7 @@ import homeTabReducer from '../features/homeTab/homeTabSlice'
 import seasonSubHeaderReducer from '../features/seasonSubHeader/seasonSubHeaderSlice'
 import seasonRoundContentReducer from '../features/seasonRoundContent/seasonRoundContentSlice'
 import questionReducer from '../features/question/questionSlice'
-import questionSectionTabReducer from '../features/questionSectionTab/questionSectionTabSlice'
+import sectionTabReducer from '../features/sectionTab/sectionTabSlice'
 import userReducer from '../features/user/userSlice'
 
 const store = configureStore({
@@ -18,7 +18,7 @@ const store = configureStore({
         seasonSubHeader : seasonSubHeaderReducer,
         seasonRoundContent : seasonRoundContentReducer,
         question : questionReducer,
-        questionSectionTab : questionSectionTabReducer,
+        sectionTab : sectionTabReducer,
         user : userReducer
     },
 })

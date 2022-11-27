@@ -3,11 +3,11 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { closeCreateSeasonDialog, handleChangeNewYear, handleChangeNewType, createSeason} from '../../features/season/seasonSlice'
+import { closeCreateSeasonDialog, createSeason} from '../../features/season/seasonSlice'
 import { GrClose } from "react-icons/gr";
 import { useState } from 'react';
 
-function HomeDialog() {
+function CreateSeasonDialog() {
     const seasonState = useSelector((state) => state.season)
     const dispatch = useDispatch()
 
@@ -109,4 +109,4 @@ function HomeDialog() {
     )
 }
 
-export default HomeDialog
+export default CreateSeasonDialog

@@ -22,6 +22,7 @@ function CreateQuestionDialog(props) {
     []
 
     const createNewQuestion = () => {
+        localStorage.setItem('openQuestions',false)
         console.log("createQuestion")
         dispatch(
             createQuestion({

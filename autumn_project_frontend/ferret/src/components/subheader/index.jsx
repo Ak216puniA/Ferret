@@ -2,12 +2,12 @@ import React from "react";
 import "./index.css";
 import { IoMdArrowDropright } from "react-icons/io"
 import HomeTabs from "../home_tabs";
-import SeasonTabs from "../season_tabs";
+import RoundTabs from "../round_tabs";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listRounds } from "../../features/seasonTab/seasonTabSlice";
-import QuestionSectionTabs from "../question_section_tabs";
+import SectionTabs from "../section_tabs";
 
 function SubHeader(props){
     const {page, initialTabs} = props
@@ -18,7 +18,7 @@ function SubHeader(props){
     const dispatch = useDispatch()
 
     const tabs = season_id>0 ? 
-    (seasonSubHeaderState ? <QuestionSectionTabs section_tabs={seasonTabState}/> : <SeasonTabs />)  : 
+    (seasonSubHeaderState ? <SectionTabs section_tabs={seasonTabState}/> : <RoundTabs />)  : 
     <HomeTabs homeTabs={initialTabs}/>
 
     useEffect(() => {
