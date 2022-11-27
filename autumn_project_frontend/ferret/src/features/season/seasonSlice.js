@@ -9,8 +9,6 @@ const initialState = {
     season_list : [],
     error : '',
     open : false,
-    new_year : 0,
-    new_type : 'developer'
 }
 
 export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) => {
@@ -30,18 +28,15 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
     })
 })
 
-export const createSeason = createAsyncThunk('season/createSeason', (payload,{getState}) => {
-    const state = getState()
-    console.log(state.season.new_type)
-    console.log(state.season.new_year)
+export const createSeason = createAsyncThunk('season/createSeason', (seasonData) => {
     return axios
     .post(
         `${SEASONS_BY_TYPE}`,
         {
-            name: state.season.new_year,
+            name: seasonData['year'],
             end: null,
-            description: "",
-            type: state.season.new_type,
+            description: seasonData['desc'],
+            type: seasonData['type'],
             image: null
         },
         {
@@ -66,12 +61,6 @@ const seasonSlice = createSlice({
         },
         closeCreateSeasonDialog: (state) => {
             state.open = false
-        },
-        handleChangeNewYear: (state,action) => {
-            state.new_year = action.payload
-        },
-        handleChangeNewType: (state,action) => {
-            state.new_type = action.payload
         },
     },
     extraReducers: builder => {
