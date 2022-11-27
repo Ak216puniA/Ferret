@@ -9,19 +9,16 @@ const initialState = {
     currentTab : '',
     currentTabId: -1,
     open: false,
-    new_name: '',
-    new_weightage: 0,
 }
 
-export const createSection = createAsyncThunk('questionSectionTab/createSection', (round_id, {getState}) => {
-    const state = getState()
+export const createSection = createAsyncThunk('questionSectionTab/createSection', (sectionData) => {
     return axios
     .post(
         `${SECTIONS}`,
         {
-            round_id: round_id,
-            name: state.questionSectionTab.new_name,
-            weightage: state.questionSectionTab.new_weightage
+            round_id: sectionData['roundId'],
+            name: sectionData['name'],
+            weightage: sectionData['weightage']
         },
         {
             headers: {
@@ -49,12 +46,6 @@ const questionSectionTabSlice = createSlice({
         closeCreateSectionDialog: (state) => {
             state.open = false
         },
-        handleChangeNewName: (state,action) => {
-            state.new_name = action.payload
-        },
-        handleChangeNewWeightage: (state,action) => {
-            state.new_weightage = action.payload
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -76,4 +67,4 @@ const questionSectionTabSlice = createSlice({
 })
 
 export default questionSectionTabSlice.reducer
-export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog, handleChangeNewName, handleChangeNewWeightage } = questionSectionTabSlice.actions
+export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog } = questionSectionTabSlice.actions

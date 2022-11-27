@@ -7,8 +7,6 @@ const initialState = {
     loading: false,
     error: '',
     questions: [],
-    edit: false,
-    edit_question_id: 0,
     open: false,
 }
 
