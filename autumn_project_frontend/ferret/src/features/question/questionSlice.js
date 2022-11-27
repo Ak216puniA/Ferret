@@ -33,7 +33,7 @@ export const createQuestion = createAsyncThunk('question/createQuestion', (quest
         console.log("Question created successful!")
         return response.data
     })
-    .catch((error) => alert(error.message))
+    .catch((error) => alert("Error creating question: "+error.message))
 })
 
 export const fetchQuestions = createAsyncThunk('question/fetchQuestions', (section_id) => {
@@ -49,14 +49,13 @@ export const fetchQuestions = createAsyncThunk('question/fetchQuestions', (secti
     })
 })
 
-export const updateQuestion = createAsyncThunk('question/updateQuestion', (question_id,{getState}) => {
-    const state = getState()
+export const updateQuestion = createAsyncThunk('question/updateQuestion', (questionData) => {
     return axios
     .patch(
-        `${QUESTIONS}${question_id}/`,
+        `${QUESTIONS}${questionData['questionId']}/`,
         {
-            marks: state.question.new_marks,
-            assignee: state.question.new_assignee
+            marks: questionData['questionMarks'],
+            assignee: questionData['questionAssignee']
         },
         {
             headers: {
@@ -75,12 +74,6 @@ const questionSlice = createSlice({
     name: 'question',
     initialState,
     reducers: {
-        editQuestions: (state,action) => {
-            state.edit = true
-            state.edit_question_id = action.payload['question_id']
-            state.new_marks = action.payload['marks']
-            state.new_assignee = action.payload['assignee']
-        },
         openCreateQuestionDialog: (state) => {
             state.open = true
         },
@@ -140,4 +133,4 @@ const questionSlice = createSlice({
 })
 
 export default questionSlice.reducer
-export const { editQuestions, openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions
+export const { openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions

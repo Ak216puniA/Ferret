@@ -2,49 +2,57 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
 import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
-import { editQuestions, handleChangeNewAssignee, handleChangeNewMarks, updateQuestion, openCreateQuestionDialog } from "../../features/question/questionSlice";
+import { updateQuestion, openCreateQuestionDialog } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import QuestionSectionTabDialog from "../question_section_tab_dialog";
 import CreateQuestionDialog from "../create_question_dialog";
 import './index.css';
+import { useState } from "react";
 
 function QuestionSegment(props) {
     const { question, index } = props
-    const questionState = useSelector((state) => state.question)
     const userState = useSelector((state) => state.user)
     const dispatch = useDispatch()
 
+    const [questionMarks, setQuestionMarks] = useState(question['marks'])
+    const [questionAssignee, setQuestionAssignee] = useState(question['assignee']!=null ? question['assignee']['username'] : '')
+    const [questionEdit, setQuestionEdit] = useState(false)
+
     const editClickhandler = () => {
+        setQuestionEdit(true)
+    }
+
+    const saveClickHandler = () => {
+        setQuestionEdit(false)
         dispatch(
-            editQuestions({
-                question_id: question['id'],
-                marks: question['marks'],
-                assignee: question['assignee']
+            updateQuestion({
+                questionId: question['id'],
+                questionMarks: questionMarks,
+                questionAssignee: questionAssignee
             })
         )
     }
 
-    let question_assignee = question['assignee']!=null ? question['assignee']['username'] : ''
-    let marks = question['marks']
+    const marksChangeHandler = (e) => {
+        setQuestionMarks(e.target.value)
+    }
 
-    const saveClickHandler = () => {
-        dispatch(updateQuestion(question['id']))
-        marks = questionState.new_marks
-        question_assignee = questionState.new_assignee
+    const assigneeChangeHandler = (e) => {
+        setQuestionAssignee(e.target.value)
     }
 
     let assignee_list = userState.users.length>0 ?
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
     []
 
-    let question_desc = question['id']===questionState.edit_question_id && questionState.edit ?
+    let question_desc = questionEdit ?
     <>
         <div className="editQuestionField">
             <div className="questionMarks">{`( `}</div>
             <TextField 
             required 
             type='number' 
-            defaultValue={question['marks']}
+            value={questionMarks}
             variant='outlined'
             InputProps={{ inputProps: { min: 0 } }}
             sx={{
@@ -58,15 +66,15 @@ function QuestionSegment(props) {
                 }
             }}
             fullWidth
-            onChange={(event) => dispatch(handleChangeNewMarks(event.target.value))}
+            onChange={marksChangeHandler}
             />
             <div className="questionMarks">{` marks)`}</div>
         </div>
         <div className="editQuestionField">
             <div className="questionMarks">{`Assignee: `}</div>
             <Select 
-            required 
-            defaultValue={question_assignee}
+            required
+            value={questionAssignee}
             variant='outlined'
             sx={{
                 "color":"#EEEEEE",
@@ -75,18 +83,18 @@ function QuestionSegment(props) {
                 "padding":"4px 16px",
                 "borderColor":"#F5B041"
             }}
-            onChange={(e) => dispatch(handleChangeNewAssignee(e.target.value))}
+            onChange={assigneeChangeHandler}
             >
                 {assignee_list}
             </Select>
         </div>
     </> :
     <>
-        <div className="questionMarks">{`(${marks} marks)`}</div>
-        <div className="questionAssignee">Assignee: {question_assignee}</div>
+        <div className="questionMarks">{`(${questionMarks} marks)`}</div>
+        <div className="questionAssignee">Assignee: {questionAssignee}</div>
     </>
 
-    let edit_button = question['id']===questionState.edit_question_id && questionState.edit ?
+    let edit_button = questionEdit ?
     <button className="questionContentButton" onClick={saveClickHandler}>Save</button> :
     <button className="questionContentButton" onClick={editClickhandler}>Edit</button>
 

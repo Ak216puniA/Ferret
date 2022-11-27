@@ -21,15 +21,28 @@ function CreateQuestionDialog(props) {
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
     []
 
-    const createQuestion = (section_id) => {
+    const createNewQuestion = () => {
+        console.log("createQuestion")
         dispatch(
             createQuestion({
-                'section_id':section_id,
-                'questionText':questionText,
-                'questionMarks':questionMarks,
-                'questionAssignee':questionAssignee
+                section_id:section_id,
+                questionText:questionText,
+                questionMarks:questionMarks,
+                questionAssignee:questionAssignee
             })
         )
+    }
+
+    const textChangeHandler = (e) => {
+        setQuestionText(e.target.value)
+    }
+
+    const marksChangeHandler = (e) => {
+        setQuestionMarks(e.target.value)
+    }
+
+    const assigneeChangeHandler = (e) => {
+        setQuestionAssignee(e.target.value)
     }
 
     return (
@@ -54,7 +67,7 @@ function CreateQuestionDialog(props) {
                             fullWidth
                             multiline='true'
                             rows='3'
-                            onChange={setQuestionText(e.target.value)}
+                            onChange={textChangeHandler}
                             />
                         </div>
                         <div className='field'>
@@ -66,7 +79,7 @@ function CreateQuestionDialog(props) {
                             variant='outlined'
                             InputProps={{ inputProps: { min: 0 } }}
                             fullWidth
-                            onChange={setQuestionMarks(e.target.value)}
+                            onChange={marksChangeHandler}
                             />
                         </div>
                         <div className='field'>
@@ -77,7 +90,7 @@ function CreateQuestionDialog(props) {
                                 labelId='assignee' 
                                 label="Assignee" 
                                 variant='outlined'
-                                onChange={setQuestionAssignee(e.target.value)}
+                                onChange={assigneeChangeHandler}
                                 >
                                     {assignee_list}
                                 </Select>
@@ -92,7 +105,7 @@ function CreateQuestionDialog(props) {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={createQuestion(section_id)}
+                    onClick={createNewQuestion}
                     >
                         Create
                     </button>
