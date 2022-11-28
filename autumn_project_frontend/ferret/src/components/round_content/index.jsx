@@ -1,10 +1,11 @@
 import React from "react";
-import SeasonTabDialog from "../season_tab_dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates, openMoveCandidatesDialog } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
+import CreateRoundDialog from "../create_round_dialog";
+import MoveCandidatesDialog from "../move_candidates_dialog";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -35,10 +36,10 @@ function RoundTableRow(props){
     )
 }
 
-function SeasonTestContent(props) {
+function RoundContent(props) {
     const { s_id } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
@@ -46,13 +47,13 @@ function SeasonTestContent(props) {
 
     let next_round_id = -1
     let current_round_index = -1
-    for(let index=0; index<seasonTabState.round_list.length; index++){
-        if(seasonTabState.round_list[index]['id']===seasonTabState.currentTabId){
+    for(let index=0; index<roundTabState.round_list.length; index++){
+        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId){
             current_round_index = index
-            if(index>=seasonTabState.round_list.length-1){
+            if(index>=roundTabState.round_list.length-1){
                 next_round_id = -1
             }else{
-                next_round_id = seasonTabState.round_list[index+1]['id']
+                next_round_id = roundTabState.round_list[index+1]['id']
             }
         }
     }
@@ -63,24 +64,25 @@ function SeasonTestContent(props) {
         dispatch(
             uploadCSV({
                 'file': event.target.files[0],
-                'round_id': seasonTabState.currentTabId
+                'round_id': roundTabState.currentTabId
             })
         )
     }
 
     const moveClickHandler = (() => {
-        dispatch(
-            moveCandidates({
-                'candidate_list': seasonRoundContentState.move_candidate_list,
-                'next_round_id': next_round_id,
-                'current_round_id': seasonTabState.currentTabId
-            })
-        )
+        dispatch(openMoveCandidatesDialog())
     })
 
-    const move_button = next_round_id>0 ? 
-    <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
-    <></>
+    const openQuestionsHandler = () => {
+        dispatch(openQuestions())
+        localStorage.setItem('openQuestions',true)
+    }
+
+    // const move_button = next_round_id>0 ? 
+    // <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
+    // <></>
+
+    const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 
     const csv_button = current_round_index===0 ?
     <div className="rightButton">
@@ -126,7 +128,7 @@ function SeasonTestContent(props) {
             </div>
             <div className="seasonTestContentButtonDiv">
                 <div className="leftButtonDiv">
-                    <button className="seasonTestContentButton" onClick={() => dispatch(openQuestions())}>Questions</button>
+                    <button className="seasonTestContentButton" onClick={openQuestionsHandler}>Questions</button>
                 </div>
                 <div className="rightButtonDiv">
                     <div className="rightButton">
@@ -144,10 +146,11 @@ function SeasonTestContent(props) {
                 </div>
                 {roundTable}
             </div>
-            <SeasonTabDialog season_id={s_id}/>
+            <CreateRoundDialog season_id={s_id}/>
             {move_button}
+            <MoveCandidatesDialog />
         </div>
     )
 }
 
-export default SeasonTestContent
+export default RoundContent

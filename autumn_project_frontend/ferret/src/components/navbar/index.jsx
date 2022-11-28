@@ -19,6 +19,7 @@ function NavigationBar() {
 
     const homeClickHandler = () => {
         dispatch(closeQuestions())
+        localStorage.setItem('openQuestions',false)
         routeChange('home')
     }
 

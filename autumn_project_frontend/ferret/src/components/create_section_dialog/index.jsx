@@ -2,17 +2,39 @@ import React from "react";
 import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { closeCreateSectionDialog, handleChangeNewName, handleChangeNewWeightage, createSection } from "../../features/questionSectionTab/questionSectionTabSlice";
+import { closeCreateSectionDialog, createSection } from "../../features/sectionTab/sectionTabSlice";
 import { GrClose } from "react-icons/gr";
+import { useState } from "react";
 
-function QuestionSectionTabDialog(props) {
+function CreateSectionDialog(props) {
     const { round_id } = props
-    const questionSectionTabState = useSelector((state) => state.questionSectionTab)
+    const sectionTabState = useSelector((state) => state.sectionTab)
     const dispatch = useDispatch()
+
+    const [sectionName, setSectionName] = useState('')
+    const [sectionWeightage, setSectionWeightage] = useState(0)
+
+    const nameChangeHandler = (e) => {
+        setSectionName(e.target.value)
+    }
+
+    const weightageChangeHandler = (e) => {
+        setSectionWeightage(e.target.value)
+    }
+
+    const createNewSection = () => {
+        dispatch(
+            createSection({
+                roundId: round_id,
+                name: sectionName,
+                weightage: sectionWeightage
+            })
+        )
+    }
 
     return (
         <Dialog 
-        open={questionSectionTabState.open} 
+        open={sectionTabState.open} 
         onClose={() => dispatch(closeCreateSectionDialog())}
         className='dialog'
         >
@@ -26,10 +48,11 @@ function QuestionSectionTabDialog(props) {
                             required 
                             label='Name' 
                             type='text' 
+                            value={sectionName}
                             placeholder='Section Name' 
                             variant='outlined'
                             fullWidth
-                            onChange={(e) => dispatch(handleChangeNewName(e.target.value))}
+                            onChange={nameChangeHandler}
                             />
                         </div>
                         <div className='field'>
@@ -37,11 +60,12 @@ function QuestionSectionTabDialog(props) {
                             required 
                             label='Section Weightage' 
                             type='number' 
+                            value={sectionWeightage}
                             placeholder='Section Weightage' 
                             variant='outlined'
                             InputProps={{ inputProps: { min: 0 } }}
                             fullWidth
-                            onChange={(e) => dispatch(handleChangeNewWeightage(e.target.value))}
+                            onChange={weightageChangeHandler}
                             />
                         </div>
                     </div>
@@ -53,7 +77,7 @@ function QuestionSectionTabDialog(props) {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={() => dispatch(createSection(round_id))}
+                    onClick={createNewSection}
                     >
                         Create
                     </button>
@@ -63,4 +87,4 @@ function QuestionSectionTabDialog(props) {
     )
 }
 
-export default QuestionSectionTabDialog
+export default CreateSectionDialog

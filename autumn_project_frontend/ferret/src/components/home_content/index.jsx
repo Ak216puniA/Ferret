@@ -3,7 +3,7 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { openCreateSeasonDialog } from '../../features/season/seasonSlice'
 import { useNavigate } from "react-router-dom";
-import HomeDialog from '../home_dialog';
+import CreateSeasonDialog from '../create_season_dialog';
 
 function SeasonTableRow(props){
     let navigate = useNavigate()
@@ -24,7 +24,7 @@ function SeasonTableRow(props){
     )
 }
 
-function HomepageContent(props){
+function HomeContent(props){
     const {contentHeading} = props
 
     const seasonState = useSelector((state) => state.season)
@@ -64,10 +64,10 @@ function HomepageContent(props){
         <div className='createSeasonButtonDiv'>
             <button className='createSeasonButton' onClick={() => dispatch(openCreateSeasonDialog())}>Create Season</button>
         </div>
-        <HomeDialog />
+        <CreateSeasonDialog />
     </div>
     )
 }
 
-export default HomepageContent
+export default HomeContent
 

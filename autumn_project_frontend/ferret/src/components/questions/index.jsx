@@ -4,10 +4,10 @@ import { IoMdArrowDropleft } from "react-icons/io"
 import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 import { updateQuestion, openCreateQuestionDialog } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
-import QuestionSectionTabDialog from "../question_section_tab_dialog";
 import CreateQuestionDialog from "../create_question_dialog";
 import './index.css';
 import { useState } from "react";
+import CreateSectionDialog from "../create_section_dialog";
 
 function QuestionSegment(props) {
     const { question, index } = props
@@ -115,17 +115,22 @@ function QuestionSegment(props) {
 }
 
 function Questions() {
-    const questionSectionTabState = useSelector((state) => state.questionSectionTab)
+    const sectionTabState = useSelector((state) => state.sectionTab)
     const questionState = useSelector((state) => state.question)
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    const closeQuestionsHandler = () => {
+        dispatch(closeQuestions())
+        localStorage.setItem('openQuestions',false)
+    }
 
     let questions = (
         questionState.questions.length>0 ? 
         questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1} />) : 
         [])
 
-    const add_question_button = seasonTabState.current_sections.length>0 ?
+    const add_question_button = roundTabState.current_sections.length>0 ?
     <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button> :
     <></>
 
@@ -139,7 +144,7 @@ function Questions() {
                 <div className="questionContentButtonDiv">
                     <div className="backButton">
                         <IoMdArrowDropleft size={24}/>
-                        <div className="backButtonText" onClick={() => dispatch(closeQuestions())}>Back</div>
+                        <div className="backButtonText" onClick={closeQuestionsHandler}>Back</div>
                     </div>
                     <div>
                         {add_question_button}
@@ -148,14 +153,14 @@ function Questions() {
                 <div className="questionsHeading">Questions</div>
                 <div className='questionSectionHeading'>
                     <div className={`questionSectionHeadingLeft rowFlex`}>Section</div>
-                    <div className={`questionSectionHeadingRight rowFlex`}>{questionSectionTabState.currentTab}</div>
+                    <div className={`questionSectionHeadingRight rowFlex`}>{sectionTabState.currentTab}</div>
                 </div>
                 <div>
                     {questions}
                 </div>
             </div>
-            <QuestionSectionTabDialog round_id={seasonTabState.currentTabId} />
-            <CreateQuestionDialog section_id={questionSectionTabState.currentTabId} />
+            <CreateSectionDialog round_id={roundTabState.currentTabId} />
+            <CreateQuestionDialog section_id={sectionTabState.currentTabId} />
         </div>
     )
 }

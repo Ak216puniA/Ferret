@@ -3,17 +3,17 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType, createRound } from "../../features/seasonTab/seasonTabSlice";
+import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType, createRound } from "../../features/roundTab/roundTabSlice";
 import { GrClose } from "react-icons/gr";
 
-function SeasonTabDialog(props) {
+function CreateRoundDialog(props) {
     const { season_id } = props
-    const seasonTabState = useSelector((state) => state.seasonTab)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     return (
         <Dialog 
-        open={seasonTabState.open} 
+        open={roundTabState.open} 
         onClose={() => dispatch(closeCreateRoundDialog())}
         className='dialog'
         >
@@ -42,7 +42,7 @@ function SeasonTabDialog(props) {
                                 labelId='type' 
                                 label="Round type" 
                                 placeholder='Test/Interview' 
-                                defaultValue={seasonTabState.new_type}
+                                defaultValue={roundTabState.new_type}
                                 variant='outlined'
                                 onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
                                 >
@@ -70,4 +70,4 @@ function SeasonTabDialog(props) {
     )
 }
 
-export default SeasonTabDialog
+export default CreateRoundDialog

@@ -9,7 +9,8 @@ const initialState = {
     candidate_list: [],
     csv_fetched: false,
     csv_uploaded: false,
-    move_candidate_list: []
+    move_candidate_list: [],
+    open_move_dialog: false,
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -46,30 +47,6 @@ export const uploadCSV = createAsyncThunk('seasonRoundContent/uploadCSV', (candi
         return response.data
     })
 })
-
-// export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
-//     const res = move_data['candidate_list'].map((candidate) => {
-//         axios
-//         .post(
-//             `${CANDIDATE_ROUND}`,
-//             {
-//                 candidate_id: candidate,
-//                 round_id: move_data['next_round_id'],
-//             },
-//             {
-//                 headers: {
-//                     "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-//                 },
-//                 withCredentials:true
-//             },
-//         )
-//         .then((response) => {
-//             console.log(response.data)
-//             return response.data
-//         })
-//     })
-//     return res
-// })
 
 export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
     console.log(move_data)
@@ -114,6 +91,12 @@ const seasonRoundContentSlice = createSlice({
         removeCandidateFromMove: (state,action) => {
             state.move_candidate_list = state.move_candidate_list.filter(item => item !== action.payload)
             console.log(state.move_candidate_list)
+        },
+        openMoveCandidatesDialog: (state) => {
+            state.open_move_dialog = true
+        },
+        closeMoveCandidatesDialog: (state) => {
+            state.open_move_dialog = false
         }
     },
     extraReducers: builder => {
@@ -168,4 +151,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog } = seasonRoundContentSlice.actions

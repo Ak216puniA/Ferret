@@ -1,20 +1,20 @@
 import React, {useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { MdAddBox } from "react-icons/md"
-import {tabClicked, openCreateSectionDialog} from "../../features/questionSectionTab/questionSectionTabSlice"
+import {tabClicked, openCreateSectionDialog} from "../../features/sectionTab/sectionTabSlice"
 import { fetchQuestions } from "../../features/question/questionSlice"
 import "./index.css";
 
-function QuestionSectionTabs(props) {
+function SectionTabs(props) {
     const { section_tabs } = props
     const sections = section_tabs
 
-    const questionSectionTabState = useSelector((state) => state.questionSectionTab)
+    const sectionTabState = useSelector((state) => state.sectionTab)
     const dispatch = useDispatch()
 
     useEffect(() => {
         if(sections.length>0){
-            if(questionSectionTabState.currentTab===''){
+            if(sectionTabState.currentTab===''){
                 document.getElementById(`${sections[0]['name']}Arrow`).style.display = 'block'
                 dispatch(tabClicked(
                     {
@@ -25,9 +25,9 @@ function QuestionSectionTabs(props) {
                 dispatch(fetchQuestions(sections[0]['id']))
             }else{
                 sections.forEach(tab => {
-                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===questionSectionTabState.currentTab) ? 'block' : 'none'
+                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===sectionTabState.currentTab) ? 'block' : 'none'
                 });
-                dispatch(fetchQuestions(questionSectionTabState.currentTabId))
+                dispatch(fetchQuestions(sectionTabState.currentTabId))
             }
         }
     })
@@ -49,4 +49,4 @@ function QuestionSectionTabs(props) {
     )
 }
 
-export default QuestionSectionTabs
+export default SectionTabs

@@ -1,21 +1,19 @@
 import React from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { tabClicked } from "../../features/seasonTab/seasonTabSlice";
+import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
-import { openCreateRoundDialog, fetchSections } from "../../features/seasonTab/seasonTabSlice";
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
-import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import "./index.css";
 
-function SeasonTabs(props) {
-    const seasonTabState = useSelector((state) => state.seasonTab)
-    const roundList = seasonTabState.round_list
+function RoundTabs(props) {
+    const roundTabState = useSelector((state) => state.roundTab)
+    const roundList = roundTabState.round_list
     const dispatch = useDispatch()
     
     useEffect(() => {
         if(roundList.length>0){
-            if(seasonTabState.currentTab===''){
+            if(roundTabState.currentTab===''){
                 document.getElementById(`${roundList[0]['name']}Arrow`).style.display = 'block'
                 dispatch(
                     tabClicked({
@@ -27,7 +25,7 @@ function SeasonTabs(props) {
                 dispatch(fetchSections(roundList[0]['id']))
             }else{
                 roundList.forEach(tab => {
-                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===seasonTabState.currentTab) ? 'block' : 'none'
+                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===roundTabState.currentTab) ? 'block' : 'none'
                 });
             }
         } 
@@ -42,10 +40,9 @@ function SeasonTabs(props) {
         )
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
-        dispatch(closeQuestions())
     }
 
-    let tabs = seasonTabState.round_list.length>0 ? roundList.map(tab => {
+    let tabs = roundTabState.round_list.length>0 ? roundList.map(tab => {
         return(
             <div className="pageTabDiv" key={tab['id']}>
                 <button className={"pageTab pageTabArrowDiv"} onClick={() => tabClickHandler({tab_name: tab['name'],tab_id: tab['id']})}>{tab['name']}</button>
@@ -62,4 +59,4 @@ function SeasonTabs(props) {
     )
 }
 
-export default SeasonTabs
+export default RoundTabs
