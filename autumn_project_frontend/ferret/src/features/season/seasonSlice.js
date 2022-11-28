@@ -61,14 +61,7 @@ const seasonSlice = createSlice({
         },
         closeCreateSeasonDialog: (state) => {
             state.open = false
-        },
-        // resetState: (state) => {
-        //     state.loading = false
-        //     state.season_type = ''
-        //     state.season_list = []
-        //     state.error = ''
-        //     state.open = false
-        // }
+        }
     },
     extraReducers: builder => {
         builder

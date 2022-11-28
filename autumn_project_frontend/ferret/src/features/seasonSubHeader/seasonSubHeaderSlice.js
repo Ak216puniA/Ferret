@@ -32,14 +32,7 @@ const seasonSubHeaderSlice = createSlice({
         },
         closeQuestions: (state) => {
             state.open_questions = false
-        },
-        // resetState: (state) => {
-        //     state.loading = false
-        //     state.current_season_type = ''
-        //     state.current_season_year = 0
-        //     state.current_season_desc = ''
-        //     state.open_questions = false
-        // }
+        }
     },
     extraReducers: (builder) => {
         builder
