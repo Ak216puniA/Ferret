@@ -79,10 +79,11 @@ const questionSlice = createSlice({
             state.open = false
         },
         resetQuestionsState: (state) => {
-            state.loading = false
-            state.error = ''
-            state.questions = []
-            state.open = false
+            state = initialState
+            // state.loading = false
+            // state.error = ''
+            // state.questions = []
+            // state.open = false
         }
     },
     extraReducers: builder => {

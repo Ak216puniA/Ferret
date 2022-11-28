@@ -11,7 +11,6 @@ const initialState = {
     csv_uploaded: false,
     move_candidate_list: [],
     open_move_dialog: false,
-    // candidate_marks: [],
     section_marks: []
 }
 
@@ -69,19 +68,6 @@ export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidate
         return response.data
     })
 })
-
-// export const fetchCandidateMarks = createAsyncThunk('seasonRoundContent/fetchCandidatesMarks', (round_id) => {
-//     return axios
-//     .get(
-//         `${CANDIDATE_MARKS}?round_id=${round_id}`,
-//         {
-//             withCredentials: true
-//         }
-//     )
-//     .then((response) => {
-//         return response.data
-//     })
-// })
 
 export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', async (requestData) => {
     const response = await axios
@@ -185,21 +171,6 @@ const seasonRoundContentSlice = createSlice({
             state.error = action.error.message
             console.log(state.error)
         })
-        // .addCase(fetchCandidateMarks.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(fetchCandidateMarks.fulfilled, (state,action) => {
-        //     state.loading = false
-        //     state.candidate_marks = action.payload
-        //     state.error = ''
-        //     console.log("Candidate marks fetch successful!")
-        // })
-        // .addCase(fetchCandidateMarks.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.candidate_marks = []
-        //     state.error = action.error.message
-        //     console.log("Candidate marks fetch unsuccessful!")
-        // })
         .addCase(fetchCandidateSectionMarks.pending, (state) => {
             state.loading = true
         })

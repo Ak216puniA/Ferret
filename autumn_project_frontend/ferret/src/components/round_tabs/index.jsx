@@ -5,6 +5,7 @@ import { tabClicked, openCreateRoundDialog, fetchSections, fetchCandidateMarks }
 import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
+import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 
 function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)
@@ -37,6 +38,7 @@ function RoundTabs() {
                 tab_id: tab_data['tab_id']
             })
         )
+        // dispatch(closeQuestions())
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
     }

@@ -3,7 +3,8 @@ import './App.css';
 import Home from './pages/home';
 import LoginScreen from './pages/login_screen';
 import SeasonDashboard from './pages/seasonDashboard';
-import Root from './pages/root';
+import Questions from './pages/questions'
+// import Root from './pages/root';
 import LoggingUser from './pages/logging_user';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path='/home' element={<Home />} />
         <Route path='/login' element={<LoginScreen />} />
         <Route path='/season/:season_id' element={<SeasonDashboard />} />
+        <Route path='/season/:season_id/:round_id/questions' element={<Questions />} />
       </Routes>  
     </div>
   );

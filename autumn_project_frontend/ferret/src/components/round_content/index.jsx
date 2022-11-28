@@ -1,17 +1,20 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
+// import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function RoundTableRow(props){
-    const {candidate, status, index, section_count} = props
+    const {candidate, status, index} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const dispatch = useDispatch()
+
+    let candidate_section_marks = section_marks[index-1]
 
     const checkboxClickHandler = (event) => {
         if (event.target.checked){
@@ -22,32 +25,6 @@ function RoundTableRow(props){
         }
     }
 
-    // console.log("0 isn't an......")
-    // console.log(section_marks[index-1][0])
-    let candidate_section_marks = section_marks[index-1]
-
-    // console.log("Byeeeee....")
-    // console.log(candidate_section_marks)
-
-    // let candidate_marks = [0]*section_count
-
-    // useEffect(() => {
-    //     if(section_marks!=null){
-    //         console.log(section_marks)
-    //         // candidate_marks = (
-    //         //     section_marks[index].length>0 ?
-    //         //     section_marks[index].map((marks,index) => {
-    //         //         if(index>0) return <div key={index} className={`roundContentCandidateSection singleElementRowFlex`}>{marks}</div>
-    //         //     }) :
-    //         //     <div></div>
-    //         // )
-    //     }
-    // },[section_marks])
-
-    // console.log("hellllll.......o")
-    // console.log(section_marks[index-1])
-    console.log("aaaaaaaaaaaaaaa")
-    console.log(candidate_section_marks==null)
     let candidate_marks = <></>
     if(candidate_section_marks!=null){
         candidate_marks = (
@@ -57,20 +34,7 @@ function RoundTableRow(props){
             }) :
             <div></div>
         )
-        console.log("CANDIDATE_MARKSSSSS......")
-        console.log(candidate_marks)
     }
-    // const candidate_marks = (
-        // candidate_section_marks.length>0 ?
-        // candidate_section_marks.map((marks,index) => {
-        //     if(index>0) return <div key={index} className={`roundContentCandidateSection singleElementRowFlex`}>{marks}</div>
-        // }) :
-        // <div></div>
-    // )
-    // console.log("CANDIDATE_MARKSSSSSSS......")
-    // console.log(candidate_marks)
-    // console.log("Hellloooooo....")
-    // console.log(candidate_marks)
 
     return (
         <div className='roundCandidateRow'>
@@ -94,6 +58,13 @@ function RoundContent(props) {
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    let navigate = useNavigate()
+    const routeChange = () => {
+        localStorage.setItem('questions','open')
+        const url = `/season/${s_id}/${roundTabState.currentTabId}/questions`
+        navigate(url)
+    }
 
     useEffect(() => {
         dispatch(
@@ -124,8 +95,8 @@ function RoundContent(props) {
     })
 
     const openQuestionsHandler = () => {
-        dispatch(openQuestions())
-        localStorage.setItem('openQuestions',true)
+        // dispatch(openQuestions())
+        // localStorage.setItem('openQuestions',true)
     }
 
     const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
@@ -162,7 +133,7 @@ function RoundContent(props) {
     
     let roundTable = (
         seasonRoundContentState.candidate_list.length>0 ? 
-        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} section_count={roundTabState.current_sections.length} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
         <div></div>
     )
 
@@ -180,7 +151,7 @@ function RoundContent(props) {
             </div>
             <div className="seasonTestContentButtonDiv">
                 <div className="leftButtonDiv">
-                    <button className="seasonTestContentButton" onClick={openQuestionsHandler}>Questions</button>
+                    <button className="seasonTestContentButton" onClick={() => routeChange()}>Questions</button>
                 </div>
                 <div className="rightButtonDiv">
                     <div className="rightButton">

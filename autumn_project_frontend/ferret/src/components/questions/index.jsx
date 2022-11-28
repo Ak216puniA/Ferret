@@ -1,13 +1,16 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
-import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
+// import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 import { updateQuestion, openCreateQuestionDialog } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import CreateQuestionDialog from "../create_question_dialog";
 import './index.css';
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import CreateSectionDialog from "../create_section_dialog";
+import { useParams } from "react-router-dom";
+import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice";
 
 function QuestionSegment(props) {
     const { question, index } = props
@@ -114,15 +117,24 @@ function QuestionSegment(props) {
     )
 }
 
-function Questions() {
+function QuestionsContent() {
+    const {season_id,round_id} = useParams()
     const sectionTabState = useSelector((state) => state.sectionTab)
     const questionState = useSelector((state) => state.question)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
+    let navigate = useNavigate()
+    const routeChange = () => {
+        localStorage.setItem('questions','close')
+        dispatch(resetSectionTabState())
+        const url = `/season/${season_id}`
+        navigate(url)
+    }
+
     const closeQuestionsHandler = () => {
-        dispatch(closeQuestions())
-        localStorage.setItem('openQuestions',false)
+        // dispatch(closeQuestions())
+        // localStorage.setItem('openQuestions',false)
     }
 
     let questions = (
@@ -144,7 +156,7 @@ function Questions() {
                 <div className="questionContentButtonDiv">
                     <div className="backButton">
                         <IoMdArrowDropleft size={24}/>
-                        <div className="backButtonText" onClick={closeQuestionsHandler}>Back</div>
+                        <div className="backButtonText" onClick={() => routeChange()}>Back</div>
                     </div>
                     <div>
                         {add_question_button}
@@ -159,10 +171,10 @@ function Questions() {
                     {questions}
                 </div>
             </div>
-            <CreateSectionDialog round_id={roundTabState.currentTabId} />
+            <CreateSectionDialog round_id={round_id} />
             <CreateQuestionDialog section_id={sectionTabState.currentTabId} />
         </div>
     )
 }
 
-export default Questions
+export default QuestionsContent

@@ -5,7 +5,7 @@ import { MdGroups } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { MdHelpCenter } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-// import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
+import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice";
 import { useDispatch } from "react-redux";
 import { resetRoundTabState } from "../../features/roundTab/roundTabSlice";
 import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/seasonRoundContentSlice";
@@ -21,11 +21,11 @@ function NavigationBar() {
     }
 
     const homeClickHandler = () => {
-        // dispatch(closeQuestions())
         dispatch(resetRoundTabState())
         dispatch(resetSeasonRoundContentState())
         dispatch(resetQuestionsState())
-        localStorage.setItem('openQuestions',false)
+        dispatch(resetSectionTabState())
+        localStorage.setItem('questions','close')
         routeChange('home')
     }
 

@@ -18,7 +18,9 @@ function SubHeader(props){
     const dispatch = useDispatch()
 
     const tabs = season_id>0 ? 
-    (seasonSubHeaderState ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
+    // (seasonSubHeaderState ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
+    // (seasonSubHeaderState || localStorage.getItem('openQuestions')=='true' ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
+    (localStorage.getItem('questions')=='open' ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
     <HomeTabs homeTabs={initialTabs}/>
 
     useEffect(() => {
