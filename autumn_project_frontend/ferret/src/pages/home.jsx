@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/header/index";
 import HomeContent from "../components/home_content/index";
@@ -8,7 +8,11 @@ import { Navigate } from "react-router-dom";
 
 function Home() {
   const logoutState = useSelector((state) => state.logout.authenticated)
-  const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated');
+  const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated')
+
+  useEffect(() => {
+    
+  },[])
 
   if(userAuthenticated && logoutState){
     return (

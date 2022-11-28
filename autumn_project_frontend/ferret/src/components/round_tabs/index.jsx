@@ -6,30 +6,33 @@ import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
 
-function RoundTabs(props) {
+function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)
     const roundList = roundTabState.round_list
     const dispatch = useDispatch()
     
     useEffect(() => {
-        if(roundList.length>0){
+        if(roundTabState.round_list.length>0){
             if(roundTabState.currentTab===''){
-                document.getElementById(`${roundList[0]['name']}Arrow`).style.display = 'block'
+                document.getElementById(`${roundTabState.round_list[0]['name']}Arrow`).style.display = 'block'
                 dispatch(
                     tabClicked({
-                        tab_name: roundList[0]['name'],
-                        tab_id: roundList[0]['id']
+                        tab_name: roundTabState.round_list[0]['name'],
+                        tab_id: roundTabState.round_list[0]['id']
                     })
                 )
-                dispatch(fetchRoundCandidates(roundList[0]['id']))
-                dispatch(fetchSections(roundList[0]['id']))
+                dispatch(fetchRoundCandidates(roundTabState.round_list[0]['id']))
+                dispatch(fetchSections(roundTabState.round_list[0]['id']))
             }else{
-                roundList.forEach(tab => {
+                roundTabState.round_list.forEach(tab => {
                     document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===roundTabState.currentTab) ? 'block' : 'none'
                 });
             }
-        } 
-    })
+        }else if(roundTabState.round_list.length==0){
+            dispatch(fetchRoundCandidates(0))
+            dispatch(fetchSections(0))
+        }
+    },[roundTabState.round_list, roundTabState.currentTab])
 
     const tabClickHandler = (tab_data) => {
         dispatch(
@@ -42,7 +45,7 @@ function RoundTabs(props) {
         dispatch(fetchSections(tab_data['tab_id']))
     }
 
-    let tabs = roundTabState.round_list.length>0 ? roundList.map(tab => {
+    let tabs = roundTabState.round_list.length>0 ? roundTabState.round_list.map(tab => {
         return(
             <div className="pageTabDiv" key={tab['id']}>
                 <button className={"pageTab pageTabArrowDiv"} onClick={() => tabClickHandler({tab_name: tab['name'],tab_id: tab['id']})}>{tab['name']}</button>

@@ -58,8 +58,8 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
         }
     )
     .then((response) => {
-        console.log("SECTIONS...")
-        console.log(response.data)
+        // console.log("SECTIONS...")
+        // console.log(response.data)
         return response.data
     })
 })
@@ -88,6 +88,7 @@ const roundTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
+            console.log("ROUND_LIST...")
             console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {

@@ -44,7 +44,7 @@ const seasonSubHeaderSlice = createSlice({
             state.current_season_year = action.payload[0]['name']
             state.current_season_type = action.payload[0]['type']
             state.current_season_desc = action.payload[0]['description']
-            console.log("Fetched season \n"+action.payload)
+            console.log("Fetched season")
         })
         .addCase(fetchCurrentSeason.rejected, (state,action) => {
             state.loading = false

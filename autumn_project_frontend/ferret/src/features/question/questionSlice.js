@@ -77,7 +77,8 @@ const questionSlice = createSlice({
         },
         closeCreateQuestionDialog: (state) => {
             state.open = false
-        }
+        },
+        
     },
     extraReducers: builder => {
         builder

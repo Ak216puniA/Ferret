@@ -43,12 +43,28 @@ function RoundContent(props) {
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const candidates = seasonRoundContentState.candidate_list.length>0 ? 
-    seasonRoundContentState.candidate_list : []
+    // let candidates = seasonRoundContentState.candidate_list.length>0 ? 
+    // seasonRoundContentState.candidate_list : []
+
+    // let roundTable = []
+    // let roundTableSectionHeading = []
 
     useEffect(() => {
-        console.log("USE_EFFECT.....")
-        console.log(candidates)
+        // console.log("USE_EFFECT.....")
+        // console.log(candidates)
+        // candidates = seasonRoundContentState.candidate_list
+        // let candidates = seasonRoundContentState.candidate_list.length>0 ? seasonRoundContentState.candidate_list : []
+        // roundTable = (
+        //     seasonRoundContentState.candidate_list.length>0 ? 
+        //     seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        //     <div></div>
+        // )
+    
+        // roundTableSectionHeading = (
+        //     roundTabState.current_sections.length>0 ?
+        //     roundTabState.current_sections.map((section) => <div key={section['id']} className={`roundContentCandidateSection singleElementRowFlex`}>{section['name']}</div>) :
+        //     <div></div>
+        // )
         dispatch(
             fetchCandidateSectionMarks({
                 candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
@@ -63,7 +79,7 @@ function RoundContent(props) {
     }
 
     const csvUploadHandler = (event) => {
-        console.log(event.target.files[0])
+        // console.log(event.target.files[0])
         dispatch(fetchCSV())
         dispatch(
             uploadCSV({
@@ -115,8 +131,8 @@ function RoundContent(props) {
     <></>
     
     let roundTable = (
-        candidates.length>0 ? 
-        candidates.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.length>0 ? 
+        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
         <div></div>
     )
 
