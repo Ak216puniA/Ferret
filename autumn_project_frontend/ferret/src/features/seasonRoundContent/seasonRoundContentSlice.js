@@ -9,7 +9,8 @@ const initialState = {
     candidate_list: [],
     csv_fetched: false,
     csv_uploaded: false,
-    move_candidate_list: []
+    move_candidate_list: [],
+    open_move_dialog: false,
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -90,6 +91,12 @@ const seasonRoundContentSlice = createSlice({
         removeCandidateFromMove: (state,action) => {
             state.move_candidate_list = state.move_candidate_list.filter(item => item !== action.payload)
             console.log(state.move_candidate_list)
+        },
+        openMoveCandidatesDialog: (state) => {
+            state.open_move_dialog = true
+        },
+        closeMoveCandidatesDialog: (state) => {
+            state.open_move_dialog = false
         }
     },
     extraReducers: builder => {
@@ -144,4 +151,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog } = seasonRoundContentSlice.actions

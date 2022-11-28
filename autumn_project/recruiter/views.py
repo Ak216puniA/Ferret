@@ -2,7 +2,7 @@ from cmath import exp
 from urllib import response
 from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
-from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round
+from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -125,24 +125,37 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         move_data = serializer.validated_data
 
-        for candidate_id in move_data['candidate_list']:
-            candidate_data = {
-                'candidate_id': candidate_id,
-                'round_id': move_data['next_round_id']
-            }
-            create_candidate_round(candidate_data)
+        if move_data['next_round_id']>move_data['current_round_id']:
+            for candidate_id in move_data['candidate_list']:
+                candidate_data = {
+                    'candidate_id': candidate_id,
+                    'round_id': move_data['next_round_id']
+                }
+                create_candidate_round(candidate_data)
 
+                candidate_data = {
+                    'candidate_id': candidate_id,
+                    'round_id': move_data['current_round_id']
+                }
+                update_previous_candidate_round_status(candidate_data)
+
+            response_data = {
+                "status":"created",
+            }
+            return Response(response_data,status.HTTP_201_CREATED)
+
+        for candidate_id in move_data['candidate_list']:
             candidate_data = {
                 'candidate_id': candidate_id,
                 'round_id': move_data['current_round_id']
             }
-            update_previous_candidate_round_status(candidate_data)
+            delete_candidate_round(candidate_data)
 
         response_data = {
-            "status":"success",
+            "status":"deleted",
         }
+        return Response(response_data,status.HTTP_200_OK)
 
-        return Response(response_data,status.HTTP_201_CREATED)
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()

@@ -1,10 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates, openMoveCandidatesDialog } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
+import MoveCandidatesDialog from "../move_candidates_dialog";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -69,13 +70,7 @@ function RoundContent(props) {
     }
 
     const moveClickHandler = (() => {
-        dispatch(
-            moveCandidates({
-                'candidate_list': seasonRoundContentState.move_candidate_list,
-                'next_round_id': next_round_id,
-                'current_round_id': roundTabState.currentTabId
-            })
-        )
+        dispatch(openMoveCandidatesDialog())
     })
 
     const openQuestionsHandler = () => {
@@ -83,9 +78,11 @@ function RoundContent(props) {
         localStorage.setItem('openQuestions',true)
     }
 
-    const move_button = next_round_id>0 ? 
-    <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
-    <></>
+    // const move_button = next_round_id>0 ? 
+    // <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
+    // <></>
+
+    const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 
     const csv_button = current_round_index===0 ?
     <div className="rightButton">
@@ -151,6 +148,7 @@ function RoundContent(props) {
             </div>
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
+            <MoveCandidatesDialog />
         </div>
     )
 }
