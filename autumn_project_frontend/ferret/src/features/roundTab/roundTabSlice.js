@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { ROUNDS, SECTIONS } from "../../urls";
+import { CANDIDATE_MARKS, ROUNDS, SECTIONS, SECTION_MARKS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -11,9 +11,9 @@ const initialState = {
     currentTab : '',
     currentTabId : -1,
     open : false,
-    new_title: 'title',
-    new_type: 'test',
-    current_sections: []
+    current_sections: [],
+    // candidate_marks: [],
+    // section_marks: []
 }
 
 
@@ -30,15 +30,14 @@ export const listRounds = createAsyncThunk('roundTab/listRounds', (season_id) =>
     })
 })
 
-export const createRound = createAsyncThunk('roundTab/createRound', (s_id, {getState}) => {
-    const state = getState()
+export const createRound = createAsyncThunk('roundTab/createRound', (roundData) => {
     return axios
     .post(
         `${ROUNDS}`,
         {
-            season_id: s_id,
-            name: state.roundTab.new_title,
-            type: state.roundTab.new_type
+            season_id: roundData['season_id'],
+            name: roundData['roundTitle'],
+            type: roundData['roundType']
         },
         {
             headers: {
@@ -52,7 +51,7 @@ export const createRound = createAsyncThunk('roundTab/createRound', (s_id, {getS
     })
 })
 
-export const fetchSections = createAsyncThunk('question/fetchSections', (round_id) => {
+export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_id) => {
     return axios
     .get(
         `${SECTIONS}?round_id=${round_id}`,
@@ -61,11 +60,47 @@ export const fetchSections = createAsyncThunk('question/fetchSections', (round_i
         }
     )
     .then((response) => {
+        console.log("SECTIONS...")
         console.log(response.data)
         return response.data
     })
 })
 
+// export const fetchCandidateMarks = createAsyncThunk('roundTab/fetchCandidatesMarks', (round_id) => {
+//     return axios
+//     .get(
+//         `${CANDIDATE_MARKS}?round_id=${round_id}`,
+//         {
+//             withCredentials: true
+//         }
+//     )
+//     .then((response) => {
+//         console.log("CANDIDATE_MARKS...")
+//         console.log(response.data)
+//         return response.data
+//     })
+// })
+
+// const fetchCandidateSectionMarks = createAsyncThunk('roundTab/fetchCandidateSectionMarks', (requestData) => {
+//     return axios
+//     .post(
+//         `${SECTION_MARKS}`,
+//         {
+//             candidate_list: requestData['candidate_list'],
+//             section_list: requestData['section_list'],
+//         },
+//         {
+//             headers: {
+//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+//             },
+//             withCredentials:true
+//         },
+//     )
+//     .then((response) => {
+//         console.log("SECTION_MARKS...")
+//         return response.data
+//     })
+// })
 
 const roundTabSlice = createSlice({
     name : 'roundTab',
@@ -81,14 +116,6 @@ const roundTabSlice = createSlice({
         closeCreateRoundDialog: (state) => {
             state.open = false
         },
-        handleChangeNewTitle: (state,action) => {
-            state.new_title = action.payload
-            console.log(state.new_title)
-        },
-        handleChangeNewType: (state,action) => {
-            state.new_type = action.payload
-            console.log(state.new_type)
-        }
     },
     extraReducers: builder => {
         builder
@@ -138,8 +165,38 @@ const roundTabSlice = createSlice({
             state.current_sections = []
             console.log("Sections' fetch unsuccessful!")
         })
+        // .addCase(fetchCandidateMarks.pending, (state) => {
+        //     state.loading = true
+        // })
+        // .addCase(fetchCandidateMarks.fulfilled, (state,action) => {
+        //     state.loading = false
+        //     state.candidate_marks = action.payload
+        //     state.error = ''
+        //     console.log("Candidate marks fetch successful!")
+        // })
+        // .addCase(fetchCandidateMarks.rejected, (state,action) => {
+        //     state.loading = false
+        //     state.candidate_marks = []
+        //     state.error = action.error.message
+        //     console.log("Candidate marks fetch unsuccessful!")
+        // })
+        // .addCase(fetchCandidateSectionMarks.pending, (state) => {
+        //     state.loading = true
+        // })
+        // .addCase(fetchCandidateSectionMarks.fulfilled, (state,action) => {
+        //     state.loading = false
+        //     state.section_marks = action.payload
+        //     state.error = ''
+        //     console.log("Section marks fetch successful!")
+        // })
+        // .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
+        //     state.loading = false
+        //     state.section_marks = []
+        //     state.error = action.error.message
+        //     console.log("Section marks fetch unsuccessful!")
+        // })
     }
 })
 
 export default roundTabSlice.reducer
-export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } = roundTabSlice.actions
+export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog } = roundTabSlice.actions

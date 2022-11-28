@@ -3,13 +3,35 @@ import './index.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType, createRound } from "../../features/roundTab/roundTabSlice";
+import { closeCreateRoundDialog, createRound } from "../../features/roundTab/roundTabSlice";
 import { GrClose } from "react-icons/gr";
+import { useState } from "react";
 
 function CreateRoundDialog(props) {
     const { season_id } = props
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    const [roundTitle, setRoundTitle] = useState('')
+    const [roundType, setRoundType] = useState('')
+
+    const titleChangeHandler = (e) => {
+        setRoundTitle(e.target.value)
+    }
+
+    const typeChangeHandler = (e) => {
+        setRoundType(e.target.value)
+    }
+
+    const createNewRound = () => {
+        dispatch(
+            createRound({
+                season_id: season_id,
+                roundTitle: roundTitle,
+                roundType: roundType
+            })
+        )
+    }
 
     return (
         <Dialog 
@@ -26,12 +48,13 @@ function CreateRoundDialog(props) {
                             <TextField 
                             required 
                             label='Title' 
-                            type='text' 
+                            type='text'
+                            value={roundTitle}
                             placeholder='Title' 
                             variant='outlined'
                             InputProps={{ inputProps: { min: 2000, max: 2100 } }}
                             fullWidth
-                            onChange={(e) => dispatch(handleChangeNewTitle(e.target.value))}
+                            onChange={titleChangeHandler}
                             />
                         </div>
                         <div className='field'>
@@ -41,10 +64,10 @@ function CreateRoundDialog(props) {
                                 required 
                                 labelId='type' 
                                 label="Round type" 
+                                value={roundType}
                                 placeholder='Test/Interview' 
-                                defaultValue={roundTabState.new_type}
                                 variant='outlined'
-                                onChange={(e) => dispatch(handleChangeNewType(e.target.value))}
+                                onChange={typeChangeHandler}
                                 >
                                     <MenuItem value={'test'}>Test</MenuItem>
                                     <MenuItem value={'interview'}>Interview</MenuItem>
@@ -60,7 +83,7 @@ function CreateRoundDialog(props) {
                     className='createButton' 
                     type='submit' 
                     form='createSeasonForm'
-                    onClick={() => dispatch(createRound(season_id))}
+                    onClick={createNewRound}
                     >
                         Create
                     </button>

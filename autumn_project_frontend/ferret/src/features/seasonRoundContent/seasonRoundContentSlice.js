@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axios from "axios";
-import { CANDIDATE_ROUND, CSV } from "../../urls";
+import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS } from "../../urls";
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -11,6 +11,8 @@ const initialState = {
     csv_uploaded: false,
     move_candidate_list: [],
     open_move_dialog: false,
+    candidate_marks: [],
+    section_marks: []
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -70,6 +72,41 @@ export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidate
     })
 })
 
+export const fetchCandidateMarks = createAsyncThunk('seasonRoundContent/fetchCandidatesMarks', (round_id) => {
+    return axios
+    .get(
+        `${CANDIDATE_MARKS}?round_id=${round_id}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        console.log("CANDIDATE_MARKS...")
+        console.log(response.data)
+        return response.data
+    })
+})
+
+const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
+    return axios
+    .post(
+        `${SECTION_MARKS}`,
+        {
+            candidate_list: requestData['candidate_list'],
+            section_list: requestData['section_list'],
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        console.log("SECTION_MARKS...")
+        return response.data
+    })
+})
 
 const seasonRoundContentSlice = createSlice({
     name: 'seasonRoundContent',
@@ -146,6 +183,36 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             console.log(state.error)
+        })
+        .addCase(fetchCandidateMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCandidateMarks.fulfilled, (state,action) => {
+            state.loading = false
+            state.candidate_marks = action.payload
+            state.error = ''
+            console.log("Candidate marks fetch successful!")
+        })
+        .addCase(fetchCandidateMarks.rejected, (state,action) => {
+            state.loading = false
+            state.candidate_marks = []
+            state.error = action.error.message
+            console.log("Candidate marks fetch unsuccessful!")
+        })
+        .addCase(fetchCandidateSectionMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCandidateSectionMarks.fulfilled, (state,action) => {
+            state.loading = false
+            state.section_marks = action.payload
+            state.error = ''
+            console.log("Section marks fetch successful!")
+        })
+        .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
+            state.loading = false
+            state.section_marks = []
+            state.error = action.error.message
+            console.log("Section marks fetch unsuccessful!")
         })
     }
 })

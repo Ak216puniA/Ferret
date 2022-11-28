@@ -24,16 +24,6 @@ def create_or_update_csv_candidates(candidate_data):
     candidate.save()
     return candidate.id
 
-# def create_csv_candidate_round(candidate_data):
-#     try:
-#         candidate_round = CandidateRound.objects.get(candidate_id=candidate_data['candidate_id'], round_id=candidate_data['round_id'])
-#     except ObjectDoesNotExist:
-#         candidate_round = CandidateRound(
-#             candidate_id=Candidates.objects.get(id=candidate_data['candidate_id']),
-#             round_id=Rounds.objects.get(id=candidate_data['round_id'])
-#             )
-#     candidate_round.save()
-
 def create_csv_candidate_marks(candidate_data):
     round = Rounds.objects.get(id=candidate_data['round_id'])
     if round.type=='test':

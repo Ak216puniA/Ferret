@@ -45,16 +45,16 @@ function RoundContent(props) {
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
     seasonRoundContentState.candidate_list : []
 
-    let next_round_id = -1
+    // let next_round_id = -1
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
         if(roundTabState.round_list[index]['id']===roundTabState.currentTabId){
             current_round_index = index
-            if(index>=roundTabState.round_list.length-1){
-                next_round_id = -1
-            }else{
-                next_round_id = roundTabState.round_list[index+1]['id']
-            }
+            // if(index>=roundTabState.round_list.length-1){
+            //     next_round_id = -1
+            // }else{
+            //     next_round_id = roundTabState.round_list[index+1]['id']
+            // }
         }
     }
 
@@ -77,10 +77,6 @@ function RoundContent(props) {
         dispatch(openQuestions())
         localStorage.setItem('openQuestions',true)
     }
-
-    // const move_button = next_round_id>0 ? 
-    // <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
-    // <></>
 
     const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 
@@ -120,6 +116,12 @@ function RoundContent(props) {
         <div></div>
     )
 
+    let roundTableSectionHeading = (
+        roundTabState.current_sections.length>0 ?
+        roundTabState.current_sections.map((section) => <div key={section['id']} className={`roundContentCandidateSection singleElementRowFlex`}>{section['name']}</div>) :
+        <div></div>
+    )
+
     return (
         <div className="seasonTestContent">
             <div className='contentTriangleDiv'>
@@ -143,6 +145,7 @@ function RoundContent(props) {
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>
                     <div className={`roundContentCandidateStatus singleElementRowFlex`}>Status</div>
+                    {roundTableSectionHeading}
                 </div>
                 {roundTable}
             </div>

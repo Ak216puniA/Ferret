@@ -178,9 +178,19 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
 
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
-    queryset=CandidateMarks.objects.all()
-    serializer_class=CandidateMarksSerializer
-    permission_classes=[YearWisePermission]   
+    permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        print(r_id)
+        if r_id is not None:
+            return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
+        return CandidateMarks.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return CandidateMarksNestedSerializer
+        return CandidateMarksSerializer
 
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
@@ -289,3 +299,9 @@ class UploadCSV(APIView):
         }
 
         return Response(response_data,status.HTTP_201_CREATED)
+
+class SectionMarksView(APIView):
+    def post(self, request, format=None):
+
+        print(request.data)
+        return Response({'status':'starting'})

@@ -86,11 +86,11 @@
 }
 
 .roundContentCandidateName{
-    width: 50%;
+    width: 20%;
 }
 
 .roundContentCandidateNameHeading{
-    width: 50%;
+    width: 20%;
 }
 
 .roundContentCandidateName:hover{
@@ -98,7 +98,11 @@
 }
 
 .roundContentCandidateStatus{
-    width: 40%;
+    width: 10%;
+}
+
+.roundContentCandidateSection{
+    width: 10%;
 }
 
 .roundCandidateRow{
