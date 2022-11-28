@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { CANDIDATE_MARKS, ROUNDS, SECTIONS, SECTION_MARKS } from "../../urls";
+import { ROUNDS, SECTIONS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -58,8 +58,6 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
         }
     )
     .then((response) => {
-        // console.log("SECTIONS...")
-        // console.log(response.data)
         return response.data
     })
 })
@@ -78,6 +76,16 @@ const roundTabSlice = createSlice({
         closeCreateRoundDialog: (state) => {
             state.open = false
         },
+        resetRoundTabState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.current_season = 0
+            state.round_list = []
+            state.currentTab = ''
+            state.currentTabId = -1
+            state.open = false
+            state.current_sections = []
+        }
     },
     extraReducers: builder => {
         builder
@@ -132,4 +140,4 @@ const roundTabSlice = createSlice({
 })
 
 export default roundTabSlice.reducer
-export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog } = roundTabSlice.actions
+export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, resetRoundTabState } = roundTabSlice.actions

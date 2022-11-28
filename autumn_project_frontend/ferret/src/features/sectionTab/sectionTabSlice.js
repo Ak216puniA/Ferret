@@ -46,6 +46,9 @@ const sectionTabSlice = createSlice({
         closeCreateSectionDialog: (state) => {
             state.open = false
         },
+        // resetState: (state) => {
+        //     state = initialState
+        // }
     },
     extraReducers: (builder) => {
         builder

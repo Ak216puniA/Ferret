@@ -302,14 +302,6 @@ class UploadCSV(APIView):
 
 class SectionMarksView(APIView):
     def post(self, request, format=None):
-
-        print("Hereeeeeeeeeeeeeeeee..............")
-        print(request.data)
-
-        serializer = SectionMarksSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
-
         candidate_list = request.data['candidate_list']
         section_list = request.data['section_list']
         candidate_section_marks_list = []
@@ -320,10 +312,8 @@ class SectionMarksView(APIView):
                     'section_list': section_list
                 }
                 candidate_section_marks = get_candidate_section_marks(candidate_section_data)
-                print("-----------------------------------++++++++++++++++++++++++++++++++++++")
-                print(candidate_section_marks)
                 candidate_section_marks_list.append(candidate_section_marks)
-            print(candidate_section_marks_list)
+        print(candidate_section_marks_list)
         
         response_data={
             'status':'success',

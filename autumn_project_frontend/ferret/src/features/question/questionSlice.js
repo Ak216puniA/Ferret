@@ -78,7 +78,12 @@ const questionSlice = createSlice({
         closeCreateQuestionDialog: (state) => {
             state.open = false
         },
-        
+        resetQuestionsState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.questions = []
+            state.open = false
+        }
     },
     extraReducers: builder => {
         builder
@@ -132,4 +137,4 @@ const questionSlice = createSlice({
 })
 
 export default questionSlice.reducer
-export const { openCreateQuestionDialog, closeCreateQuestionDialog } = questionSlice.actions
+export const { openCreateQuestionDialog, closeCreateQuestionDialog, resetQuestionsState } = questionSlice.actions

@@ -24,7 +24,6 @@ export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRo
         }
     )
     .then((response) => {
-        // console.log(response.data)
         return response.data
     })
 })
@@ -51,7 +50,6 @@ export const uploadCSV = createAsyncThunk('seasonRoundContent/uploadCSV', (candi
 })
 
 export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
-    // console.log(move_data)
     return axios
     .post(
         `${CANDIDATE_ROUND}`,
@@ -81,8 +79,6 @@ export const fetchCandidateMarks = createAsyncThunk('seasonRoundContent/fetchCan
         }
     )
     .then((response) => {
-        // console.log("CANDIDATE_MARKS...")
-        // console.log(response.data)
         return response.data
     })
 })
@@ -103,8 +99,6 @@ export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/f
         },
     )
     .then((response) => {
-        // console.log("SECTION_MARKS...")
-        // console.log(response.data)
         return response.data
     })
 })
@@ -124,17 +118,26 @@ const seasonRoundContentSlice = createSlice({
         },
         appendCandidateToMove: (state,action) => {
             state.move_candidate_list = state.move_candidate_list.concat([action.payload])
-            // console.log(state.move_candidate_list)
         },
         removeCandidateFromMove: (state,action) => {
             state.move_candidate_list = state.move_candidate_list.filter(item => item !== action.payload)
-            // console.log(state.move_candidate_list)
         },
         openMoveCandidatesDialog: (state) => {
             state.open_move_dialog = true
         },
         closeMoveCandidatesDialog: (state) => {
             state.open_move_dialog = false
+        },
+        resetSeasonRoundContentState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.candidate_list = []
+            state.csv_fetched = false
+            state.csv_uploaded = false
+            state.move_candidate_list = []
+            state.open_move_dialog = false
+            state.candidate_marks = []
+            state.section_marks = []
         }
     },
     extraReducers: builder => {
@@ -219,4 +222,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState } = seasonRoundContentSlice.actions

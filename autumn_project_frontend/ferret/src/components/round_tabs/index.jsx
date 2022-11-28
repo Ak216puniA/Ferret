@@ -8,7 +8,6 @@ import "./index.css";
 
 function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)
-    const roundList = roundTabState.round_list
     const dispatch = useDispatch()
     
     useEffect(() => {
@@ -28,11 +27,8 @@ function RoundTabs() {
                     document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===roundTabState.currentTab) ? 'block' : 'none'
                 });
             }
-        }else if(roundTabState.round_list.length==0){
-            dispatch(fetchRoundCandidates(0))
-            dispatch(fetchSections(0))
         }
-    },[roundTabState.round_list, roundTabState.currentTab])
+    })
 
     const tabClickHandler = (tab_data) => {
         dispatch(
