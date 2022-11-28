@@ -87,7 +87,7 @@ export const fetchCandidateMarks = createAsyncThunk('seasonRoundContent/fetchCan
     })
 })
 
-const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
+export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
     return axios
     .post(
         `${SECTION_MARKS}`,
@@ -104,6 +104,7 @@ const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCan
     )
     .then((response) => {
         console.log("SECTION_MARKS...")
+        console.log(response.data)
         return response.data
     })
 })

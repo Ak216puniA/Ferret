@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -303,5 +303,31 @@ class UploadCSV(APIView):
 class SectionMarksView(APIView):
     def post(self, request, format=None):
 
+        print("Hereeeeeeeeeeeeeeeee..............")
         print(request.data)
-        return Response({'status':'starting'})
+
+        serializer = SectionMarksSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(serializer.validated_data)
+
+        candidate_list = request.data['candidate_list']
+        section_list = request.data['section_list']
+        candidate_section_marks_list = []
+        if len(candidate_list)>0 and len(section_list):
+            for candidate_id in candidate_list:
+                candidate_section_data = {
+                    'candidate_id': candidate_id,
+                    'section_list': section_list
+                }
+                candidate_section_marks = get_candidate_section_marks(candidate_section_data)
+                print("-----------------------------------++++++++++++++++++++++++++++++++++++")
+                print(candidate_section_marks)
+                candidate_section_marks_list.append(candidate_section_marks)
+            print(candidate_section_marks_list)
+        
+        response_data={
+            'status':'success',
+            'data':candidate_section_marks_list
+        }
+
+        return Response(response_data)

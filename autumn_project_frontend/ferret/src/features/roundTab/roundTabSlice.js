@@ -12,8 +12,6 @@ const initialState = {
     currentTabId : -1,
     open : false,
     current_sections: [],
-    // candidate_marks: [],
-    // section_marks: []
 }
 
 
@@ -65,42 +63,6 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
         return response.data
     })
 })
-
-// export const fetchCandidateMarks = createAsyncThunk('roundTab/fetchCandidatesMarks', (round_id) => {
-//     return axios
-//     .get(
-//         `${CANDIDATE_MARKS}?round_id=${round_id}`,
-//         {
-//             withCredentials: true
-//         }
-//     )
-//     .then((response) => {
-//         console.log("CANDIDATE_MARKS...")
-//         console.log(response.data)
-//         return response.data
-//     })
-// })
-
-// const fetchCandidateSectionMarks = createAsyncThunk('roundTab/fetchCandidateSectionMarks', (requestData) => {
-//     return axios
-//     .post(
-//         `${SECTION_MARKS}`,
-//         {
-//             candidate_list: requestData['candidate_list'],
-//             section_list: requestData['section_list'],
-//         },
-//         {
-//             headers: {
-//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-//             },
-//             withCredentials:true
-//         },
-//     )
-//     .then((response) => {
-//         console.log("SECTION_MARKS...")
-//         return response.data
-//     })
-// })
 
 const roundTabSlice = createSlice({
     name : 'roundTab',
@@ -165,36 +127,6 @@ const roundTabSlice = createSlice({
             state.current_sections = []
             console.log("Sections' fetch unsuccessful!")
         })
-        // .addCase(fetchCandidateMarks.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(fetchCandidateMarks.fulfilled, (state,action) => {
-        //     state.loading = false
-        //     state.candidate_marks = action.payload
-        //     state.error = ''
-        //     console.log("Candidate marks fetch successful!")
-        // })
-        // .addCase(fetchCandidateMarks.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.candidate_marks = []
-        //     state.error = action.error.message
-        //     console.log("Candidate marks fetch unsuccessful!")
-        // })
-        // .addCase(fetchCandidateSectionMarks.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(fetchCandidateSectionMarks.fulfilled, (state,action) => {
-        //     state.loading = false
-        //     state.section_marks = action.payload
-        //     state.error = ''
-        //     console.log("Section marks fetch successful!")
-        // })
-        // .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.section_marks = []
-        //     state.error = action.error.message
-        //     console.log("Section marks fetch unsuccessful!")
-        // })
     }
 })
 

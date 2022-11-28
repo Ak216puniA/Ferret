@@ -1,11 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates, openMoveCandidatesDialog } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
+import { useEffect } from "react";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -45,17 +46,20 @@ function RoundContent(props) {
     const candidates = seasonRoundContentState.candidate_list.length>0 ? 
     seasonRoundContentState.candidate_list : []
 
-    // let next_round_id = -1
+    useEffect(() => {
+        console.log("USE_EFFECT.....")
+        console.log(candidates)
+        dispatch(
+            fetchCandidateSectionMarks({
+                candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
+                section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
+    },[seasonRoundContentState.candidate_list,roundTabState.current_sections])
+
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
-        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId){
-            current_round_index = index
-            // if(index>=roundTabState.round_list.length-1){
-            //     next_round_id = -1
-            // }else{
-            //     next_round_id = roundTabState.round_list[index+1]['id']
-            // }
-        }
+        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId) current_round_index = index
     }
 
     const csvUploadHandler = (event) => {
