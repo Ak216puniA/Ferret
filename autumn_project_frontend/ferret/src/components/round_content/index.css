@@ -63,19 +63,32 @@
 
 .roundContentDiv{
     padding: 0px 44px;
+    overflow: auto;
+    white-space: nowrap;
 }
 
 .roundHeadingRow{
     display: flex;
     flex-direction: row;
     align-items: center;
+    /* display: inline-block; */
+    /* text-align: center; */
     margin-top: 16px;
     margin-bottom: 4px;
     background-color: #F5B041;
     color: black;
     height: 32px;
     font-size: 16px;
+    overflow: auto;
+    white-space: nowrap;
 }
+
+/* .roundHeadingRow div{ 
+    display: inline-block;
+    text-align: center;
+    align-items: center;
+    vertical-align:middle;
+ } */
 
 .roundContentCheckbox{
     width: 5%;
@@ -103,6 +116,7 @@
 
 .roundContentCandidateSection{
     width: 10%;
+    /* width: 150px; */
 }
 
 .roundCandidateRow{

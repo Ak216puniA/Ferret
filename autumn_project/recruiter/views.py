@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 from rest_framework import status
 import pandas
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 env = environ.Env()
 environ.Env.read_env()
@@ -117,8 +118,17 @@ class InterviewPanelModelViewSet(viewsets.ModelViewSet):
 
 class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
-    serializer_class=QuestionsSerializer
+    serializer_class=CandidatesNestedSerializer
     permission_classes=[YearWisePermission]
+
+    # def retrieve(self, request, pk=None):
+    #     queryset = Candidates.objects.all()
+    #     print("CANDIDATE_FETCH_REQUEST_DATA...")
+    #     print(pk)
+
+    #     candidate = get_object_or_404(queryset,pk)
+    #     serializer = CandidatesNestedSerializer(candidate)
+    #     return Response(serializer.data)
 
 class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateProjectLink.objects.all()
