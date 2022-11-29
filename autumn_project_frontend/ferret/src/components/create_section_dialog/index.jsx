@@ -39,7 +39,7 @@ function CreateSectionDialog(props) {
         className='dialog'
         >
             <div className='crossDiv' onClick={() => dispatch(closeCreateSectionDialog())}><GrClose size={12}/></div>
-            <DialogTitle>Create New Recruitment Season</DialogTitle>
+            <DialogTitle>Create New Section</DialogTitle>
             <DialogContent>
                 <form id='createSeasonForm' onSubmit={() => dispatch()}>
                     <div className='fieldsDiv'>

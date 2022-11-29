@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -178,9 +178,19 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
 
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
-    queryset=CandidateMarks.objects.all()
-    serializer_class=CandidateMarksSerializer
-    permission_classes=[YearWisePermission]   
+    permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        r_id = self.request.query_params.get('round_id')
+        print(r_id)
+        if r_id is not None:
+            return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
+        return CandidateMarks.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return CandidateMarksNestedSerializer
+        return CandidateMarksSerializer
 
 class getAuthCode(APIView):
     permission_classes=[AllowAny]
@@ -289,3 +299,25 @@ class UploadCSV(APIView):
         }
 
         return Response(response_data,status.HTTP_201_CREATED)
+
+class SectionMarksView(APIView):
+    def post(self, request, format=None):
+        candidate_list = request.data['candidate_list']
+        section_list = request.data['section_list']
+        candidate_section_marks_list = []
+        if len(candidate_list)>0 and len(section_list):
+            for candidate_id in candidate_list:
+                candidate_section_data = {
+                    'candidate_id': candidate_id,
+                    'section_list': section_list
+                }
+                candidate_section_marks = get_candidate_section_marks(candidate_section_data)
+                candidate_section_marks_list.append(candidate_section_marks)
+        print(candidate_section_marks_list)
+        
+        response_data={
+            'status':'success',
+            'data':candidate_section_marks_list
+        }
+
+        return Response(response_data)

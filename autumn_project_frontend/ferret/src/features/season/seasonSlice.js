@@ -61,7 +61,7 @@ const seasonSlice = createSlice({
         },
         closeCreateSeasonDialog: (state) => {
             state.open = false
-        },
+        }
     },
     extraReducers: builder => {
         builder
@@ -87,7 +87,7 @@ const seasonSlice = createSlice({
             state.error = ''
             state.new_year = 0
             state.new_type = ''
-            console.log("Created new season \n"+action.payload)
+            console.log("Created new season")
         })
         .addCase(createSeason.rejected, (state,action) => {
             state.loading = false

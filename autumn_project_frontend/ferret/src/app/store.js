@@ -8,6 +8,8 @@ import seasonRoundContentReducer from '../features/seasonRoundContent/seasonRoun
 import questionReducer from '../features/question/questionSlice'
 import sectionTabReducer from '../features/sectionTab/sectionTabSlice'
 import userReducer from '../features/user/userSlice'
+import roundReducer from '../features/round/roundSlice'
+import candidateModalReducer from '../features/candidateModal/candidateModalSlice'
 
 const store = configureStore({
     reducer: {
@@ -19,7 +21,9 @@ const store = configureStore({
         seasonRoundContent : seasonRoundContentReducer,
         question : questionReducer,
         sectionTab : sectionTabReducer,
-        user : userReducer
+        user : userReducer,
+        round : roundReducer,
+        candidateModal : candidateModalReducer
     },
 })
 

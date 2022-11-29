@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import "./index.css";
 import {tabClicked} from "../../features/homeTab/homeTabSlice"
 import {listSeasons} from "../../features/season/seasonSlice"
+import { fetchSections, listRounds } from "../../features/roundTab/roundTabSlice";
+import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 
 function HomeTabs(props) {
     const { homeTabs } = props
@@ -21,7 +23,7 @@ function HomeTabs(props) {
             });
             dispatch(listSeasons(homeTabState))
         }
-    })
+    },[homeTabState])
 
     let tabs = season_types.map(tab => {
         return(

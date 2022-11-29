@@ -86,7 +86,6 @@ class QuestionsSerializer(serializers.ModelSerializer):
 class QuestionsNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Questions
-        fields = '__all__'
         exclude = ['assignee']
 
 
@@ -179,3 +178,9 @@ class MoveCandidateListSerializer(serializers.Serializer):
     candidate_list = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)
     next_round_id = serializers.IntegerField()
     current_round_id = serializers.IntegerField()
+
+# Section marks serializer
+
+class SectionMarksSerializer(serializers.Serializer):
+    candidate_list = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)
+    section_list = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)

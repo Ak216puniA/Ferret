@@ -46,6 +46,13 @@ const sectionTabSlice = createSlice({
         closeCreateSectionDialog: (state) => {
             state.open = false
         },
+        resetSectionTabState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.currentTab = ''
+            state.currentTabId = -1
+            state.open = false
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -67,4 +74,4 @@ const sectionTabSlice = createSlice({
 })
 
 export default sectionTabSlice.reducer
-export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog } = sectionTabSlice.actions
+export const { tabClicked, openCreateSectionDialog, closeCreateSectionDialog, resetSectionTabState } = sectionTabSlice.actions

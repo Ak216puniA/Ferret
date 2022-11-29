@@ -18,11 +18,11 @@ function MoveCandidatesDialog() {
 
     const moveToRoundChangehandler = (e) => {
         setMoveToRoundId(e.target.value)
-        console.log(e.target.value)
+        // console.log(e.target.value)
     }
 
     const moveSelectedCandidates = () => {
-        console.log("Move these")
+        // console.log("Move these")
         dispatch(
             moveCandidates({
                 candidate_list: seasonRoundContentState.move_candidate_list,

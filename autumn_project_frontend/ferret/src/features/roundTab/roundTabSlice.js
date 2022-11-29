@@ -11,9 +11,7 @@ const initialState = {
     currentTab : '',
     currentTabId : -1,
     open : false,
-    new_title: 'title',
-    new_type: 'test',
-    current_sections: []
+    current_sections: [],
 }
 
 
@@ -30,15 +28,14 @@ export const listRounds = createAsyncThunk('roundTab/listRounds', (season_id) =>
     })
 })
 
-export const createRound = createAsyncThunk('roundTab/createRound', (s_id, {getState}) => {
-    const state = getState()
+export const createRound = createAsyncThunk('roundTab/createRound', (roundData) => {
     return axios
     .post(
         `${ROUNDS}`,
         {
-            season_id: s_id,
-            name: state.roundTab.new_title,
-            type: state.roundTab.new_type
+            season_id: roundData['season_id'],
+            name: roundData['roundTitle'],
+            type: roundData['roundType']
         },
         {
             headers: {
@@ -52,7 +49,7 @@ export const createRound = createAsyncThunk('roundTab/createRound', (s_id, {getS
     })
 })
 
-export const fetchSections = createAsyncThunk('question/fetchSections', (round_id) => {
+export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_id) => {
     return axios
     .get(
         `${SECTIONS}?round_id=${round_id}`,
@@ -61,11 +58,9 @@ export const fetchSections = createAsyncThunk('question/fetchSections', (round_i
         }
     )
     .then((response) => {
-        console.log(response.data)
         return response.data
     })
 })
-
 
 const roundTabSlice = createSlice({
     name : 'roundTab',
@@ -81,13 +76,15 @@ const roundTabSlice = createSlice({
         closeCreateRoundDialog: (state) => {
             state.open = false
         },
-        handleChangeNewTitle: (state,action) => {
-            state.new_title = action.payload
-            console.log(state.new_title)
-        },
-        handleChangeNewType: (state,action) => {
-            state.new_type = action.payload
-            console.log(state.new_type)
+        resetRoundTabState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.current_season = 0
+            state.round_list = []
+            state.currentTab = ''
+            state.currentTabId = -1
+            state.open = false
+            state.current_sections = []
         }
     },
     extraReducers: builder => {
@@ -99,6 +96,7 @@ const roundTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
+            console.log("ROUND_LIST...")
             console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {
@@ -142,4 +140,4 @@ const roundTabSlice = createSlice({
 })
 
 export default roundTabSlice.reducer
-export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, handleChangeNewTitle, handleChangeNewType } = roundTabSlice.actions
+export const { tabClicked, openCreateRoundDialog, closeCreateRoundDialog, resetRoundTabState } = roundTabSlice.actions

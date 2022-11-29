@@ -1,15 +1,20 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, moveCandidates, openMoveCandidatesDialog } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+// import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
+    const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const dispatch = useDispatch()
+
+    let candidate_section_marks = section_marks[index-1]
 
     const checkboxClickHandler = (event) => {
         if (event.target.checked){
@@ -18,6 +23,17 @@ function RoundTableRow(props){
         if (!event.target.checked){
             dispatch(removeCandidateFromMove(candidate['id']))
         }
+    }
+
+    let candidate_marks = <></>
+    if(candidate_section_marks!=null){
+        candidate_marks = (
+            candidate_section_marks.length>0 ?
+            candidate_section_marks.map((marks,index) => {
+                if(index>0) return <div key={index} className={`roundContentCandidateSection singleElementRowFlex`}>{marks}</div>
+            }) :
+            <div></div>
+        )
     }
 
     return (
@@ -32,6 +48,7 @@ function RoundTableRow(props){
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
+            {candidate_marks}
         </div>
     )
 }
@@ -42,24 +59,28 @@ function RoundContent(props) {
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const candidates = seasonRoundContentState.candidate_list.length>0 ? 
-    seasonRoundContentState.candidate_list : []
+    let navigate = useNavigate()
+    const routeChange = () => {
+        localStorage.setItem('questions','open')
+        const url = `/season/${s_id}/${roundTabState.currentTabId}/questions`
+        navigate(url)
+    }
 
-    let next_round_id = -1
+    useEffect(() => {
+        dispatch(
+            fetchCandidateSectionMarks({
+                candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
+                section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
+    },[seasonRoundContentState.candidate_list,roundTabState.current_sections])
+
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
-        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId){
-            current_round_index = index
-            if(index>=roundTabState.round_list.length-1){
-                next_round_id = -1
-            }else{
-                next_round_id = roundTabState.round_list[index+1]['id']
-            }
-        }
+        if(roundTabState.round_list[index]['id']===roundTabState.currentTabId) current_round_index = index
     }
 
     const csvUploadHandler = (event) => {
-        console.log(event.target.files[0])
         dispatch(fetchCSV())
         dispatch(
             uploadCSV({
@@ -74,13 +95,9 @@ function RoundContent(props) {
     })
 
     const openQuestionsHandler = () => {
-        dispatch(openQuestions())
-        localStorage.setItem('openQuestions',true)
+        // dispatch(openQuestions())
+        // localStorage.setItem('openQuestions',true)
     }
-
-    // const move_button = next_round_id>0 ? 
-    // <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
-    // <></>
 
     const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 
@@ -115,8 +132,14 @@ function RoundContent(props) {
     <></>
     
     let roundTable = (
-        candidates.length>0 ? 
-        candidates.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.length>0 ? 
+        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        <div></div>
+    )
+
+    let roundTableSectionHeading = (
+        roundTabState.current_sections.length>0 ?
+        roundTabState.current_sections.map((section) => <div key={section['id']} className={`roundContentCandidateSection singleElementRowFlex`}>{section['name']}</div>) :
         <div></div>
     )
 
@@ -128,7 +151,7 @@ function RoundContent(props) {
             </div>
             <div className="seasonTestContentButtonDiv">
                 <div className="leftButtonDiv">
-                    <button className="seasonTestContentButton" onClick={openQuestionsHandler}>Questions</button>
+                    <button className="seasonTestContentButton" onClick={() => routeChange()}>Questions</button>
                 </div>
                 <div className="rightButtonDiv">
                     <div className="rightButton">
@@ -143,6 +166,7 @@ function RoundContent(props) {
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>
                     <div className={`roundContentCandidateStatus singleElementRowFlex`}>Status</div>
+                    {roundTableSectionHeading}
                 </div>
                 {roundTable}
             </div>

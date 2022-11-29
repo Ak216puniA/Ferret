@@ -103,9 +103,6 @@ class CandidateMarks(models.Model):
 
     status=models.CharField(max_length=16,choices=StatusOfQuestion.choices,default=StatusOfQuestion.UNCHECKED)
 
-    def __str__(self):
-        return self.candidate_id
-
 class CandidateRound(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
