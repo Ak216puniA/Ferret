@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCandidate, fetchQuestionWiseCandidateSectionMarks, openCandidateModal } from '../../features/candidateModal/candidateModalSlice'
+import { fetchCandidate, fetchQuestionWiseCandidateSectionMarks, openCandidateModal, selectSection } from '../../features/candidateModal/candidateModalSlice'
 import './index.css';
 
 function CandidateModal() {
@@ -21,32 +21,57 @@ function CandidateModal() {
         )
     }
 
-    function sectionCardClickHandler(section_id){
+    function sectionCardClickHandler(section_id,section_name){
         dispatch(
             fetchQuestionWiseCandidateSectionMarks({
                 candidate_id: candidateModalState.candidate['id'],
                 section_id: section_id
             })
         )
+        dispatch(selectSection(section_name))
     }
 
     let sectionCards = roundTabState.current_sections.length>0 ?
     roundTabState.current_sections.map((section,index) => {
         return (
-            <div onClick={() => sectionCardClickHandler(section['id'])}>
+            <div onClick={() => sectionCardClickHandler(section['id'],section['name'])}>
                 <Card 
                 key={section['id']}
                 sx={{
-                    minWidth: "120px",
+                    minWidth: "160px",
                     margin: '4px 8px'
                 }}
                 >
                     <CardContent>
-                        <div className='sectionCardHeading'>{section['name']}</div>
-                        <div className='sectionCard'>{section['weightage']}</div>
-                        <div className='sectionCard'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
+                        <div className='candidateModalHeading2'>{section['name']}</div>
+                        <div className='candidateModalTextFaded'>weightage : {section['weightage']}</div>
+                        <div className='candidateModalHeading3'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
                     </CardContent>
                 </Card>
+            </div>
+        )
+    }) :
+    []
+
+    let sectionName = candidateModalState.section_name!='' ? candidateModalState.section_name : 'No section selected!'
+
+
+    let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
+    candidateModalState.candidate_question_data.map((question,index) => {
+        return (
+            <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
+                <div className='candidateModalRowFlex'>
+                    <div>Q.{index+1}</div>
+                    <div>({question['question']['assignee']} : {question['status']})</div>
+                </div>
+                <div className='candidateModalColumnFlex'>
+                    <div className='candidateModalQuestionText'>{question['question']['text']}</div>
+                    <div className='candidateModalQuestionMarks'>{question['marks']}/{question['question']['marks']}</div>
+                </div>
+                <div className='candidateModalColumnFlex'>
+                    <div>Remarks:</div>
+                    <div className='candidateModalQuestionRemark'>{question['remarks']}</div>
+                </div>
             </div>
         )
     }) :
@@ -82,8 +107,8 @@ function CandidateModal() {
                     <div>{candidateModalState.candidate['name']}</div>
                     <div>{candidateModalState.candidate['enrollment_no']}</div>
                 </Box>
-                <Divider />
             </DialogTitle>
+            <Divider />
             <DialogContent>
                 <Box
                 sx={flexBoxColumn}
@@ -108,6 +133,11 @@ function CandidateModal() {
                     </div>
                     <div className='candidateModalContentDiv'>
                         {sectionCards}
+                    </div>
+                    <Divider style={{width:'100%', height:'12px'}}/>
+                    <div className='candidateModalSectionDescDiv'>
+                        <div className='candidateModalHeading1'>{sectionName}</div>
+                        {sectionQuestionData}
                     </div>
                 </Box>
             </DialogContent>

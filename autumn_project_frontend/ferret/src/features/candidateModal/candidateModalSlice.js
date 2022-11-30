@@ -10,7 +10,8 @@ const initialState = {
     candidate_id: 0,
     candidate: [],
     candidate_section_marks: [],
-    candidate_question_data: []
+    candidate_question_data: [],
+    section_name: ''
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -66,6 +67,9 @@ const candidateModalSlice = createSlice({
         openCandidateModal: (state,action) => {
             state.open_candidate_modal = action.payload['open']
             state.candidate_id = action.payload['candidate_id']
+        },
+        selectSection: (state,action) => {
+            state.section_name = action.payload
         }
     },
     extraReducers: builder => {
@@ -117,4 +121,4 @@ const candidateModalSlice = createSlice({
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection } = candidateModalSlice.actions

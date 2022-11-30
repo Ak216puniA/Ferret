@@ -51,7 +51,7 @@ def get_question_wise_candidate_section_marks(candidate_section_data):
         serializer = QuestionsSerializer(question)
 
         question_data = {
-            'question_object': serializer.data,
+            'question': serializer.data,
             'marks': marks,
             'remarks': remarks,
             'status': status

@@ -28,3 +28,80 @@
 .candidateModalInfoData{
     opacity: 0.8;
 }
+
+.candidateModalSectionDescDiv{
+    margin: 0 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.candidateModalRowFlex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.candidateModalColumnFlex{
+    display: flex;
+    flex-direction: column;
+}
+
+.candidateModalQuestionText{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.candidateModalQuestionMarks{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.candidateModalQuestionDiv{
+    margin: 8px 0px;
+}
+
+.candidateModalSectionDescDiv{
+    width: 100%;
+}
+
+.candidateModalHeading1{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 8px 8px;
+    font-size: 18px;
+}
+
+.candidateModalHeading2{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.candidateModalTextFaded{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-bottom: 8px;
+}
+
+.candidateModalHeading3{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
