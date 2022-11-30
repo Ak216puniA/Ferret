@@ -1,11 +1,111 @@
-import { Card, CardActionArea, CardContent, CardHeader, Dialog, DialogContent, DialogTitle, Divider } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
+import { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
+import { IoMdDoneAll } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCandidate, fetchQuestionWiseCandidateSectionMarks, openCandidateModal, selectSection } from '../../features/candidateModal/candidateModalSlice'
+import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
 import './index.css';
+
+function CandidateModalQuestion(props) {
+    const {question,index} = props
+    const candidateModalState = useSelector((state) => state.candidateModal)
+    const roundTabState = useSelector((state) => state.roundTab)
+    const dispatch = useDispatch()
+
+    const [questionMarks, setQuestionMarks] = useState()
+    const [questionRemarks, setQuestionRemarks] = useState()
+
+    const remarkChangeHandler = (event) => {
+        setQuestionRemarks(event.target.value)
+    }
+
+    const marksChangeHandler = (event) => {
+        setQuestionMarks(event.target.value)
+        dispatch(
+            updateCandidateQuestionMarks({
+                id: question['id'],
+                marks: event.target.value
+            })
+        )
+        dispatch(
+            fetchSelectedCandidateSectionMarks({
+                candidate_list: [candidateModalState.candidate_id],
+                section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
+    }
+
+    const markQuestionChecked = () => {
+        dispatch(
+            updateCandidateQuestionStatus({
+                id: question['id'],
+                remarks: questionRemarks
+            })
+        )
+    }
+
+    useEffect(() => {
+        setQuestionMarks(question['marks'])
+        setQuestionRemarks(question['remarks']=='' ? '' : question['remarks'])
+    },[])
+
+    return (
+        <>
+        <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
+            <div className='candidateModalRowFlex'>
+                <div>Q.{index+1}</div>
+            </div>
+            <div className='candidateModalColumnFlex'>
+                <div className='candidateModalQuestionText'>{question['question']['text']}</div>
+                <div className='candidateModalQuestionMarks'>
+                    <TextField 
+                    type='number' 
+                    value={questionMarks}
+                    variant='outlined'
+                    onChange={marksChangeHandler}
+                    size='small'
+                    sx={{
+                        justifyContent:"flex-end",
+                        width: '64px',
+                        padding: '8px 0px',
+                        display: 'flex',
+                        marginRight: '8px'
+                    }}
+                    />
+                    /{question['question']['marks']}
+                </div>
+            </div>
+            <div className='candidateModalColumnFlex'>
+                <div>Remarks:</div>
+                <div className='field'>
+                    <TextField 
+                    type='text' 
+                    value={questionRemarks}
+                    variant='outlined'
+                    fullWidth
+                    multiline={true}
+                    rows='3'
+                    onChange={remarkChangeHandler}
+                    sx={{
+                        width: '92%',
+                        fontSize: '14px'
+                    }}
+                    />
+                </div>
+            </div>
+            <div className='candidateModalCheckButtonDiv'>
+                <div>Assigned to : {question['assignee']['username']}</div>
+                <button className='candidateModalCheckButton' onClick={markQuestionChecked}><IoMdDoneAll className='tickIcon' size={20}/></button>
+            </div>
+            <div>Status : {question['status']}</div>
+        </div>
+        <Divider style={{width:'100%', height:'12px'}}/>
+        </>
+    )
+}
 
 function CandidateModal() {
     const candidateModalState = useSelector((state) => state.candidateModal)
@@ -13,12 +113,7 @@ function CandidateModal() {
     const dispatch = useDispatch()
 
     const closeModalHandler = () => {
-        dispatch(
-            openCandidateModal({
-                open: false,
-                candidate_id: 0
-            })
-        )
+        dispatch(resetCandidateModalState())
     }
 
     function sectionCardClickHandler(section_id,section_name){
@@ -29,12 +124,18 @@ function CandidateModal() {
             })
         )
         dispatch(selectSection(section_name))
+        dispatch(
+            fetchSelectedCandidateSectionMarks({
+                candidate_list: [candidateModalState.candidate_id],
+                section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
     }
 
     let sectionCards = roundTabState.current_sections.length>0 ?
     roundTabState.current_sections.map((section,index) => {
         return (
-            <div onClick={() => sectionCardClickHandler(section['id'],section['name'])}>
+            <div key={section['id']} onClick={() => sectionCardClickHandler(section['id'],section['name'])}>
                 <Card 
                 key={section['id']}
                 sx={{
@@ -57,24 +158,7 @@ function CandidateModal() {
 
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
-    candidateModalState.candidate_question_data.map((question,index) => {
-        return (
-            <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
-                <div className='candidateModalRowFlex'>
-                    <div>Q.{index+1}</div>
-                    <div>({question['question']['assignee']} : {question['status']})</div>
-                </div>
-                <div className='candidateModalColumnFlex'>
-                    <div className='candidateModalQuestionText'>{question['question']['text']}</div>
-                    <div className='candidateModalQuestionMarks'>{question['marks']}/{question['question']['marks']}</div>
-                </div>
-                <div className='candidateModalColumnFlex'>
-                    <div>Remarks:</div>
-                    <div className='candidateModalQuestionRemark'>{question['remarks']}</div>
-                </div>
-            </div>
-        )
-    }) :
+    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
 
     const flexBoxRow = {

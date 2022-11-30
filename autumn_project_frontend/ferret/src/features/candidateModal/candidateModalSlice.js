@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS } from '../../urls'
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -60,6 +60,45 @@ export const fetchQuestionWiseCandidateSectionMarks = createAsyncThunk('candidat
     })
 })
 
+export const updateCandidateQuestionMarks = createAsyncThunk('candidateModal/updateCandidateQuestionMarks', (candidateQuestionData) => {
+    return axios
+    .patch(
+        `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
+        {
+            marks: candidateQuestionData['marks'],
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/updateCandidateQuestionStatus', (candidateQuestionData) => {
+    return axios
+    .patch(
+        `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
+        {
+            status: 'checked',
+            remarks: candidateQuestionData['remarks']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -70,6 +109,16 @@ const candidateModalSlice = createSlice({
         },
         selectSection: (state,action) => {
             state.section_name = action.payload
+        },
+        resetCandidateModalState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.open_candidate_modal = false
+            state.candidate_id = 0
+            state.candidate = []
+            state.candidate_section_marks = []
+            state.candidate_question_data = []
+            state.section_name = ''
         }
     },
     extraReducers: builder => {
@@ -117,8 +166,34 @@ const candidateModalSlice = createSlice({
             state.error = action.error.message
             state.candidate_question_data = []
         })
+        .addCase(updateCandidateQuestionMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            console.log("Candidate question's marks update successful!")
+        })
+        .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Candidate question's marks update unsucessful!")
+        })
+        .addCase(updateCandidateQuestionStatus.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateCandidateQuestionStatus.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            console.log("Candidate question's status update successful!")
+        })
+        .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Candidate question's status update unsucessful!")
+        })
     }
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState } = candidateModalSlice.actions

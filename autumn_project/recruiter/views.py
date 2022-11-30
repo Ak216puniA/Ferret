@@ -343,5 +343,4 @@ class IndividualCandidateSectionMarks(APIView):
             'section_id': request.query_params.get('section_id')
         }
         question_data = get_question_wise_candidate_section_marks(candidate_section_data)
-        print(question_data)
         return Response(question_data)

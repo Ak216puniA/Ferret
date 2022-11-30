@@ -5,6 +5,7 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
+    margin-bottom: 8px;
 }
 
 .candidateModalInnerInfoDiv{
@@ -104,4 +105,31 @@
     justify-content: center;
     align-items: center;
     font-size: 14px;
+}
+
+.candidateModalCheckButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.candidateModalCheckButton{
+    border: none;
+    padding: 4px 6px;
+    border-radius: 8px;
+    background-color: #00ADB5;
+}
+
+.candidateModalCheckButton:hover{
+    background-color: #00BCC5;
+}
+
+.tickIcon{
+    color: #EEEEEE;
+}
+
+.candidateModalAssignee{
+    margin-bottom: 12px;
 }

@@ -5,7 +5,7 @@ import { USERS } from "../../urls"
 const initialState = {
     loading: false,
     error: '',
-    users: []
+    users: [],
 }
 
 export const fetchUsers = createAsyncThunk('user/fetchUsers', (year) => {

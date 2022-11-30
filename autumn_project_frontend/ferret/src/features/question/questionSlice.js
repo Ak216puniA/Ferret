@@ -79,7 +79,6 @@ const questionSlice = createSlice({
             state.open = false
         },
         resetQuestionsState: (state) => {
-            // state = initialState
             state.loading = false
             state.error = ''
             state.questions = []
@@ -109,10 +108,6 @@ const questionSlice = createSlice({
         .addCase(updateQuestion.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            state.edit = false
-            state.edit_question_id = 0
-            state.new_marks = 0
-            state.new_assignee = 0
         })
         .addCase(updateQuestion.rejected, (state,action) => {
             state.loading = false
@@ -125,9 +120,6 @@ const questionSlice = createSlice({
         .addCase(createQuestion.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            state.new_marks = 0
-            state.new_assignee = 0
-            state.new_text = ''
         })
         .addCase(createQuestion.rejected, (state,action) => {
             state.loading = false
