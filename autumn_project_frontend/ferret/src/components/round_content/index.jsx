@@ -8,10 +8,13 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CandidateModal from "../candidate_modal";
+import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     let candidate_section_marks = section_marks[index-1]
@@ -23,6 +26,22 @@ function RoundTableRow(props){
         if (!event.target.checked){
             dispatch(removeCandidateFromMove(candidate['id']))
         }
+    }
+
+    const candidateClickHandler = () => {
+        dispatch(
+            openCandidateModal({
+                open: true,
+                candidate_id: candidate['id']
+            })
+        )
+        dispatch(fetchCandidate(candidate['id']))
+        dispatch(
+            fetchSelectedCandidateSectionMarks({
+                candidate_list: [candidate['id']],
+                section_list: roundTabState.current_sections.map((section) => section['id'])
+            })
+        )
     }
 
     let candidate_marks = <></>
@@ -37,6 +56,7 @@ function RoundTableRow(props){
     }
 
     return (
+        <>
         <div className='roundCandidateRow'>
             <div className={`roundContentCheckbox  singleElementRowFlex`}>
                 <Checkbox 
@@ -46,10 +66,12 @@ function RoundTableRow(props){
                 />
             </div>
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
-            <div className={`roundContentCandidateName singleElementRowFlex`}>{candidate['name']}</div>
+            <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
             {candidate_marks}
         </div>
+        <CandidateModal />
+        </>
     )
 }
 
@@ -73,7 +95,7 @@ function RoundContent(props) {
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
-    },[seasonRoundContentState.candidate_list,roundTabState.current_sections])
+    },[seasonRoundContentState.candidate_list,roundTabState.current_sections,dispatch])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
@@ -94,10 +116,10 @@ function RoundContent(props) {
         dispatch(openMoveCandidatesDialog())
     })
 
-    const openQuestionsHandler = () => {
-        // dispatch(openQuestions())
-        // localStorage.setItem('openQuestions',true)
-    }
+    // const openQuestionsHandler = () => {
+    //     dispatch(openQuestions())
+    //     localStorage.setItem('openQuestions',true)
+    // }
 
     const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 

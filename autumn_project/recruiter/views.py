@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 from rest_framework import status
 import pandas
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 env = environ.Env()
 environ.Env.read_env()
@@ -77,6 +78,19 @@ class SectionsModelViewSet(viewsets.ModelViewSet):
             return SectionsNestedSerializer
         return SectionsSerializer
 
+    def list(self, request):
+        queryset = self.get_queryset()
+        section_data = []
+        for section in queryset:
+            section_data.append(section.id)
+        section_total_marks = get_section_total_marks(section_data)
+        serializer = SectionsNestedSerializer(queryset,many=True)
+        response_data = {
+            'section_list': serializer.data,
+            'section_total_marks_list': section_total_marks
+        }
+        return Response(response_data)
+
 class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
     permission_classes=[YearWisePermission]
@@ -117,7 +131,7 @@ class InterviewPanelModelViewSet(viewsets.ModelViewSet):
 
 class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
-    serializer_class=QuestionsSerializer
+    serializer_class=CandidatesNestedSerializer
     permission_classes=[YearWisePermission]
 
 class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
@@ -321,3 +335,12 @@ class SectionMarksView(APIView):
         }
 
         return Response(response_data)
+
+class IndividualCandidateSectionMarks(APIView):
+    def get(self, request, format=None):
+        candidate_section_data = {
+            'candidate_id': request.query_params.get('candidate_id'),
+            'section_id': request.query_params.get('section_id')
+        }
+        question_data = get_question_wise_candidate_section_marks(candidate_section_data)
+        return Response(question_data)

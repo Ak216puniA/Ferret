@@ -85,7 +85,7 @@ function CreateSeasonDialog() {
                             placeholder='Description' 
                             variant='outlined'
                             fullWidth
-                            multiline='true'
+                            multiline={true}
                             rows='3'
                             onChange={descChangeHandler}
                             />

@@ -1,4 +1,5 @@
 from recruiter.models import *
+from recruiter.serializers import QuestionsSerializer, UserNameSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
 def create_candidate_marks_with_question(data):
@@ -38,3 +39,26 @@ def get_candidate_section_marks(candidate_section_data):
         candidate_section_marks.append(section_marks)
     return candidate_section_marks
 
+def get_question_wise_candidate_section_marks(candidate_section_data):
+    candidate_section_marks = []
+    candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_section_data['candidate_id'], question_id__section_id=candidate_section_data['section_id'])
+    for candidate_question in candidate_marks:
+        question = Questions.objects.get(id=candidate_question.question_id.id)
+        marks = candidate_question.marks
+        remarks = candidate_question.remarks
+        status = candidate_question.status
+        id = candidate_question.id
+
+        serializer = QuestionsSerializer(question)
+        user_serializer = UserNameSerializer(question.assignee)
+
+        question_data = {
+            'question': serializer.data,
+            'marks': marks,
+            'remarks': remarks,
+            'status': status,
+            'id': id,
+            'assignee':user_serializer.data
+        }
+        candidate_section_marks.append(question_data)
+    return candidate_section_marks

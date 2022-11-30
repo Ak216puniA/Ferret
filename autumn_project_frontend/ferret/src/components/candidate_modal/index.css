@@ -1,0 +1,150 @@
+.candidateModalContentDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.candidateModalInnerInfoDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.candidateModalInnerInfoDivData{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 8px;
+}
+
+.candidateModalInfoHeading{
+    margin-right: 4px;
+}
+
+.candidateModalInfoData{
+    opacity: 0.8;
+}
+
+.candidateModalSectionDescDiv{
+    margin: 0 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.candidateModalRowFlex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.candidateModalColumnFlex{
+    display: flex;
+    flex-direction: column;
+}
+
+.candidateModalColumnFlex2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.candidateModalQuestionText{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.candidateModalQuestionMarks{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.candidateModalQuestionDiv{
+    margin: 8px 0px;
+}
+
+.candidateModalSectionDescDiv{
+    width: 90%;
+}
+
+.candidateModalHeading1{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 8px 8px;
+    font-size: 18px;
+}
+
+.candidateModalHeading2{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.candidateModalTextFaded{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-bottom: 2em;
+}
+
+.candidateModalHeading3{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+.candidateModalCheckButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.candidateModalCheckButton{
+    border: none;
+    padding: 4px 6px;
+    border-radius: 8px;
+    background-color: #00ADB5;
+}
+
+.candidateModalCheckButton:hover{
+    background-color: #00BCC5;
+}
+
+.tickIcon{
+    color: #EEEEEE;
+}
+
+.candidateModalAssignee{
+    margin-bottom: 12px;
+}
+
+.dialogTitleText{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.candidateModalQuestionNo{
+    font-size: 18px;
+}

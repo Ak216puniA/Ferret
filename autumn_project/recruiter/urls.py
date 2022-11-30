@@ -24,4 +24,5 @@ urlpatterns =[
     path('auth/logout/', LogoutView.as_view()),
     path('api/csv/', UploadCSV.as_view()),
     path('api/section_marks/', SectionMarksView.as_view()),
+    path('api/candidate_section_marks/', IndividualCandidateSectionMarks.as_view())
 ]
