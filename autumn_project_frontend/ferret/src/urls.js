@@ -17,6 +17,7 @@ export const CANDIDATES = `${BACKEND_BASE_URL}candidate/`
 export const CANDIDATE_ROUND = `${BACKEND_BASE_URL}candidate_round/`
 export const CANDIDATE_MARKS = `${BACKEND_BASE_URL}candidate_marks/`
 export const SECTION_MARKS = `${BACKEND_BASE_URL}api/section_marks/`
+export const CANDIDATE_SECTION_MARKS = `${BACKEND_BASE_URL}api/candidate_section_marks/`
 export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 export const CSV = `${BACKEND_BASE_URL}api/csv/`
 

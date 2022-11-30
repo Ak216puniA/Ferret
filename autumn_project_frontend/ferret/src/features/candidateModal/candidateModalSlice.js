@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, SECTION_MARKS } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS } from '../../urls'
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -9,7 +9,8 @@ const initialState = {
     open_candidate_modal: false,
     candidate_id: 0,
     candidate: [],
-    candidate_section_marks: []
+    candidate_section_marks: [],
+    candidate_question_data: []
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -37,6 +38,19 @@ export const fetchSelectedCandidateSectionMarks = createAsyncThunk('candidateMod
             headers: {
                 "X-CSRFToken": Cookies.get('ferret_csrftoken'),
             },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const fetchQuestionWiseCandidateSectionMarks = createAsyncThunk('candidateModal/fetchQuestionWiseCandidateSectionMarks', (requestData) => {
+    return axios
+    .get(
+        `${CANDIDATE_SECTION_MARKS}?candidate_id=${requestData['candidate_id']}&section_id=${requestData['section_id']}`,
+        {
             withCredentials: true
         }
     )
@@ -83,6 +97,21 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             state.candidate_section_marks = []
+        })
+        .addCase(fetchQuestionWiseCandidateSectionMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchQuestionWiseCandidateSectionMarks.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.candidate_question_data = action.payload
+            console.log("CANDIDATE_QUESTION_DATA...")
+            console.log(state.candidate_question_data)
+        })
+        .addCase(fetchQuestionWiseCandidateSectionMarks.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.candidate_question_data = []
         })
     }
 })

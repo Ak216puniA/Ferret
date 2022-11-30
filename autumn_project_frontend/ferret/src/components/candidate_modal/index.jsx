@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCandidate, openCandidateModal } from '../../features/candidateModal/candidateModalSlice'
+import { fetchCandidate, fetchQuestionWiseCandidateSectionMarks, openCandidateModal } from '../../features/candidateModal/candidateModalSlice'
 import './index.css';
 
 function CandidateModal() {
@@ -21,26 +21,33 @@ function CandidateModal() {
         )
     }
 
+    function sectionCardClickHandler(section_id){
+        dispatch(
+            fetchQuestionWiseCandidateSectionMarks({
+                candidate_id: candidateModalState.candidate['id'],
+                section_id: section_id
+            })
+        )
+    }
+
     let sectionCards = roundTabState.current_sections.length>0 ?
     roundTabState.current_sections.map((section,index) => {
         return (
-            <>
-            <Card 
-            key={section['id']}
-            sx={{
-                minWidth: "120px",
-                margin: '4px 8px'
-            }}
-            >
-                <CardActionArea onClick={() => console.log("Card clicked!")}>
+            <div onClick={() => sectionCardClickHandler(section['id'])}>
+                <Card 
+                key={section['id']}
+                sx={{
+                    minWidth: "120px",
+                    margin: '4px 8px'
+                }}
+                >
                     <CardContent>
                         <div className='sectionCardHeading'>{section['name']}</div>
                         <div className='sectionCard'>{section['weightage']}</div>
                         <div className='sectionCard'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
                     </CardContent>
-                </CardActionArea>
-            </Card>
-            </>
+                </Card>
+            </div>
         )
     }) :
     []
