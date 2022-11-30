@@ -49,6 +49,12 @@
     flex-direction: column;
 }
 
+.candidateModalColumnFlex2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .candidateModalQuestionText{
     display: flex;
     flex-direction: row;
@@ -68,7 +74,7 @@
 }
 
 .candidateModalSectionDescDiv{
-    width: 100%;
+    width: 90%;
 }
 
 .candidateModalHeading1{
@@ -96,7 +102,7 @@
     align-items: center;
     font-size: 12px;
     opacity: 0.5;
-    margin-bottom: 8px;
+    margin-bottom: 2em;
 }
 
 .candidateModalHeading3{
@@ -104,7 +110,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .candidateModalCheckButtonDiv{
@@ -132,4 +138,13 @@
 
 .candidateModalAssignee{
     margin-bottom: 12px;
+}
+
+.dialogTitleText{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.candidateModalQuestionNo{
+    font-size: 18px;
 }

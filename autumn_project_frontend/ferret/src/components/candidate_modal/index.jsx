@@ -56,7 +56,8 @@ function CandidateModalQuestion(props) {
         <>
         <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
             <div className='candidateModalRowFlex'>
-                <div>Q.{index+1}</div>
+                <div className='candidateModalQuestionNo'>Q.{index+1}</div>
+                <div>({question['assignee']['username']})</div>
             </div>
             <div className='candidateModalColumnFlex'>
                 <div className='candidateModalQuestionText'>{question['question']['text']}</div>
@@ -80,29 +81,36 @@ function CandidateModalQuestion(props) {
             </div>
             <div className='candidateModalColumnFlex'>
                 <div>Remarks:</div>
-                <div className='field'>
-                    <TextField 
-                    type='text' 
-                    value={questionRemarks}
-                    variant='outlined'
-                    fullWidth
-                    multiline={true}
-                    rows='3'
-                    onChange={remarkChangeHandler}
-                    sx={{
-                        width: '92%',
-                        fontSize: '14px'
-                    }}
-                    />
+                <TextField 
+                type='text' 
+                value={questionRemarks}
+                variant='outlined'
+                fullWidth
+                multiline={true}
+                rows='2'
+                onChange={remarkChangeHandler}
+                sx={{
+                    width: '100%',
+                    fontSize: '14px',
+                    margin: '4px 0px'
+                }}
+                />
+            </div>
+            <div className='candidateModalColumnFlex2'>
+                <div className='candidateModalCheckButtonDiv'>
+                    <button className='candidateModalCheckButton' onClick={markQuestionChecked}><IoMdDoneAll className='tickIcon' size={20}/></button>
                 </div>
+                <div>Status : {question['status']}</div>
             </div>
-            <div className='candidateModalCheckButtonDiv'>
-                <div>Assigned to : {question['assignee']['username']}</div>
-                <button className='candidateModalCheckButton' onClick={markQuestionChecked}><IoMdDoneAll className='tickIcon' size={20}/></button>
-            </div>
-            <div>Status : {question['status']}</div>
         </div>
-        <Divider style={{width:'100%', height:'12px'}}/>
+        <Divider 
+        style={{
+            width:'100%', 
+            backgroundColor: '#F5B041',
+            marginTop: '4px',
+            marginBottom: '12px'
+        }}
+        />
         </>
     )
 }
@@ -139,14 +147,24 @@ function CandidateModal() {
                 <Card 
                 key={section['id']}
                 sx={{
-                    minWidth: "160px",
-                    margin: '4px 8px'
+                    minWidth: "10em",
+                    margin: '4px 8px',
+                    backgroundColor: '#F5B041',
+                    '&:hover': {
+                        backgroundColor: '#F7A624',
+                    }
                 }}
                 >
-                    <CardContent>
-                        <div className='candidateModalHeading2'>{section['name']}</div>
-                        <div className='candidateModalTextFaded'>weightage : {section['weightage']}</div>
-                        <div className='candidateModalHeading3'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
+                    <CardContent
+                    sx={{
+                        padding: '12px 0px'
+                    }}
+                    >
+                        <div className='candidateModalCard'>
+                            <div className='candidateModalHeading2'>{section['name']}</div>
+                            <div className='candidateModalTextFaded'>weightage : {section['weightage']}</div>
+                            <div className='candidateModalHeading3'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
@@ -181,18 +199,23 @@ function CandidateModal() {
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
         className='candidateModal'
-        PaperProps={{ sx: { width: "60%" } }}
+        PaperProps={{ sx: { width: "60%", backgroundColor: '#EEEEEE' } }}
         >
             <div className='crossDiv' onClick={closeModalHandler}><GrClose size={12}/></div>
             <DialogTitle>
                 <Box
                 sx={flexBoxRow}
                 >
-                    <div>{candidateModalState.candidate['name']}</div>
-                    <div>{candidateModalState.candidate['enrollment_no']}</div>
+                    <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div>
+                    <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div>
                 </Box>
             </DialogTitle>
-            <Divider />
+            <Divider 
+            style={{
+                backgroundColor: '#00BCC5',
+                width: '100%',
+            }}
+            />
             <DialogContent>
                 <Box
                 sx={flexBoxColumn}
@@ -218,7 +241,13 @@ function CandidateModal() {
                     <div className='candidateModalContentDiv'>
                         {sectionCards}
                     </div>
-                    <Divider style={{width:'100%', height:'12px'}}/>
+                    <Divider 
+                    style={{
+                        width:'100%', 
+                        backgroundColor: '#00BCC5',
+                        margin: '8px 0px'
+                    }}
+                    />
                     <div className='candidateModalSectionDescDiv'>
                         <div className='candidateModalHeading1'>{sectionName}</div>
                         {sectionQuestionData}
