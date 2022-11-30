@@ -12,6 +12,7 @@ const initialState = {
     currentTabId : -1,
     open : false,
     current_sections: [],
+    current_sections_total_marks: []
 }
 
 
@@ -127,13 +128,15 @@ const roundTabSlice = createSlice({
         .addCase(fetchSections.fulfilled, (state, action) => {
             state.loading = false
             state.error = ''
-            state.current_sections = action.payload
+            state.current_sections = action.payload['section_list']
+            state.current_sections_total_marks = action.payload['section_total_marks_list']
             console.log("Sections fetched successfully!")
         })
         .addCase(fetchSections.rejected, (state, action) => {
             state.loading = false
             state.error = action.error.message
             state.current_sections = []
+            state.current_sections_total_marks = []
             console.log("Sections' fetch unsuccessful!")
         })
     }

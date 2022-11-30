@@ -21,10 +21,8 @@ function CandidateModal() {
         )
     }
 
-    console.log("SECTIONS_...")
-    console.log(roundTabState.current_sections)
     let sectionCards = roundTabState.current_sections.length>0 ?
-    roundTabState.current_sections.map((section) => {
+    roundTabState.current_sections.map((section,index) => {
         return (
             <>
             <Card 
@@ -38,6 +36,7 @@ function CandidateModal() {
                     <CardContent>
                         <div className='sectionCardHeading'>{section['name']}</div>
                         <div className='sectionCard'>{section['weightage']}</div>
+                        <div className='sectionCard'>{candidateModalState.candidate_section_marks[index+1]} / {roundTabState.current_sections_total_marks[index]}</div>
                     </CardContent>
                 </CardActionArea>
             </Card>
@@ -60,10 +59,6 @@ function CandidateModal() {
         flexDirection:'column',
         alignItems:'center',
     }
-
-    useEffect(() => {
-        dispatch(fetchCandidate(candidateModalState.candidate_id))
-    },[dispatch,candidateModalState.candidate_id])
 
     return (
         <Dialog

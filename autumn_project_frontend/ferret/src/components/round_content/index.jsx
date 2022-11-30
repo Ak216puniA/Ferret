@@ -9,11 +9,12 @@ import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CandidateModal from "../candidate_modal";
-import { openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     let candidate_section_marks = section_marks[index-1]
@@ -32,6 +33,13 @@ function RoundTableRow(props){
             openCandidateModal({
                 open: true,
                 candidate_id: candidate['id']
+            })
+        )
+        dispatch(fetchCandidate(candidate['id']))
+        dispatch(
+            fetchSelectedCandidateSectionMarks({
+                candidate_list: [candidate['id']],
+                section_list: roundTabState.current_sections.map((section) => section['id'])
             })
         )
     }

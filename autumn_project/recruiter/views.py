@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -78,6 +78,23 @@ class SectionsModelViewSet(viewsets.ModelViewSet):
             return SectionsNestedSerializer
         return SectionsSerializer
 
+    def list(self, request, *args, **kwargs):
+        print("SECTIONS....")
+        print(self.get_queryset())
+        queryset = self.get_queryset()
+        section_data = []
+        for section in queryset:
+            section_data.append(section.id)
+        section_total_marks = get_section_total_marks(section_data)
+        print(section_total_marks)
+        serializer = SectionsNestedSerializer(queryset,many=True)
+        print(serializer.data)
+        response_data = {
+            'section_list': serializer.data,
+            'section_total_marks_list': section_total_marks
+        }
+        return Response(response_data)
+
 class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
     permission_classes=[YearWisePermission]
@@ -120,15 +137,6 @@ class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
     serializer_class=CandidatesNestedSerializer
     permission_classes=[YearWisePermission]
-
-    # def retrieve(self, request, pk=None):
-    #     queryset = Candidates.objects.all()
-    #     print("CANDIDATE_FETCH_REQUEST_DATA...")
-    #     print(pk)
-
-    #     candidate = get_object_or_404(queryset,pk)
-    #     serializer = CandidatesNestedSerializer(candidate)
-    #     return Response(serializer.data)
 
 class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateProjectLink.objects.all()
