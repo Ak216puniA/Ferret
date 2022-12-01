@@ -1,0 +1,40 @@
+.filterDrawerDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 100%;
+    flex-grow: 1;
+    background-color: #EEEEEE;
+}
+
+.filterDrawerCategoryDiv{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    background-color: #F5B041;
+}
+
+.filterDrawerCategoryContentDiv{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+    background-color: #EEEEEE
+}
+
+.marksContentDiv{
+    padding: 7.5% 7.5%;
+}
+
+.filterContentResetButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 2% 2%;
+}
+
+.filterContentResetButtonDiv:hover{
+    background-color: #DDDDDD;
+}
