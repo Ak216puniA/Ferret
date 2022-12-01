@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CandidateModal from "../candidate_modal";
 import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
+import { openFilterDrawer } from "../../features/filter/filterSlice";
+import FilterDrawer from "../filter_drawer";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -121,6 +123,11 @@ function RoundContent(props) {
     //     localStorage.setItem('openQuestions',true)
     // }
 
+    const filterCandidatesHandler = () => {
+        console.log("FILTER_CLICKED...")
+        dispatch(openFilterDrawer(true))
+    }
+
     const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
 
     const csv_button = current_round_index===0 ?
@@ -177,7 +184,7 @@ function RoundContent(props) {
                 </div>
                 <div className="rightButtonDiv">
                     <div className="rightButton">
-                        <button className="seasonTestContentButton">Filter</button>
+                        <button className="seasonTestContentButton" onClick={filterCandidatesHandler}>Filter</button>
                     </div>
                     {csv_button}
                 </div>
@@ -195,6 +202,7 @@ function RoundContent(props) {
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
             <MoveCandidatesDialog />
+            <FilterDrawer />
         </div>
     )
 }

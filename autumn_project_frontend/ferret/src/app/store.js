@@ -10,6 +10,7 @@ import sectionTabReducer from '../features/sectionTab/sectionTabSlice'
 import userReducer from '../features/user/userSlice'
 import roundReducer from '../features/round/roundSlice'
 import candidateModalReducer from '../features/candidateModal/candidateModalSlice'
+import filterReducer from '../features/filter/filterSlice'
 
 const store = configureStore({
     reducer: {
@@ -23,7 +24,8 @@ const store = configureStore({
         sectionTab : sectionTabReducer,
         user : userReducer,
         round : roundReducer,
-        candidateModal : candidateModalReducer
+        candidateModal : candidateModalReducer,
+        filter : filterReducer
     },
 })
 

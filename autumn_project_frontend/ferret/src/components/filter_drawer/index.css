@@ -1,0 +1,16 @@
+.filterDrawerDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 100%;
+    flex-grow: 1;
+    background-color: #EEEEEE;
+}
+
+.filterDrawerCategoryDiv{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    background-color: #F5B041;
+}
