@@ -3,7 +3,9 @@ import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel,
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { useState } from 'react'
-import { GrPowerReset } from 'react-icons/gr'
+import { MdFilterListAlt } from 'react-icons/md'
+import { AiOutlineReload } from 'react-icons/ai'
+import { filterCandidates } from '../../features/seasonRoundContent/seasonRoundContentSlice'
 
 function FilterDrawerContent() {
   const filterState = useSelector((state) => state.filter)
@@ -12,7 +14,7 @@ function FilterDrawerContent() {
 
   const [marksCriteria, setMarksCriteria] = useState('')
   const [marks, setMarks] = useState()
-  const [round, setRound] = useState('')
+  // const [round, setRound] = useState('')
   const [section, setSection] = useState('')
   const [status, setStatus] = useState('')
 
@@ -25,9 +27,10 @@ function FilterDrawerContent() {
   }
 
   const radioGroupChangeHandler = (event) => {
-    if(filterState.category==='Round'){
-      setRound(event.target.value)
-    }else if(filterState.category==='Section'){
+    // if(filterState.category==='Round'){
+    //   setRound(event.target.value)
+    // }else 
+    if(filterState.category==='Section'){
       setSection(event.target.value)
     }else if(filterState.category==='Status'){
       setStatus(event.target.value)
@@ -35,27 +38,50 @@ function FilterDrawerContent() {
   }
 
   const resetButtonHandler = () => {
-    if(filterState.category==='Round'){
-      setRound('')
-    }else if(filterState.category==='Section'){
+    // if(filterState.category==='Round'){
+    //   setRound('')
+    // }else 
+    if(filterState.category==='Section'){
       setSection('')
     }else if(filterState.category==='Status'){
       setStatus('')
     }
   }
 
+  const filterClickHandler = () => {
+    dispatch(
+      filterCandidates({
+        currentRound: roundTabState.currentTabId,
+        // round: round,
+        section: section,
+        status: status,
+        marks: marks,
+        marksCriteria: marksCriteria
+      })
+    )
+  }
+
   let filterDrawerContentList = []
-  if(filterState.category==='Round'){
-    filterDrawerContentList = roundTabState.round_list.map(round => round['name'])
-  }else if(filterState.category==='Section'){
-    filterDrawerContentList = roundTabState.current_sections.map(section => section['name'])
+  // if(filterState.category==='Round'){
+  //   filterDrawerContentList = roundTabState.round_list.map(round => round['name'])
+  // }else 
+  if(filterState.category==='Section'){
+    filterDrawerContentList = roundTabState.current_sections.map(section => [section['id'],section['name']])
   }else if(filterState.category==='Status'){
-    filterDrawerContentList = ['Done','Pending']
+    filterDrawerContentList = [[1,'Done'],[2,'Pending']]
   }
 
   const filterDrawerContent =  filterDrawerContentList.length>0 ? 
-  filterDrawerContentList.map((data) => <FormControlLabel key={data} value={data} control={<Radio />} label={data} />) :
+  filterDrawerContentList.map((data) => <FormControlLabel key={data} value={data[0]} control={<Radio />} label={data[1]} />) :
   []
+
+  const filterButton = (
+    <div className='filterDrawerFilterButtonDiv'>
+      <div className='filterButton' onClick={filterClickHandler}>
+        <MdFilterListAlt className='filterIcon' size={20} />
+      </div>
+    </div>
+  )
 
   if(filterState.category==='Marks'){
     const marksFilterInputLabel = marksCriteria==='topPercentage' ? 'Percentage' : 'Marks'
@@ -80,7 +106,8 @@ function FilterDrawerContent() {
 
     return (
       <>
-      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><GrPowerReset /></div>
+      {filterButton}
+      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
       <div className='marksContentDiv'>
         <FormControl fullWidth>
           <InputLabel id='criteria'>Filtering Criteria</InputLabel>
@@ -106,7 +133,8 @@ function FilterDrawerContent() {
   else{
     return (
       <>
-      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><GrPowerReset /></div>
+      {filterButton}
+      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
       <FormControl>
         <RadioGroup
           onChange={radioGroupChangeHandler}

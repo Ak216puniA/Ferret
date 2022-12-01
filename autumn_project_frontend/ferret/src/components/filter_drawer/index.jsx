@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { openFilterDrawer, selectCategory } from '../../features/filter/filterSlice'
 import './index.css'
 import FilterDrawerContent from '../filter_drawer_content'
+import { AiOutlineReload } from 'react-icons/ai'
 
 function FilterDrawer() {
     const filterState = useSelector((state) => state.filter)
@@ -22,7 +23,7 @@ function FilterDrawer() {
     }
 
     const categories = [
-        'Round',
+        // 'Round',
         'Section',
         'Marks',
         'Status'
@@ -64,16 +65,21 @@ function FilterDrawer() {
         },
         }}
         >
-        <div className='filterDrawerDiv'>
-            <div className='filterDrawerCategoryDiv'>
-            <List>
-                {categoryList}
-            </List>
+            <div className='filterDrawerDiv'>
+                <div className='filterDrawerLeftDiv'>
+                    <div className='filterDrawerResetButtonDiv'>
+                        <div className='filterButton'><AiOutlineReload className='filterIcon' size={20} /></div>
+                    </div>
+                    <div className='filterDrawerCategoryDiv'>
+                        <List>
+                            {categoryList}
+                        </List>
+                    </div>
+                </div>
+                <div className='filterDrawerCategoryContentDiv'>
+                <FilterDrawerContent />
+                </div>
             </div>
-            <div className='filterDrawerCategoryContentDiv'>
-            <FilterDrawerContent />
-            </div>
-        </div>
         </Drawer>
     )
 }

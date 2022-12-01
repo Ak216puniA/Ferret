@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axios from "axios";
-import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS } from "../../urls";
+import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -84,6 +84,30 @@ export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/f
                 withCredentials: true
             });
     return response.data;
+})
+
+export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandidates', (filterData) => {
+    return axios
+    .post(
+        `${FILTER_CANDIDATES}`,
+        {
+            round_id: filterData['currentRound'],
+            round: filterData['round'],
+            section: filterData['section'],
+            status: filterData['status'],
+            marks: filterData['marks'],
+            marks_criteria: filterData['marksCriteria']
+        },
+        {
+            headers: {
+                "X-CSRFToken": Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
 })
 
 const seasonRoundContentSlice = createSlice({
@@ -185,6 +209,20 @@ const seasonRoundContentSlice = createSlice({
             state.section_marks = []
             state.error = action.error.message
             console.log("Section marks fetch unsuccessful!")
+        })
+        .addCase(filterCandidates.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(filterCandidates.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            // state.candidate_list = action.payload
+            console.log('FILTERED_CANDIDATE_LIST...')
+        })
+        .addCase(filterCandidates.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("CANNOT_FILTER_CANDIDATES...")
         })
     }
 })

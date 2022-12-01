@@ -344,3 +344,11 @@ class IndividualCandidateSectionMarks(APIView):
         }
         question_data = get_question_wise_candidate_section_marks(candidate_section_data)
         return Response(question_data)
+
+class FilterCandidatesView(APIView):
+    def post(self, request, format=None):
+        print(request.data)
+
+        candidate_list = CandidateRound.objects.filter(round_id=request.data['round_id'])
+        print(candidate_list)
+        return Response({'status':'success'})
