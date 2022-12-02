@@ -41,10 +41,10 @@ def get_candidate_section_marks(candidate_section_data):
 
 def get_candidate_total_marks(candidate_round_data):
     candidate_total_marks = [candidate_round_data['candidate_id']]
-    candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=candidate_round_data['round_id'])
+    candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=candidate_round_data['round_id'], candidate_id=candidate_round_data['candidate_id'])
     total_marks=0
     for question in candidate_marks:
-        total_marks+=question['marks']
+        total_marks+=question.marks
     candidate_total_marks.append(total_marks)
     return candidate_total_marks
 
