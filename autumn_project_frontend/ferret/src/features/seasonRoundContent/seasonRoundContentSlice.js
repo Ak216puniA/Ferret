@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axios from "axios";
-import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS } from "../../urls";
+import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -86,6 +86,30 @@ export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/f
     return response.data;
 })
 
+export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandidates', (filterData) => {
+    return axios
+    .post(
+        `${FILTER_CANDIDATES}`,
+        {
+            round_id: filterData['currentRound'],
+            round: filterData['round'],
+            section: filterData['section'],
+            status: filterData['status'],
+            marks: filterData['marks'],
+            marks_criteria: filterData['marksCriteria']
+        },
+        {
+            headers: {
+                "X-CSRFToken": Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const seasonRoundContentSlice = createSlice({
     name: 'seasonRoundContent',
     initialState,
@@ -132,13 +156,13 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_list = action.payload
-            console.log("Candidates' retrieval successful!")
+            // console.log("Candidates' retrieval successful!")
         })
         .addCase(fetchRoundCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
-            console.log("Candidates' retrieval failed! \n"+state.error)
+            // console.log("Candidates' retrieval failed! \n"+state.error)
         })
         .addCase(uploadCSV.pending, (state) => {
             state.loading = true
@@ -148,14 +172,14 @@ const seasonRoundContentSlice = createSlice({
             state.error = ''
             state.candidate_list = action.payload['data']
             state.csv_uploaded = true
-            console.log("CSV upload successful!")
+            // console.log("CSV upload successful!")
         })
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
             state.csv_uploaded = false
-            console.log("CSV upload unsuccessful!")
+            // console.log("CSV upload unsuccessful!")
         })
         .addCase(moveCandidates.pending, (state) => {
             state.loading = true
@@ -164,7 +188,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.move_candidate_list = []
-            console.log("Candidates moved sucessfully!")
+            // console.log("Candidates moved sucessfully!")
         })
         .addCase(moveCandidates.rejected, (state,action) => {
             state.loading = false
@@ -178,13 +202,27 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.section_marks = action.payload['data']
             state.error = ''
-            console.log("Section marks fetch successful!")
+            // console.log("Section marks fetch successful!")
         })
         .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
             state.section_marks = []
             state.error = action.error.message
-            console.log("Section marks fetch unsuccessful!")
+            // console.log("Section marks fetch unsuccessful!")
+        })
+        .addCase(filterCandidates.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(filterCandidates.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.candidate_list = action.payload['data']
+            // console.log("FILTER_CANDIDATES_SUCCESSFUL...")
+        })
+        .addCase(filterCandidates.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            // console.log("CANNOT_FILTER_CANDIDATES...")
         })
     }
 })

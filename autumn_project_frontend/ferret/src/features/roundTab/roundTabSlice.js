@@ -10,6 +10,7 @@ const initialState = {
     round_list: [],
     currentTab : '',
     currentTabId : -1,
+    // currentTabType: '',
     open : false,
     current_sections: [],
     current_sections_total_marks: []
@@ -70,6 +71,7 @@ const roundTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload['tab_name']
             state.currentTabId = action.payload['tab_id']
+            // state.currentTabType = action.payload['tab_type']
         },
         openCreateRoundDialog: (state) => {
             state.open = true

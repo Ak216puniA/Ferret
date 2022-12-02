@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks
+from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -42,7 +43,7 @@ class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')
         season_id = self.request.query_params.get('season_id')
-        print(self.request.user)
+        # print(self.request.user)
         if season_type is not None:
             return RecruitmentSeasons.objects.filter(type=season_type)
         if season_id is not None:
@@ -116,7 +117,7 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
                 'round_id':round.id,
                 'question_id':question_id
             }
-            print(data)
+            # print(data)
             create_candidate_marks_with_question(data)
 
         response_data = {
@@ -196,7 +197,7 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         r_id = self.request.query_params.get('round_id')
-        print(r_id)
+        # print(r_id)
         if r_id is not None:
             return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
         return CandidateMarks.objects.all()
@@ -260,13 +261,13 @@ class LoginView(APIView):
                         res = Response(status=status.HTTP_202_ACCEPTED)
                         res['Access-Control-Allow-Origin']='http://localhost:3000'
                         res['Access-Control-Allow-Credentials']='true'
-                        print(request.user)
+                        # print(request.user)
                         
         return redirect('http://localhost:3000/logging')
 
 class isUserAuthenticated(APIView):
     def get(self, request):
-        print(request.user)
+        # print(request.user)
         return Response({'authenticated': request.user.is_authenticated})
 
 class LogoutView(APIView):
@@ -283,6 +284,8 @@ class UploadCSV(APIView):
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
 
+        # print("CSV...")
+        # print(csv_file)
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
 
@@ -327,7 +330,7 @@ class SectionMarksView(APIView):
                 }
                 candidate_section_marks = get_candidate_section_marks(candidate_section_data)
                 candidate_section_marks_list.append(candidate_section_marks)
-        print(candidate_section_marks_list)
+        # print(candidate_section_marks_list)
         
         response_data={
             'status':'success',
@@ -344,3 +347,46 @@ class IndividualCandidateSectionMarks(APIView):
         }
         question_data = get_question_wise_candidate_section_marks(candidate_section_data)
         return Response(question_data)
+
+class FilterCandidatesView(APIView):
+    def post(self, request, format=None):
+        filter_data = {
+            'round_id': request.data['round_id'],
+            'section': int(request.data['section']),
+            'status': int(request.data['status']),
+            'marks': int(request.data['marks']),
+            'marks_criteria': request.data['marks_criteria']
+        }
+
+        status_round_data = {
+            'status': filter_data['status'],
+            'round_id': filter_data['round_id']
+        }
+        candidate_list = filter_by_status(status_round_data)
+
+        filter_section_data = {
+            'section': filter_data['section'],
+            'candidate_list': candidate_list,
+            'round_id': filter_data['round_id']
+        }
+        candidate_list = filter_by_section(filter_section_data)
+
+        filter_marks_data = {
+            'marks': filter_data['marks'],
+            'marks_criteria': filter_data['marks_criteria'],
+            'candidate_list': candidate_list
+        }
+        candidate_list = filter_by_marks(filter_marks_data)
+        # print(candidate_list)
+
+        filtered_candidates = []
+        for candidate_marks_pair in candidate_list:
+            candidate = CandidateRound.objects.get(candidate_id=candidate_marks_pair[0], round_id=filter_data['round_id'])
+            serializer = CandidateRoundNestedSerializer(candidate)
+            filtered_candidates.append(serializer.data)
+        response_data = {
+            'status': 'success',
+            'data': filtered_candidates
+        }
+        
+        return Response(response_data)

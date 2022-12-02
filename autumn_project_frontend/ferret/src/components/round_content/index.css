@@ -91,11 +91,11 @@
  } */
 
 .roundContentCheckbox{
-    width: 5%;
+    width: 2%;
 }
 
 .roundContentIndex{
-    width: 5%;
+    width: 3%;
 }
 
 .roundContentCandidateName{
@@ -116,7 +116,6 @@
 
 .roundContentCandidateSection{
     width: 10%;
-    /* width: 150px; */
 }
 
 .roundCandidateRow{
