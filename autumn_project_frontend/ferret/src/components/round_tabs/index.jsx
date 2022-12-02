@@ -35,7 +35,8 @@ function RoundTabs() {
         dispatch(
             tabClicked({
                 tab_name: tab_data['tab_name'],
-                tab_id: tab_data['tab_id']
+                tab_id: tab_data['tab_id'],
+                // tab_type: tab_data['tab_type']
             })
         )
         // dispatch(closeQuestions())
@@ -46,7 +47,7 @@ function RoundTabs() {
     let tabs = roundTabState.round_list.length>0 ? roundTabState.round_list.map(tab => {
         return(
             <div className="pageTabDiv" key={tab['id']}>
-                <button className={"pageTab pageTabArrowDiv"} onClick={() => tabClickHandler({tab_name: tab['name'],tab_id: tab['id']})}>{tab['name']}</button>
+                <button className={"pageTab pageTabArrowDiv"} onClick={() => tabClickHandler({tab_name: tab['name'],tab_id: tab['id'],tab_type: tab['type']})}>{tab['name']}</button>
                 <div className={"currentTabDownArrowDiv pageTabArrowDiv"}><div className="currentTabDownArrow" id={`${tab['name']}Arrow`}></div></div>
             </div>
         )

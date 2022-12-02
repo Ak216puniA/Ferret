@@ -72,7 +72,7 @@ function RoundTableRow(props){
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
             {candidate_marks}
         </div>
-        <CandidateModal />
+        {/* <CandidateModal /> */}
         </>
     )
 }
@@ -200,6 +200,7 @@ function RoundContent(props) {
             </div>
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
+            <CandidateModal />
             <MoveCandidatesDialog />
             <FilterDrawer />
         </div>
