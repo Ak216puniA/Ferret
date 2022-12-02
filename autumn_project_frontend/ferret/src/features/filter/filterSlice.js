@@ -40,7 +40,6 @@ const filterSlice = createSlice({
         resetFilterState: (state) => {
             state.loading= false
             state.error= ''
-            state.open_filter_drawer= false
             state.category= ''
             state.marksCriteria= ''
             state.marks= -1
@@ -51,4 +50,4 @@ const filterSlice = createSlice({
 })
 
 export default filterSlice.reducer
-export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus} = filterSlice.actions
+export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus, resetFilterState} = filterSlice.actions

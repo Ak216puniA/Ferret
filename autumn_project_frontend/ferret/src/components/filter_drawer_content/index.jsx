@@ -2,7 +2,6 @@ import React from 'react'
 import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Checkbox } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
-import { useState } from 'react'
 import { AiOutlineReload } from 'react-icons/ai'
 import { setMarks, setMarksCriteria, setSection, setStatus } from '../../features/filter/filterSlice'
 
@@ -46,7 +45,7 @@ function FilterMarksContent() {
   return (
     <>
     <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-    <div className='marksContentDiv'>
+    <div className='categoryContentDiv'>
       <FormControl fullWidth>
         <InputLabel id='criteria'>Filtering Criteria</InputLabel>
         <Select 
@@ -90,14 +89,16 @@ function FilterSectionContent() {
   return (
     <>
     <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-    <FormControl>
-      <RadioGroup 
-      value={filterState.section} 
-      onChange={radioGroupChangeHandler}
-      >
-        {filterDrawerSectionContent}
-      </RadioGroup>
-    </FormControl>
+    <div className='categoryContentDiv'>
+      <FormControl>
+        <RadioGroup 
+        value={filterState.section} 
+        onChange={radioGroupChangeHandler}
+        >
+          {filterDrawerSectionContent}
+        </RadioGroup>
+      </FormControl>
+    </div>
     </>
   )
 }
@@ -120,23 +121,29 @@ function FilterStatusContent() {
   return (
     <>
     <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-    <FormControl>
-      <RadioGroup
-      value={filterState.status}
-      onChange={radioGroupChangeHandler}
-      >
-        {filterDrawerStatusContent}
-      </RadioGroup>
-    </FormControl>
+    <div className='categoryContentDiv'>
+      <FormControl>
+        <RadioGroup
+        value={filterState.status}
+        onChange={radioGroupChangeHandler}
+        >
+          {filterDrawerStatusContent}
+        </RadioGroup>
+      </FormControl>
+    </div>
     </>
   )
 }
 
 function FilterDrawerContent() {
   const filterState = useSelector((state) => state.filter)
-  const filterDrawerContent = filterState.category==='Marks' ? 
+  const filterDrawerCategoryContent = filterState.category==='Marks' ? 
   <FilterMarksContent /> : 
   (filterState.category==='Section' ? <FilterSectionContent /> : <FilterStatusContent />)
+
+  const filterDrawerContent = filterState.category==='' ? 
+  <div className='noFilterContentDiv'>No filter selected!</div> : 
+  <>{filterDrawerCategoryContent}</>
 
   return <>{filterDrawerContent}</>
 }

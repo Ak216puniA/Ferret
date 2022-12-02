@@ -216,8 +216,9 @@ const seasonRoundContentSlice = createSlice({
         .addCase(filterCandidates.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
-            state.candidate_list = action.payload['data']
-            console.log('FILTERED_CANDIDATE_LIST...')
+            // state.candidate_list = action.payload['data']
+            console.log('FILTERED_CANDIDATE_LIST...(RESPONSE)')
+            console.log(action.payload)
         })
         .addCase(filterCandidates.rejected, (state,action) => {
             state.loading = false
