@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS } from '../../urls'
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -11,7 +11,8 @@ const initialState = {
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
-    section_name: ''
+    section_name: '',
+    section_id: 0
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -99,6 +100,30 @@ export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/up
     })
 })
 
+export const createCandidateInterviewQuestion = createAsyncThunk('candidateModal/createCandidateInterviewQuestion', (questionData) => {
+    return axios
+    .post(
+        `${QUESTIONS}`,
+        {
+            candidate_id: questionData['candidate_id'],
+            section_id: questionData['section_id'],
+            text: questionData['questionText'],
+            marks: questionData['questionMarks'],
+            total_marks: questionData['questionTotalMarks'],
+            remarks: questionData['questionRemarks']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -108,7 +133,8 @@ const candidateModalSlice = createSlice({
             state.candidate_id = action.payload['candidate_id']
         },
         selectSection: (state,action) => {
-            state.section_name = action.payload
+            state.section_name = action.payload['section_name']
+            state.section_id = action.payload['section_id']
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -191,6 +217,20 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             console.log("Candidate question's status update unsucessful!")
+        })
+        .addCase(createCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createCandidateInterviewQuestion.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            console.log("INTERVIEW_QUESTION_CREATED...")
+        })
+        .addCase(createCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("INTERVIEW_QUESTION_NOT_CREATED")
+            console.log(action.error.message)
         })
     }
 })

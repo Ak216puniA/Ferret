@@ -36,7 +36,7 @@ function RoundTabs() {
             tabClicked({
                 tab_name: tab_data['tab_name'],
                 tab_id: tab_data['tab_id'],
-                // tab_type: tab_data['tab_type']
+                tab_type: tab_data['tab_type']
             })
         )
         // dispatch(closeQuestions())

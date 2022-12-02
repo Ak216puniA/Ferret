@@ -2,7 +2,7 @@ from recruiter.models import *
 from recruiter.serializers import QuestionsSerializer, UserNameSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
-def create_candidate_marks_with_question(data):
+def create_test_candidate_marks_with_question(data):
     try:
         candidate_rounds = CandidateRound.objects.filter(round_id=data['round_id'])
     except:
@@ -17,6 +17,21 @@ def create_candidate_marks_with_question(data):
                     question_id=Questions.objects.get(id=data['question_id'])
                     )
             candidate_marks.save()
+
+def create_interview_candidate_marks_with_question(data):
+    try:
+        candidate_marks = CandidateMarks.objects.get(candidate_id=data['candidate_id'], question_id=data['question_id'])
+    except ObjectDoesNotExist:
+        candidate_marks = CandidateMarks(
+            candidate_id=Candidates.objects.get(id=data['candidate_id']),
+            question_id=Questions.objects.get(id=data['question_id']),
+            marks=data['marks'],
+            remarks=data['remarks']
+        )
+    else:
+        candidate_marks.marks=data['marks']
+        candidate_marks.remarks=data['remarks']
+    candidate_marks.save()
 
 def get_section_total_marks(section_data):
     section_total_marks=[]

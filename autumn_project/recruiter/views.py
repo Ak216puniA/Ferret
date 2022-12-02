@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks
+from .utilities.candidate_marks_update import create_test_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks, create_interview_candidate_marks_with_question
 from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
 from .serializers import *
 from .models import *
@@ -107,18 +107,32 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
             return QuestionsNestedSerializer
         return QuestionsSerializer
 
-    def create(self, request, *args, **kwargs):
-        question_id = create_question(request.data)
-
+    def create(self, request):
+        print(request.data)
         section = Sections.objects.get(id=request.data['section_id'])
         round = Rounds.objects.get(id=section.round_id.id)
         if round.type=='test':
+            question_id = create_question(request.data)
             data = {
                 'round_id':round.id,
                 'question_id':question_id
             }
-            # print(data)
-            create_candidate_marks_with_question(data)
+            create_test_candidate_marks_with_question(data)
+        if round.type=='interview':
+            print("INTERVIEW_QUESTION_TO_CREATE...")
+            # question_data = {
+            #     'section_id': request.data['section_id'],
+            #     'text': request.data['text'],
+            #     'marks': request.data['total_marks']
+            # }
+            # question_id = create_question(question_data)
+            # data = {
+            #     'candidate_id': request.data['candidate_id'],
+            #     'question_id': question_id,
+            #     'marks': request.data['marks'],
+            #     'remarks': request.data['remarks']
+            # }
+            # create_interview_candidate_marks_with_question(data)
 
         response_data = {
             'status': 'success'
