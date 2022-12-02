@@ -16,8 +16,6 @@ const filterSlice = createSlice({
         },
         selectCategory: (state,action) => {
             state.category = action.payload
-            console.log("CATEGORY_SELECTED")
-            console.log(state.category)
         }
     }
 })

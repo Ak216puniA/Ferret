@@ -124,7 +124,6 @@ function RoundContent(props) {
     // }
 
     const filterCandidatesHandler = () => {
-        console.log("FILTER_CLICKED...")
         dispatch(openFilterDrawer(true))
     }
 

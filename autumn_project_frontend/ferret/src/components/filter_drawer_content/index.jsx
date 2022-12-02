@@ -34,14 +34,17 @@ function FilterDrawerContent() {
   }
 
   const resetButtonHandler = () => {
-    if(filterState.category==='Section'){
-      setMarks()
-      setMarksCriteria()
-    }else if(filterState.category==='Section'){
-      setSection()
-    }else if(filterState.category==='Status'){
-      setStatus()
-    }
+    // if(filterState.category==='Marks'){
+    //   setMarks()
+    //   setMarksCriteria()
+    // }else if(filterState.category==='Section'){
+    //   setSection()
+    // }else if(filterState.category==='Status'){
+    //   setStatus()
+    // }
+    console.log('STATE...')
+    console.log(section)
+    console.log(marks)
     console.log(status)
   }
 
@@ -65,7 +68,7 @@ function FilterDrawerContent() {
   }
 
   const filterDrawerContent =  filterDrawerContentList.length>0 ? 
-  filterDrawerContentList.map((data) => <FormControlLabel key={data} value={data[0]} control={<Radio />} label={data[1]} />) :
+  filterDrawerContentList.map((data) => <FormControlLabel key={data} value={data[0]} control={<Radio />} onClick={radioGroupChangeHandler} label={data[1]} />) :
   []
 
   const filterButton = (
@@ -83,7 +86,7 @@ function FilterDrawerContent() {
     (
       <TextField 
       required 
-      labelId='marks'
+      labelid='marks'
       label={marksFilterInputLabel} 
       type='number'
       value={marks}
@@ -106,7 +109,7 @@ function FilterDrawerContent() {
           <InputLabel id='criteria'>Filtering Criteria</InputLabel>
           <Select 
           required 
-          labelId='criteria' 
+          labelid='criteria' 
           label='Filtering Criteria'
           value={marksCriteria}
           placeholder='Filtering criteria' 
@@ -124,13 +127,15 @@ function FilterDrawerContent() {
     )
   }
   else{
+    // const filterCategory = filterState.category==='Status' ? {status} : {section}
     return (
       <>
       {filterButton}
       <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
       <FormControl>
         <RadioGroup
-          onChange={radioGroupChangeHandler}
+        // value={filterCategory}
+          // onChange={radioGroupChangeHandler}
         >
           {filterDrawerContent}
         </RadioGroup>

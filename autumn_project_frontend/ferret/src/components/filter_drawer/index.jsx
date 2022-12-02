@@ -23,7 +23,6 @@ function FilterDrawer() {
     }
 
     const categories = [
-        // 'Round',
         'Section',
         'Marks',
         'Status'
