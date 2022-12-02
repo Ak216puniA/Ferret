@@ -1,148 +1,144 @@
 import React from 'react'
-import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio } from '@mui/material'
+import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Checkbox } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { useState } from 'react'
-import { MdFilterListAlt } from 'react-icons/md'
 import { AiOutlineReload } from 'react-icons/ai'
-import { filterCandidates } from '../../features/seasonRoundContent/seasonRoundContentSlice'
+import { setMarks, setMarksCriteria, setSection, setStatus } from '../../features/filter/filterSlice'
 
-function FilterDrawerContent() {
+function FilterMarksContent() {
   const filterState = useSelector((state) => state.filter)
-  const roundTabState = useSelector((state) => state.roundTab)
   const dispatch = useDispatch()
 
-  const [marksCriteria, setMarksCriteria] = useState()
-  const [marks, setMarks] = useState()
-  const [section, setSection] = useState()
-  const [status, setStatus] = useState()
-
   const marksCriteriaChangeHandler = (event) => {
-    setMarksCriteria(event.target.value)
+    dispatch(setMarksCriteria(event.target.value))
   }
 
   const marksChangeHandler = (event) => {
-    setMarks(event.target.value)
-  }
-
-  const radioGroupChangeHandler = (event) => { 
-    if(filterState.category==='Section'){
-      setSection(event.target.value)
-    }else if(filterState.category==='Status'){
-      setStatus(event.target.value)
-    }
+    dispatch(setMarks(event.target.value))
   }
 
   const resetButtonHandler = () => {
-    // if(filterState.category==='Marks'){
-    //   setMarks()
-    //   setMarksCriteria()
-    // }else if(filterState.category==='Section'){
-    //   setSection()
-    // }else if(filterState.category==='Status'){
-    //   setStatus()
-    // }
-    console.log('STATE...')
-    console.log(section)
-    console.log(marks)
-    console.log(status)
+    dispatch(setMarks(-1))
+    dispatch(setMarksCriteria(''))
   }
 
-  const filterClickHandler = () => {
-    dispatch(
-      filterCandidates({
-        currentRound: roundTabState.currentTabId,
-        section: section,
-        status: status,
-        marks: marks,
-        marksCriteria: marksCriteria
-      })
-    )
-  }
-
-  let filterDrawerContentList = []
-  if(filterState.category==='Section'){
-    filterDrawerContentList = roundTabState.current_sections.map(section => [section['id'],section['name']])
-  }else if(filterState.category==='Status'){
-    filterDrawerContentList = [[1,'Done'],[2,'Pending']]
-  }
-
-  const filterDrawerContent =  filterDrawerContentList.length>0 ? 
-  filterDrawerContentList.map((data) => <FormControlLabel key={data} value={data[0]} control={<Radio />} onClick={radioGroupChangeHandler} label={data[1]} />) :
-  []
-
-  const filterButton = (
-    <div className='filterDrawerFilterButtonDiv'>
-      <div className='filterButton' onClick={filterClickHandler}>
-        <MdFilterListAlt className='filterIcon' size={20} />
-      </div>
-    </div>
+  const marksFilterInputLabel = filterState.marksCriteria==='topPercentage' ? 'Percentage' : (filterState.marksCriteria==='topMarks' ? 'Top' : 'Marks')
+  const marksFilterContent = filterState.marksCriteria==='' ?
+  <></> :
+  (
+    <TextField 
+    required 
+    labelid='marks'
+    label={marksFilterInputLabel} 
+    type='number'
+    value={filterState.marks}
+    variant='outlined'
+    InputProps={{ inputProps: { min: 0 } }}
+    fullWidth
+    onChange={marksChangeHandler}
+    sx={{
+      marginTop: '5%'
+    }}
+    />
   )
 
-  if(filterState.category==='Marks'){
-    const marksFilterInputLabel = marksCriteria==='topPercentage' ? 'Percentage' : (marksCriteria==='topMarks' ? 'Top' : 'Marks')
-    const marksFilterContent = marksCriteria==='' ?
-    <></> :
-    (
-      <TextField 
-      required 
-      labelid='marks'
-      label={marksFilterInputLabel} 
-      type='number'
-      value={marks}
-      variant='outlined'
-      InputProps={{ inputProps: { min: 0 } }}
-      fullWidth
-      onChange={marksChangeHandler}
-      sx={{
-        marginTop: '5%'
-      }}
-      />
-    )
-
-    return (
-      <>
-      {filterButton}
-      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-      <div className='marksContentDiv'>
-        <FormControl fullWidth>
-          <InputLabel id='criteria'>Filtering Criteria</InputLabel>
-          <Select 
-          required 
-          labelid='criteria' 
-          label='Filtering Criteria'
-          value={marksCriteria}
-          placeholder='Filtering criteria' 
-          variant='outlined'
-          onChange={marksCriteriaChangeHandler}
-          >
-              <MenuItem value={'topPercentage'}>Top rankers based on Percentage</MenuItem>
-              <MenuItem value={'topMarks'}>Top rankers based on Marks</MenuItem>
-              <MenuItem value={'absoluteMarks'}>Absolute marks</MenuItem>
-          </Select>
-        </FormControl>
-        {marksFilterContent}
-      </div>
-      </>
-    )
-  }
-  else{
-    // const filterCategory = filterState.category==='Status' ? {status} : {section}
-    return (
-      <>
-      {filterButton}
-      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-      <FormControl>
-        <RadioGroup
-        // value={filterCategory}
-          // onChange={radioGroupChangeHandler}
+  return (
+    <>
+    <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
+    <div className='marksContentDiv'>
+      <FormControl fullWidth>
+        <InputLabel id='criteria'>Filtering Criteria</InputLabel>
+        <Select 
+        required 
+        labelid='criteria' 
+        label='Filtering Criteria'
+        value={filterState.marksCriteria}
+        placeholder='Filtering criteria' 
+        variant='outlined'
+        onChange={marksCriteriaChangeHandler}
         >
-          {filterDrawerContent}
-        </RadioGroup>
+            <MenuItem value={'topPercentage'}>Top rankers based on Percentage</MenuItem>
+            <MenuItem value={'topMarks'}>Top rankers based on Marks</MenuItem>
+            <MenuItem value={'absoluteMarks'}>Absolute marks</MenuItem>
+        </Select>
       </FormControl>
-      </>
-    )
+      {marksFilterContent}
+    </div>
+    </>
+  )
+}
+
+function FilterSectionContent() {
+  const roundTabState = useSelector((state) => state.roundTab)
+  const filterState = useSelector((state) => state.filter)
+  const dispatch = useDispatch()
+
+  const radioGroupChangeHandler = (event) => { 
+    dispatch(setSection(event.target.value))
   }
+
+  const resetButtonHandler = () => {
+    dispatch(setSection(-1))
+  }
+
+  const filterDrawerSectionContentList = roundTabState.current_sections.map(section => [section['id'],section['name']])
+  const filterDrawerSectionContent = filterDrawerSectionContentList.length>0 ?
+  filterDrawerSectionContentList.map(section => <FormControlLabel key={section[0]} value={section[0]} control={<Radio />} label={section[1]} />) :
+  []
+
+  return (
+    <>
+    <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
+    <FormControl>
+      <RadioGroup 
+      value={filterState.section} 
+      onChange={radioGroupChangeHandler}
+      >
+        {filterDrawerSectionContent}
+      </RadioGroup>
+    </FormControl>
+    </>
+  )
+}
+
+function FilterStatusContent() {
+  const filterState = useSelector((state) => state.filter)
+  const dispatch = useDispatch()
+
+  const radioGroupChangeHandler = (event) => { 
+    dispatch(setStatus(event.target.value))
+  }
+
+  const resetButtonHandler = () => {
+    dispatch(setStatus(-1))
+  }
+
+  const filterDrawerStatusContentList = [[1,'Done'],[2,'Pending']]
+  const filterDrawerStatusContent = filterDrawerStatusContentList.map(status => <FormControlLabel key={status[0]} value={status[0]} control={<Radio />} label={status[1]} />)
+
+  return (
+    <>
+    <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
+    <FormControl>
+      <RadioGroup
+      value={filterState.status}
+      onChange={radioGroupChangeHandler}
+      >
+        {filterDrawerStatusContent}
+      </RadioGroup>
+    </FormControl>
+    </>
+  )
+}
+
+function FilterDrawerContent() {
+  const filterState = useSelector((state) => state.filter)
+  const filterDrawerContent = filterState.category==='Marks' ? 
+  <FilterMarksContent /> : 
+  (filterState.category==='Section' ? <FilterSectionContent /> : <FilterStatusContent />)
+
+  return <>{filterDrawerContent}</>
 }
 
 export default FilterDrawerContent

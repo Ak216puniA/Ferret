@@ -5,6 +5,7 @@ import { openFilterDrawer, selectCategory } from '../../features/filter/filterSl
 import './index.css'
 import FilterDrawerContent from '../filter_drawer_content'
 import { AiOutlineReload } from 'react-icons/ai'
+import { MdFilterListAlt } from 'react-icons/md'
 
 function FilterDrawer() {
     const filterState = useSelector((state) => state.filter)
@@ -21,6 +22,19 @@ function FilterDrawer() {
         document.getElementsByClassName('filterCategoryButton')[i].style.backgroundColor = i===index ? '#EEEEEE' : '#F5B041'
         }
     }
+
+    const filterClickHandler = () => {
+        console.log("FILTER_CANDIDATES...")
+        // dispatch(
+        //   filterCandidates({
+        //     currentRound: roundTabState.currentTabId,
+        //     section: section,
+        //     status: status,
+        //     marks: marks,
+        //     marksCriteria: marksCriteria
+        //   })
+        // )
+      }
 
     const categories = [
         'Section',
@@ -64,7 +78,7 @@ function FilterDrawer() {
         },
         }}
         >
-            <div className='filterDrawerDiv'>
+            {/* <div className='filterDrawerDiv'>
                 <div className='filterDrawerLeftDiv'>
                     <div className='filterDrawerResetButtonDiv'>
                         <div className='filterButton'><AiOutlineReload className='filterIcon' size={20} /></div>
@@ -77,6 +91,20 @@ function FilterDrawer() {
                 </div>
                 <div className='filterDrawerCategoryContentDiv'>
                 <FilterDrawerContent />
+                </div>
+            </div> */}
+            <div className='filterDrawerButtonDiv'>
+                <div className='filterButton'><AiOutlineReload className='filterIcon' size={20} /></div>
+                <div className='filterButton' onClick={filterClickHandler}><MdFilterListAlt className='filterIcon' size={20} /></div>
+            </div>
+            <div className='filterDrawerDiv'>
+                <div className='filterDrawerCategoryDiv'>
+                    <List>
+                        {categoryList}
+                    </List>
+                </div>
+                <div className='filterDrawerCategoryContentDiv'>
+                    <FilterDrawerContent />
                 </div>
             </div>
         </Drawer>
