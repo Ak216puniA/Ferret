@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
 from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks
+from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks
+from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -283,6 +284,8 @@ class UploadCSV(APIView):
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
 
+        print("CSV...")
+        print(csv_file)
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
 
@@ -347,8 +350,42 @@ class IndividualCandidateSectionMarks(APIView):
 
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
-        print(request.data)
+        filter_data = {
+            'round_id': request.data['round_id'],
+            'section': int(request.data['section']),
+            'status': int(request.data['status']),
+            'marks': int(request.data['marks']),
+            'marks_criteria': request.data['marks_criteria']
+        }
 
-        candidate_list = CandidateRound.objects.filter(round_id=request.data['round_id'])
+        status_round_data = {
+            'status': filter_data['status'],
+            'round_id': filter_data['round_id']
+        }
+        candidate_list = filter_by_status(status_round_data)
+
+        filter_section_data = {
+            'section': filter_data['section'],
+            'candidate_list': candidate_list
+        }
+        candidate_list = filter_by_section(filter_section_data)
+
+        filter_marks_data = {
+            'marks': filter_data['marks'],
+            'marks_criteria': filter_data['marks_criteria'],
+            'candidate_list': candidate_list
+        }
+        candidate_list = filter_by_marks(filter_marks_data)
         print(candidate_list)
-        return Response({'status':'success'})
+
+        filtered_candidates = []
+        for candidate_marks_pair in candidate_list:
+            candidate = Candidates.objects.get(id=candidate_marks_pair[0])
+            serializer = CandidatesNestedSerializer(candidate)
+            filtered_candidates.append(serializer.data)
+        response_data = {
+            'status': 'success',
+            'data': filtered_candidates
+        }
+        
+        return Response(response_data)

@@ -12,11 +12,10 @@ function FilterDrawerContent() {
   const roundTabState = useSelector((state) => state.roundTab)
   const dispatch = useDispatch()
 
-  const [marksCriteria, setMarksCriteria] = useState('')
+  const [marksCriteria, setMarksCriteria] = useState()
   const [marks, setMarks] = useState()
-  // const [round, setRound] = useState('')
-  const [section, setSection] = useState('')
-  const [status, setStatus] = useState('')
+  const [section, setSection] = useState()
+  const [status, setStatus] = useState()
 
   const marksCriteriaChangeHandler = (event) => {
     setMarksCriteria(event.target.value)
@@ -26,10 +25,7 @@ function FilterDrawerContent() {
     setMarks(event.target.value)
   }
 
-  const radioGroupChangeHandler = (event) => {
-    // if(filterState.category==='Round'){
-    //   setRound(event.target.value)
-    // }else 
+  const radioGroupChangeHandler = (event) => { 
     if(filterState.category==='Section'){
       setSection(event.target.value)
     }else if(filterState.category==='Status'){
@@ -38,21 +34,21 @@ function FilterDrawerContent() {
   }
 
   const resetButtonHandler = () => {
-    // if(filterState.category==='Round'){
-    //   setRound('')
-    // }else 
     if(filterState.category==='Section'){
-      setSection('')
+      setMarks()
+      setMarksCriteria()
+    }else if(filterState.category==='Section'){
+      setSection()
     }else if(filterState.category==='Status'){
-      setStatus('')
+      setStatus()
     }
+    console.log(status)
   }
 
   const filterClickHandler = () => {
     dispatch(
       filterCandidates({
         currentRound: roundTabState.currentTabId,
-        // round: round,
         section: section,
         status: status,
         marks: marks,
@@ -62,9 +58,6 @@ function FilterDrawerContent() {
   }
 
   let filterDrawerContentList = []
-  // if(filterState.category==='Round'){
-  //   filterDrawerContentList = roundTabState.round_list.map(round => round['name'])
-  // }else 
   if(filterState.category==='Section'){
     filterDrawerContentList = roundTabState.current_sections.map(section => [section['id'],section['name']])
   }else if(filterState.category==='Status'){
@@ -84,7 +77,7 @@ function FilterDrawerContent() {
   )
 
   if(filterState.category==='Marks'){
-    const marksFilterInputLabel = marksCriteria==='topPercentage' ? 'Percentage' : 'Marks'
+    const marksFilterInputLabel = marksCriteria==='topPercentage' ? 'Percentage' : (marksCriteria==='topMarks' ? 'Top' : 'Marks')
     const marksFilterContent = marksCriteria==='' ?
     <></> :
     (
