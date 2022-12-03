@@ -3,8 +3,8 @@ from urllib import response
 from rest_framework.response import Response
 from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
 from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
-from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_test_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks, create_interview_candidate_marks_with_question
+from .utilities.questions_update import create_question, delete_question
+from .utilities.candidate_marks_update import create_test_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks, create_interview_candidate_marks_with_question, delete_question_for_all_candidates
 from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
 from .serializers import *
 from .models import *
@@ -141,6 +141,11 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
             'status': 'success'
         }
         return Response(response_data,status.HTTP_201_CREATED)
+
+    def destroy(self, request, pk=None):
+        delete_question(pk)
+        delete_question_for_all_candidates(pk)
+        return Response({'status':'success'},status.HTTP_200_OK)
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     queryset=InterviewPanel.objects.all()

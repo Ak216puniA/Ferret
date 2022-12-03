@@ -88,3 +88,9 @@ def get_question_wise_candidate_section_marks(candidate_section_data):
         }
         candidate_section_marks.append(question_data)
     return candidate_section_marks
+
+def delete_question_for_all_candidates(question_id):
+    candidate_marks = CandidateMarks.objects.filter(question_id=question_id)
+    for candidate in candidate_marks:
+        candidate.delete()
+    

@@ -8,6 +8,8 @@ const initialState = {
     error: '',
     questions: [],
     open: false,
+    openDeleteDialog: false,
+    questionsChanged: false
 }
 
 export const createQuestion = createAsyncThunk('question/createQuestion', (questionData) => {
@@ -68,6 +70,22 @@ export const updateQuestion = createAsyncThunk('question/updateQuestion', (quest
     })
 })
 
+export const deleteQuestion = createAsyncThunk('question/deleteQuestion', (questionData) => {
+    return axios
+    .delete(
+        `${QUESTIONS}${questionData['questionId']}`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const questionSlice = createSlice({
     name: 'question',
     initialState,
@@ -77,6 +95,12 @@ const questionSlice = createSlice({
         },
         closeCreateQuestionDialog: (state) => {
             state.open = false
+        },
+        openQuestionDeleteConfirmationDialog:  (state,action) => {
+            state.openDeleteDialog = action.payload
+        },
+        updatedQuestionList: (state) => {
+            state.questionsChanged = false
         },
         resetQuestionsState: (state) => {
             state.loading = false
@@ -126,8 +150,26 @@ const questionSlice = createSlice({
             state.error = action.error.message
             console.log(state.error)
         })
+        .addCase(deleteQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteQuestion.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.openDeleteDialog = false
+            state.questionsChanged = true
+            console.log("TEST_QUESTION_DELETED...")
+            console.log(action.payload)
+        })
+        .addCase(deleteQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.openDeleteDialog = false
+            console.log("TEST_QUESTION_NOT_DELETED...")
+            console.log(action.error.message)
+        })
     }
 })
 
 export default questionSlice.reducer
-export const { openCreateQuestionDialog, closeCreateQuestionDialog, resetQuestionsState } = questionSlice.actions
+export const { openCreateQuestionDialog, closeCreateQuestionDialog, resetQuestionsState, openQuestionDeleteConfirmationDialog, updatedQuestionList } = questionSlice.actions
