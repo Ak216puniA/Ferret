@@ -6,10 +6,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createCandidateInterviewQuestion } from '../../features/candidateModal/candidateModalSlice'
 import './index.css'
 
-function CandidateModalInterviewChooseQuestion(){
-    
-}
-
 function CandidateModalInterviewAddQuestion() {
     const candidateModalState = useSelector((state) => state.candidateModal)
     const dispatch = useDispatch()

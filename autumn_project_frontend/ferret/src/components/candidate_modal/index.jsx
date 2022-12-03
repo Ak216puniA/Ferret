@@ -4,8 +4,10 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { fetchQuestions } from '../../features/question/questionSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
+import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import './index.css';
@@ -36,6 +38,7 @@ function CandidateModal() {
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
+        dispatch(fetchQuestions(section_id))
     }
 
     const dialogCloseHandler = () => {
@@ -89,7 +92,12 @@ function CandidateModal() {
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
 
-    let addNewQuestionOption = (candidateModalState.section_name!=='' && roundTabState.currentTabType==='interview') ? <CandidateModalInterviewAddQuestion /> : <></>
+    let addNewQuestionOption = (candidateModalState.section_name!=='' && roundTabState.currentTabType==='interview') ? 
+    <>
+    <CandidateModalInterviewAddQuestion />
+    <CandidateModalInterviewChooseQuestion />
+    </> : 
+    <></>
 
     const flexBoxRow = {
         display:'flex',
