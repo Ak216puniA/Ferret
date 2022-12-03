@@ -4,9 +4,10 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
 import CandidateModalQuestion from '../candidate_modal_question'
+import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import './index.css';
 
 function CandidateModal() {
@@ -33,6 +34,18 @@ function CandidateModal() {
             fetchSelectedCandidateSectionMarks({
                 candidate_list: [candidateModalState.candidate_id],
                 section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
+    }
+
+    const dialogCloseHandler = () => {
+        dispatch(openDeleteCofirmationDialog(false))
+    }
+
+    const agreeActionClickHandler = () => {
+        dispatch(
+            deleteCandidateInterviewQuestion({
+                candidateMarksId: candidateModalState.deleteQuestionId
             })
         )
     }
@@ -106,6 +119,7 @@ function CandidateModal() {
     },[candidateModalState.interviewQuestionsChanged])
 
     return (
+        <>
         <Dialog
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
@@ -167,6 +181,12 @@ function CandidateModal() {
                 </Box>
             </DialogContent>
         </Dialog>
+        <DeleteConfirmationDialog
+        open={candidateModalState.openDeleteDialog} 
+        dialogCloseHandler={dialogCloseHandler} 
+        agreeActionClickHandler={agreeActionClickHandler}
+        />
+        </>
     )
 }
 

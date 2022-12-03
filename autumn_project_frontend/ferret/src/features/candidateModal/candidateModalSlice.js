@@ -14,7 +14,8 @@ const initialState = {
     section_name: '',
     section_id: 0,
     interviewQuestionsChanged: false,
-    openDeleteDialog: false
+    openDeleteDialog: false,
+    deleteQuestionId: 0
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -158,7 +159,8 @@ const candidateModalSlice = createSlice({
             state.interviewQuestionsChanged = false
         },
         openDeleteCofirmationDialog: (state,action) => {
-            state.openDeleteDialog = action.payload
+            state.openDeleteDialog = action.payload['open']
+            state.deleteQuestionId = action.payload['questionId']
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -266,6 +268,7 @@ const candidateModalSlice = createSlice({
             state.error = ''
             state.interviewQuestionsChanged = true
             state.openDeleteDialog = false
+            state.deleteQuestionId = 0
             console.log("INTERVIEW_QUESTION_DELETED...")
             console.log(action.payload)
         })
@@ -274,6 +277,7 @@ const candidateModalSlice = createSlice({
             state.error = action.error.message
             state.interviewQuestionsChanged = false
             state.openDeleteDialog = false
+            state.deleteQuestionId = 0
             console.log("INTERVIEW_QUESTION_NOT_DELETED...")
             console.log(action.error.message)
         })

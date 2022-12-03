@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
-// import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 import { updateQuestion, openCreateQuestionDialog, openQuestionDeleteConfirmationDialog, deleteQuestion, fetchQuestions, updatedQuestionList } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import CreateQuestionDialog from "../create_question_dialog";
@@ -19,7 +18,6 @@ function QuestionSegment(props) {
     const { question, index } = props
     const userState = useSelector((state) => state.user)
     const roundTabState = useSelector((state) => state.roundTab)
-    const questionState = useSelector((state) => state.question)
     const dispatch = useDispatch()
 
     const [questionMarks, setQuestionMarks] = useState(question['marks'])
@@ -50,21 +48,12 @@ function QuestionSegment(props) {
     }
 
     const questionDeleteHandler = () => {
-        console.log("HELOOOOOO....")
-        dispatch(openQuestionDeleteConfirmationDialog(true))
-    }
-
-    const dialogCloseHandler = () => {
-        dispatch(openQuestionDeleteConfirmationDialog(false))
-    }
-
-    const agreeActionClickHandler = () => {
-        console.log(question['text'])
-        // dispatch(
-        //     deleteQuestion({
-        //         questionId: question['id']
-        //     })
-        // )
+        dispatch(
+            openQuestionDeleteConfirmationDialog({
+                open: true,
+                deleteQuestionId: question['id']
+            })
+        )
     }
 
     let assignee_list = userState.users.length>0 ?
@@ -149,11 +138,6 @@ function QuestionSegment(props) {
                 {question_desc}
             </div>
         </div>
-        <DeleteConfirmationDialog 
-        open={questionState.openDeleteDialog} 
-        dialogCloseHandler={dialogCloseHandler} 
-        agreeActionClickHandler={agreeActionClickHandler}
-        />
         </>
     )
 }
@@ -171,6 +155,24 @@ function QuestionsContent() {
         dispatch(resetSectionTabState())
         const url = `/season/${season_id}`
         navigate(url)
+    }
+
+    const dialogCloseHandler = () => {
+        dispatch(
+            openQuestionDeleteConfirmationDialog({
+                open: false,
+                deleteQuestionId: 0
+            })
+        )
+    }
+
+    const agreeActionClickHandler = () => {
+        console.log(questionState.deleteQuestionId)
+        dispatch(
+            deleteQuestion({
+                questionId: questionState.deleteQuestionId
+            })
+        )
     }
 
     let questions = (
@@ -216,6 +218,11 @@ function QuestionsContent() {
             </div>
             <CreateSectionDialog round_id={round_id} />
             <CreateQuestionDialog section_id={sectionTabState.currentTabId} />
+            <DeleteConfirmationDialog 
+            open={questionState.openDeleteDialog} 
+            dialogCloseHandler={dialogCloseHandler} 
+            agreeActionClickHandler={agreeActionClickHandler}
+            />
         </div>
     )
 }

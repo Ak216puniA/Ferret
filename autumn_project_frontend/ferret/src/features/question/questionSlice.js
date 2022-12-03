@@ -9,7 +9,8 @@ const initialState = {
     questions: [],
     open: false,
     openDeleteDialog: false,
-    questionsChanged: false
+    questionsChanged: false,
+    deleteQuestionId: 0
 }
 
 export const createQuestion = createAsyncThunk('question/createQuestion', (questionData) => {
@@ -97,7 +98,8 @@ const questionSlice = createSlice({
             state.open = false
         },
         openQuestionDeleteConfirmationDialog:  (state,action) => {
-            state.openDeleteDialog = action.payload
+            state.openDeleteDialog = action.payload['open']
+            state.deleteQuestionId = action.payload['deleteQuestionId']
         },
         updatedQuestionList: (state) => {
             state.questionsChanged = false
@@ -158,6 +160,7 @@ const questionSlice = createSlice({
             state.error = ''
             state.openDeleteDialog = false
             state.questionsChanged = true
+            state.deleteQuestionId = 0
             console.log("TEST_QUESTION_DELETED...")
             console.log(action.payload)
         })
@@ -165,6 +168,8 @@ const questionSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             state.openDeleteDialog = false
+            state.questionsChanged = false
+            state.deleteQuestionId = 0
             console.log("TEST_QUESTION_NOT_DELETED...")
             console.log(action.error.message)
         })

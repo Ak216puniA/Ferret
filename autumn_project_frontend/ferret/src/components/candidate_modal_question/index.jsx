@@ -23,7 +23,12 @@ function CandidateModalQuestion(props) {
     }
 
     const candidateInterviewQuestionDeleteHandler = () => {
-        dispatch(openDeleteCofirmationDialog(true))
+        dispatch(
+            openDeleteCofirmationDialog({
+                open: true,
+                questionId: question['id']
+            })
+        )
     }
 
     let questionAssigneeComponent = roundTabState.currentTabType==='test' ? 
@@ -47,22 +52,11 @@ function CandidateModalQuestion(props) {
     }
 
     const markQuestionChecked = () => {
+        console.log(question['id'])
         dispatch(
             updateCandidateQuestionStatus({
                 id: question['id'],
                 remarks: questionRemarks
-            })
-        )
-    }
-
-    const dialogCloseHandler = () => {
-        dispatch(openDeleteCofirmationDialog(false))
-    }
-
-    const agreeActionClickHandler = () => {
-        dispatch(
-            deleteCandidateInterviewQuestion({
-                candidateMarksId: question['id']
             })
         )
     }
@@ -130,11 +124,6 @@ function CandidateModalQuestion(props) {
             marginTop: '4px',
             marginBottom: '12px'
         }}
-        />
-        <DeleteConfirmationDialog
-        open={candidateModalState.openDeleteDialog} 
-        dialogCloseHandler={dialogCloseHandler} 
-        agreeActionClickHandler={agreeActionClickHandler}
         />
         </>
     )
