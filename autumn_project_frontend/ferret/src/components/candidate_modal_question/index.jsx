@@ -1,10 +1,12 @@
-import { Divider, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, TextField } from '@mui/material'
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { IoMdDoneAll } from 'react-icons/io'
+import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSelectedCandidateSectionMarks, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import './index.css'
 
 function CandidateModalQuestion(props) {
     const {question,index} = props
@@ -19,7 +21,13 @@ function CandidateModalQuestion(props) {
         setQuestionRemarks(event.target.value)
     }
 
-    let questionAssigneeComponent = roundTabState.currentTabType==='test' ? <div>({question['assignee']['username']})</div> : <></>
+    const candidateInterviewQuestionDeleteHandler = () => {
+        dispatch(openDeleteCofirmationDialog(true))
+    }
+
+    let questionAssigneeComponent = roundTabState.currentTabType==='test' ? 
+    <div>({question['assignee']['username']})</div> : 
+    <div className='candidateModalQuestionDeleteIconDiv' onClick={candidateInterviewQuestionDeleteHandler}><MdDelete color='#C0392B' size={18} /></div>
 
     const marksChangeHandler = (event) => {
         setQuestionMarks(event.target.value)
@@ -110,7 +118,46 @@ function CandidateModalQuestion(props) {
             marginBottom: '12px'
         }}
         />
+        <DeleteConfirmationDialog candidateMarksId={question['id']}/>
         </>
+    )
+}
+
+function DeleteConfirmationDialog(props){
+    const { candidateMarksId } = props
+    const candidateModalState = useSelector((state) => state.candidateModal.openDeleteDialog)
+    const dispatch = useDispatch()
+
+    const deleteConfirmationDialogCloseHandler = () => {
+        dispatch(openDeleteCofirmationDialog(false))
+    }
+
+    const agreeActionClickHandler = () => {
+        dispatch(
+            deleteCandidateInterviewQuestion({
+                candidateMarksId: candidateMarksId
+            })
+        )
+    }
+
+    return (
+        <Dialog
+        open={candidateModalState}
+        onClose={deleteConfirmationDialogCloseHandler}
+        >
+            <DialogTitle>
+                Delete question?
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Question will be deleted from candidate's question list forever.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <button onClick={deleteConfirmationDialogCloseHandler} className='blueDialogActionButton'>Cancel</button>
+                <button onClick={agreeActionClickHandler} autoFocus className='redDialogActionButton'>Delete</button>
+            </DialogActions>
+        </Dialog>
     )
 }
 

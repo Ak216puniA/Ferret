@@ -1,0 +1,36 @@
+.candidateModalQuestionDeleteIconDiv{
+    padding: 4px 4px 0px 4px;
+    border-radius: 4px;
+}
+
+.candidateModalQuestionDeleteIconDiv:hover{
+    background-color: #F2D7D5;
+}
+
+.blueDialogActionButton{
+    color: white;
+    background-color: #00ADB5;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    margin: 0px 4px 4px 4px;
+    border-radius: 8px;
+}
+
+.blueDialogActionButton:hover{
+    background-color: #00BCC5;
+}
+
+.redDialogActionButton{
+    color: white;
+    background-color: #C0392B;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    margin: 0px 4px 4px 4px;
+    border-radius: 8px;
+}
+
+.redDialogActionButton:hover{
+    background-color: #CD6155;
+}

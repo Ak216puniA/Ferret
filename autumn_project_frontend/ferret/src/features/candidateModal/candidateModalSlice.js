@@ -13,7 +13,8 @@ const initialState = {
     candidate_question_data: [],
     section_name: '',
     section_id: 0,
-    interviewQuestionCreated: false
+    interviewQuestionsChanged: false,
+    openDeleteDialog: false
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -125,6 +126,22 @@ export const createCandidateInterviewQuestion = createAsyncThunk('candidateModal
     })
 })
 
+export const deleteCandidateInterviewQuestion = createAsyncThunk('candidateModal/deleteCandidateInterviewQuestion', (questionData) => {
+    return axios
+    .delete(
+        `${CANDIDATE_MARKS}${questionData['candidateMarksId']}`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -138,7 +155,10 @@ const candidateModalSlice = createSlice({
             state.section_id = action.payload['section_id']
         },
         updatedCandidateSectionQuestionList: (state) => {
-            state.interviewQuestionCreated = false
+            state.interviewQuestionsChanged = false
+        },
+        openDeleteCofirmationDialog: (state,action) => {
+            state.openDeleteDialog = action.payload
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -228,18 +248,37 @@ const candidateModalSlice = createSlice({
         .addCase(createCandidateInterviewQuestion.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            state.interviewQuestionCreated = true
+            state.interviewQuestionsChanged = true
             console.log("INTERVIEW_QUESTION_CREATED...")
         })
         .addCase(createCandidateInterviewQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            state.interviewQuestionCreated = false
+            state.interviewQuestionsChanged = false
             console.log("INTERVIEW_QUESTION_NOT_CREATED")
+            console.log(action.error.message)
+        })
+        .addCase(deleteCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteCandidateInterviewQuestion.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.interviewQuestionsChanged = true
+            state.openDeleteDialog = false
+            console.log("INTERVIEW_QUESTION_DELETED...")
+            console.log(action.payload)
+        })
+        .addCase(deleteCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.interviewQuestionsChanged = false
+            state.openDeleteDialog = false
+            console.log("INTERVIEW_QUESTION_NOT_DELETED...")
             console.log(action.error.message)
         })
     }
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog } = candidateModalSlice.actions
