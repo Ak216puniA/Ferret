@@ -167,7 +167,6 @@ function QuestionsContent() {
     }
 
     const agreeActionClickHandler = () => {
-        console.log(questionState.deleteQuestionId)
         dispatch(
             deleteQuestion({
                 questionId: questionState.deleteQuestionId

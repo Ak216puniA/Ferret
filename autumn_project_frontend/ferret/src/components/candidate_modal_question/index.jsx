@@ -52,7 +52,6 @@ function CandidateModalQuestion(props) {
     }
 
     const markQuestionChecked = () => {
-        console.log(question['id'])
         dispatch(
             updateCandidateQuestionStatus({
                 id: question['id'],

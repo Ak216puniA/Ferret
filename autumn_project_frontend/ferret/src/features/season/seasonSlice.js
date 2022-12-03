@@ -82,12 +82,12 @@ const seasonSlice = createSlice({
         .addCase(createSeason.pending, (state) => {
             state.loading = true
         })
-        .addCase(createSeason.fulfilled, (state,action) => {
+        .addCase(createSeason.fulfilled, (state) => {
             state.loading = false
             state.error = ''
             state.new_year = 0
             state.new_type = ''
-            console.log("Created new season")
+            // console.log("Created new season")
         })
         .addCase(createSeason.rejected, (state,action) => {
             state.loading = false

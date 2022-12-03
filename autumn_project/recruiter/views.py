@@ -108,7 +108,7 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
         return QuestionsSerializer
 
     def create(self, request):
-        print(request.data)
+        # print(request.data)
         section = Sections.objects.get(id=request.data['section_id'])
         round = Rounds.objects.get(id=section.round_id.id)
         if round.type=='test':
@@ -125,16 +125,16 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
                 'marks': int(request.data['total_marks']),
                 'assignee': None
             }
-            print(question_data)
+            # print(question_data)
             question_id = create_question(question_data)
-            print(question_id)
+            # print(question_id)
             data = {
                 'candidate_id': request.data['candidate_id'],
                 'question_id': question_id,
                 'marks': int(request.data['marks']),
                 'remarks': request.data['remarks']
             }
-            print(data)
+            # print(data)
             create_interview_candidate_marks_with_question(data)
 
         response_data = {

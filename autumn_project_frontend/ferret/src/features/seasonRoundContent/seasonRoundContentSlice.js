@@ -162,7 +162,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
-            // console.log("Candidates' retrieval failed! \n"+state.error)
+            console.log("Candidates' retrieval failed!")
         })
         .addCase(uploadCSV.pending, (state) => {
             state.loading = true
@@ -179,7 +179,7 @@ const seasonRoundContentSlice = createSlice({
             state.error = action.error.message
             state.candidate_list = []
             state.csv_uploaded = false
-            // console.log("CSV upload unsuccessful!")
+            console.log("CSV upload unsuccessful!")
         })
         .addCase(moveCandidates.pending, (state) => {
             state.loading = true
@@ -193,7 +193,7 @@ const seasonRoundContentSlice = createSlice({
         .addCase(moveCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Candidates not moved!")
         })
         .addCase(fetchCandidateSectionMarks.pending, (state) => {
             state.loading = true
@@ -208,7 +208,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.section_marks = []
             state.error = action.error.message
-            // console.log("Section marks fetch unsuccessful!")
+            console.log("All candidates' Section marks fetch unsuccessful!")
         })
         .addCase(filterCandidates.pending, (state) => {
             state.loading = true
@@ -222,7 +222,7 @@ const seasonRoundContentSlice = createSlice({
         .addCase(filterCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            // console.log("CANNOT_FILTER_CANDIDATES...")
+            console.log("Candidates not filtered!")
         })
     }
 })

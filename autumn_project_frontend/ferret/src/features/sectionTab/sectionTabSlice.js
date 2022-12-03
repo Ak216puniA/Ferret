@@ -68,7 +68,7 @@ const sectionTabSlice = createSlice({
         .addCase(createSection.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Section not created!")
         })
     }
 })

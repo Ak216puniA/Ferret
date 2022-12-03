@@ -31,7 +31,6 @@ export const createQuestion = createAsyncThunk('question/createQuestion', (quest
         },
     )
     .then((response) => {
-        console.log("Question created successful!")
         return response.data
     })
     .catch((error) => alert("Error creating question: "+error.message))
@@ -66,7 +65,6 @@ export const updateQuestion = createAsyncThunk('question/updateQuestion', (quest
         },
     )
     .then((response) => {
-        console.log("Question patch successful!")
         return response.data
     })
 })
@@ -120,7 +118,7 @@ const questionSlice = createSlice({
             state.loading = false
             state.error = ''
             state.questions = action.payload
-            console.log("Questions fetched successfully!")
+            // console.log("Questions fetched successfully!")
         })
         .addCase(fetchQuestions.rejected, (state, action) => {
             state.loading = false
@@ -138,7 +136,7 @@ const questionSlice = createSlice({
         .addCase(updateQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Question not updated!")
         })
         .addCase(createQuestion.pending, (state) => {
             state.loading = true
@@ -150,7 +148,7 @@ const questionSlice = createSlice({
         .addCase(createQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Question not created!")
         })
         .addCase(deleteQuestion.pending, (state) => {
             state.loading = true
@@ -161,8 +159,8 @@ const questionSlice = createSlice({
             state.openDeleteDialog = false
             state.questionsChanged = true
             state.deleteQuestionId = 0
-            console.log("TEST_QUESTION_DELETED...")
-            console.log(action.payload)
+            // console.log("TEST_QUESTION_DELETED...")
+            // console.log(action.payload)
         })
         .addCase(deleteQuestion.rejected, (state,action) => {
             state.loading = false
@@ -170,8 +168,8 @@ const questionSlice = createSlice({
             state.openDeleteDialog = false
             state.questionsChanged = false
             state.deleteQuestionId = 0
-            console.log("TEST_QUESTION_NOT_DELETED...")
-            console.log(action.error.message)
+            console.log("Question not deleted")
+            // console.log(action.error.message)
         })
     }
 })
