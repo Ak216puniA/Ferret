@@ -32,6 +32,7 @@ def create_interview_candidate_marks_with_question(data):
         candidate_marks.marks=data['marks']
         candidate_marks.remarks=data['remarks']
     candidate_marks.save()
+    print(candidate_marks)
 
 def get_section_total_marks(section_data):
     section_total_marks=[]

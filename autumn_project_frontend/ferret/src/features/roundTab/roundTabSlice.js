@@ -64,6 +64,8 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
     })
 })
 
+// export const updateSectionTotalMarks = 
+
 const roundTabSlice = createSlice({
     name : 'roundTab',
     initialState,

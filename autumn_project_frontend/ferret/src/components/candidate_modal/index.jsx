@@ -6,18 +6,17 @@ import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { IoMdDoneAll } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
-import { createQuestion } from '../../features/question/questionSlice'
+import { createCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateQuestionMarks, updateCandidateQuestionStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import './index.css';
 
 function InterviewSectionAddQuestion() {
     const candidateModalState = useSelector((state) => state.candidateModal)
     const dispatch = useDispatch()
 
-    const [questionText, setQuestionText] = useState()
-    const [questionTotalMarks, setQuestionTotalMarks] = useState()
-    const [questionMarks, setQuestionMarks] = useState()
-    const [questionRemarks, setQuestionRemarks] = useState()
+    const [questionText, setQuestionText] = useState('')
+    const [questionTotalMarks, setQuestionTotalMarks] = useState(0)
+    const [questionMarks, setQuestionMarks] = useState(0)
+    const [questionRemarks, setQuestionRemarks] = useState('')
 
     const questionTextChangeHandler = (event) => {
         setQuestionText(event.target.value)
@@ -36,17 +35,24 @@ function InterviewSectionAddQuestion() {
     }
 
     const createInterviewQuestion = () => {
-        console.log("CREATE_QUESTION...")
-        dispatch(
-            createQuestion({
-                candidate_id: candidateModalState.candidate_id,
-                section_id: candidateModalState.section_id,
-                questionText: questionText,
-                questionMarks: questionMarks,
-                questionTotalMarks: questionTotalMarks,
-                questionRemarks: questionRemarks
-            })
-        )
+        if(questionText!==''){
+            dispatch(
+                createCandidateInterviewQuestion({
+                    candidate_id: candidateModalState.candidate_id,
+                    section_id: candidateModalState.section_id,
+                    questionText: questionText,
+                    questionMarks: questionMarks,
+                    questionTotalMarks: questionTotalMarks,
+                    questionRemarks: questionRemarks
+                })
+            )
+            setQuestionMarks(0)
+            setQuestionRemarks('')
+            setQuestionText('')
+            setQuestionTotalMarks(0)
+        }else{
+            alert("Question text is a required field!")
+        }
     }
 
     return (
@@ -328,6 +334,19 @@ function CandidateModal() {
         flexDirection:'column',
         alignItems:'center',
     }
+
+    useEffect(() => {
+        if(candidateModalState.interviewQuestionCreated===true){
+            console.log("Hello")
+            dispatch(
+                fetchQuestionWiseCandidateSectionMarks({
+                    candidate_id: candidateModalState.candidate['id'],
+                    section_id: candidateModalState.section_id
+                })
+            )
+            dispatch(updatedCandidateSectionQuestionList())
+        }
+    },[candidateModalState.interviewQuestionCreated])
 
     return (
         <Dialog

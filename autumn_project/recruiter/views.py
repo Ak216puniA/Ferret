@@ -119,20 +119,23 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
             }
             create_test_candidate_marks_with_question(data)
         if round.type=='interview':
-            print("INTERVIEW_QUESTION_TO_CREATE...")
-            # question_data = {
-            #     'section_id': request.data['section_id'],
-            #     'text': request.data['text'],
-            #     'marks': request.data['total_marks']
-            # }
-            # question_id = create_question(question_data)
-            # data = {
-            #     'candidate_id': request.data['candidate_id'],
-            #     'question_id': question_id,
-            #     'marks': request.data['marks'],
-            #     'remarks': request.data['remarks']
-            # }
-            # create_interview_candidate_marks_with_question(data)
+            question_data = {
+                'section_id': request.data['section_id'],
+                'text': request.data['text'],
+                'marks': int(request.data['total_marks']),
+                'assignee': None
+            }
+            print(question_data)
+            question_id = create_question(question_data)
+            print(question_id)
+            data = {
+                'candidate_id': request.data['candidate_id'],
+                'question_id': question_id,
+                'marks': int(request.data['marks']),
+                'remarks': request.data['remarks']
+            }
+            print(data)
+            create_interview_candidate_marks_with_question(data)
 
         response_data = {
             'status': 'success'

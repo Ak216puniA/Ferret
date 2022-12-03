@@ -12,7 +12,8 @@ const initialState = {
     candidate_section_marks: [],
     candidate_question_data: [],
     section_name: '',
-    section_id: 0
+    section_id: 0,
+    interviewQuestionCreated: false
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -136,6 +137,9 @@ const candidateModalSlice = createSlice({
             state.section_name = action.payload['section_name']
             state.section_id = action.payload['section_id']
         },
+        updatedCandidateSectionQuestionList: (state) => {
+            state.interviewQuestionCreated = false
+        },
         resetCandidateModalState: (state) => {
             state.loading = false
             state.error = ''
@@ -221,14 +225,16 @@ const candidateModalSlice = createSlice({
         .addCase(createCandidateInterviewQuestion.pending, (state) => {
             state.loading = true
         })
-        .addCase(createCandidateInterviewQuestion.fulfilled, (state,action) => {
+        .addCase(createCandidateInterviewQuestion.fulfilled, (state) => {
             state.loading = false
             state.error = ''
+            state.interviewQuestionCreated = true
             console.log("INTERVIEW_QUESTION_CREATED...")
         })
         .addCase(createCandidateInterviewQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
+            state.interviewQuestionCreated = false
             console.log("INTERVIEW_QUESTION_NOT_CREATED")
             console.log(action.error.message)
         })
@@ -236,4 +242,4 @@ const candidateModalSlice = createSlice({
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList } = candidateModalSlice.actions

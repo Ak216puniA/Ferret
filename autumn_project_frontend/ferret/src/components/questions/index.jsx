@@ -15,6 +15,7 @@ import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice"
 function QuestionSegment(props) {
     const { question, index } = props
     const userState = useSelector((state) => state.user)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const [questionMarks, setQuestionMarks] = useState(question['marks'])
@@ -48,6 +49,31 @@ function QuestionSegment(props) {
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
     []
 
+    let questionAssigneeComponent = roundTabState.currentTabType==='test' ?
+    <div className="questionAssignee">Assignee: {questionAssignee}</div> :
+    <></>
+
+    let questionAssigneeEditComponent = roundTabState.currentTabType==='test' ?
+    <div className="editQuestionField">
+        <div className="questionMarks">{`Assignee: `}</div>
+        <Select 
+        required
+        value={questionAssignee}
+        variant='outlined'
+        sx={{
+            "color":"#EEEEEE",
+            "fontSize":"15px",
+            "height":"36px",
+            "padding":"4px 16px",
+            "borderColor":"#F5B041"
+        }}
+        onChange={assigneeChangeHandler}
+        >
+            {assignee_list}
+        </Select>
+    </div> :
+    <></>
+
     let question_desc = questionEdit ?
     <>
         <div className="editQuestionField">
@@ -73,28 +99,11 @@ function QuestionSegment(props) {
             />
             <div className="questionMarks">{` marks)`}</div>
         </div>
-        <div className="editQuestionField">
-            <div className="questionMarks">{`Assignee: `}</div>
-            <Select 
-            required
-            value={questionAssignee}
-            variant='outlined'
-            sx={{
-                "color":"#EEEEEE",
-                "fontSize":"15px",
-                "height":"36px",
-                "padding":"4px 16px",
-                "borderColor":"#F5B041"
-            }}
-            onChange={assigneeChangeHandler}
-            >
-                {assignee_list}
-            </Select>
-        </div>
+        {questionAssigneeEditComponent}
     </> :
     <>
         <div className="questionMarks">{`(${questionMarks} marks)`}</div>
-        <div className="questionAssignee">Assignee: {questionAssignee}</div>
+        {questionAssigneeComponent}
     </>
 
     let edit_button = questionEdit ?
