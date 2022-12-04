@@ -43,9 +43,13 @@ function FilterDrawer() {
         }
     }
 
-    const categories = [
+    const categories = localStorage.getItem('year')>2 ? 
+    [
         'Section',
         'Marks',
+        'Status'
+    ] :
+    [
         'Status'
     ]
 

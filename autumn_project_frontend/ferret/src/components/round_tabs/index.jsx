@@ -54,10 +54,15 @@ function RoundTabs() {
         )
     }) : []
 
+    const yearWiseAddRoundButton = localStorage.getItem('year')>2 ?
+    <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div> :
+    <></>
+
     return (
         <>
             {tabs}
-            <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div>
+            {/* <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div> */}
+            {yearWiseAddRoundButton}
         </>
     )
 }

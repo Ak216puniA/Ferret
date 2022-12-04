@@ -285,7 +285,26 @@ class LoginView(APIView):
 
 class isUserAuthenticated(APIView):
     def get(self, request):
-        return Response({'authenticated': request.user.is_authenticated})
+        print(request.user.name)
+        if request.user.is_authenticated==True:
+            response_data = {
+                'authenticated': request.user.is_authenticated,
+                'username': request.user.username,
+                'name': request.user.name,
+                'email': request.user.email,
+                'year': request.user.year,
+                'userpart': request.user.userpart
+            }
+        else:
+            response_data = {
+                'authenticated': request.user.is_authenticated,
+                'username': '',
+                'name': '',
+                'email': '',
+                'year': 0,
+                'userpart': ''
+            }
+        return Response(response_data)
 
 class LogoutView(APIView):
     def get(self, request, format=None):

@@ -41,10 +41,15 @@ function SectionTabs(props) {
         )
     })
 
+    const yearWiseAddSectionButton = localStorage.getItem('year')>2 ?
+    <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateSectionDialog())} size={28}/></div> :
+    <></>
+
     return (
         <>
             {tabs}
-            <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateSectionDialog())} size={28}/></div>
+            {/* <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateSectionDialog())} size={28}/></div> */}
+            {yearWiseAddSectionButton}
         </>
     )
 }

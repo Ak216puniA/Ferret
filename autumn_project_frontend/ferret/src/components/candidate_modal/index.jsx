@@ -100,6 +100,21 @@ function CandidateModal() {
     </> : 
     <></>
 
+    const yearWiseSectionCards = localStorage.getItem('year')>2 ?
+    <div className='candidateModalContentDiv'>
+        {sectionCards}
+    </div> :
+    <></>
+
+    const yearWiseSectionDesc = localStorage.getItem('year')>2 ?
+    <div className='candidateModalSectionDescDiv'>
+        <div className='candidateModalHeading1'>{sectionName}</div>
+        {sectionQuestionData}
+        {addNewQuestionOption}
+    </div> :
+    <></>
+
+
     const flexBoxRow = {
         display:'flex',
         flexDirection:'row',
@@ -178,9 +193,10 @@ function CandidateModal() {
                             <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
                         </div>
                     </div>
-                    <div className='candidateModalContentDiv'>
+                    {/* <div className='candidateModalContentDiv'>
                         {sectionCards}
-                    </div>
+                    </div> */}
+                    {yearWiseSectionCards}
                     <Divider 
                     style={{
                         width:'100%', 
@@ -188,11 +204,12 @@ function CandidateModal() {
                         margin: '8px 0px'
                     }}
                     />
-                    <div className='candidateModalSectionDescDiv'>
+                    {/* <div className='candidateModalSectionDescDiv'>
                         <div className='candidateModalHeading1'>{sectionName}</div>
                         {sectionQuestionData}
                         {addNewQuestionOption}
-                    </div>
+                    </div> */}
+                    {yearWiseSectionDesc}
                 </Box>
             </DialogContent>
         </Dialog>

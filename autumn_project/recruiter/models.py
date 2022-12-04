@@ -10,6 +10,7 @@ class Users(AbstractUser):
     last_name=None
     last_login=models.DateTimeField(auto_now=True)
     date_joined=models.DateField(auto_now_add=True)
+    name=models.CharField(max_length=255,null=True,blank=True)
 
     class UserpartForUser(models.TextChoices):
         DEVELOPER = 'developer', _('Developer')

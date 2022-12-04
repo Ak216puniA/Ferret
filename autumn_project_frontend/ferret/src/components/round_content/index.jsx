@@ -53,7 +53,7 @@ function RoundTableRow(props){
     }
 
     let candidate_marks = <></>
-    if(candidate_section_marks!=null){
+    if(candidate_section_marks!=null && localStorage.getItem('year')>2){
         candidate_marks = (
             candidate_section_marks.length>0 ?
             candidate_section_marks.map((marks,index) => {
@@ -63,16 +63,27 @@ function RoundTableRow(props){
         )
     }
 
+    const yearWiseCheckbox = localStorage.getItem('year')>2 ?
+    <div className={`roundContentCheckbox  singleElementRowFlex`}>
+        <Checkbox 
+        size="small" 
+        sx={{color: '#00ADB5'}}
+        onChange={checkboxClickHandler}
+        />
+    </div> :
+    <></>
+
     return (
         <>
         <div className='roundCandidateRow'>
-            <div className={`roundContentCheckbox  singleElementRowFlex`}>
+            {/* <div className={`roundContentCheckbox  singleElementRowFlex`}>
                 <Checkbox 
                 size="small" 
                 sx={{color: '#00ADB5'}}
                 onChange={checkboxClickHandler}
                 />
-            </div>
+            </div> */}
+            {yearWiseCheckbox}
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
@@ -132,9 +143,11 @@ function RoundContent(props) {
         dispatch(openFilterDrawer(true))
     }
 
-    const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
+    const move_button = localStorage.getItem('year')>2 ? 
+    <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
+    <></>
 
-    const csv_button = current_round_index===0 ?
+    const csv_button = current_round_index===0 && localStorage.getItem('year')>2 ?
     <div className="rightButton">
         <label htmlFor="uploadCSV">
             <input
@@ -170,11 +183,17 @@ function RoundContent(props) {
         <div></div>
     )
 
-    let roundTableSectionHeading = (
+    let roundTableSectionHeading = localStorage.getItem('year')>2 ? 
+    (
         roundTabState.current_sections.length>0 ?
         roundTabState.current_sections.map((section) => <div key={section['id']} className={`roundContentCandidateSection singleElementRowFlex`}>{section['name']}</div>) :
         <div></div>
-    )
+    ) :
+    <></>
+
+    const yearWiseCheckboxHeadingRowPadding = localStorage.getItem('year')>2 ? 
+    <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
+    <></>
 
     return (
         <div className="seasonTestContent">
@@ -195,7 +214,8 @@ function RoundContent(props) {
             </div>
             <div className="roundContentDiv">
                 <div className='roundHeadingRow'>
-                    <div className={`roundContentCheckbox  singleElementRowFlex`}></div>
+                    {/* <div className={`roundContentCheckbox  singleElementRowFlex`}></div> */}
+                    {yearWiseCheckboxHeadingRowPadding}
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>
                     <div className={`roundContentCandidateStatus singleElementRowFlex`}>Status</div>
