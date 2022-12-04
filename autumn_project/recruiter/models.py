@@ -18,7 +18,7 @@ class Users(AbstractUser):
 
     userpart=models.CharField(max_length=16,choices=UserpartForUser.choices,default=UserpartForUser.DEVELOPER)
     year=models.IntegerField(default=0)
-    image=models.ImageField(null=True)
+    image=models.ImageField(null=True,blank=True)
 
     def __str__(self):
         return self.username

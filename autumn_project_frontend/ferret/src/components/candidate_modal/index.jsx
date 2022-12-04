@@ -1,10 +1,11 @@
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
+import { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
@@ -17,6 +18,8 @@ function CandidateModal() {
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    const [candidateRoundStatus, setCandidateRoundStatus] = useState()
 
     const closeModalHandler = () => {
         dispatch(resetCandidateModalState())
@@ -197,6 +200,30 @@ function CandidateModal() {
                         {sectionCards}
                     </div> */}
                     {yearWiseSectionCards}
+                    <div>
+                        <div>
+                            Status: 
+                        </div>
+                        <div>
+                        <FormControl fullWidth>
+                            <InputLabel id='criteria'>Filtering Criteria</InputLabel>
+                            <Select 
+                            required 
+                            labelid='criteria' 
+                            label='Filtering Criteria'
+                            // value={filterState.marksCriteria}
+                            placeholder='Filtering criteria' 
+                            variant='outlined'
+                            // onChange={marksCriteriaChangeHandler}
+                            >
+                                <MenuItem value={'topPercentage'}>Top rankers based on Percentage</MenuItem>
+                                <MenuItem value={'topMarks'}>Top rankers based on Marks</MenuItem>
+                                <MenuItem value={'absoluteMarks'}>Absolute marks</MenuItem>
+                            </Select>
+                        </FormControl>
+                        </div>
+                        {candidateModalState.candidateRoundId}
+                    </div>
                     <Divider 
                     style={{
                         width:'100%', 

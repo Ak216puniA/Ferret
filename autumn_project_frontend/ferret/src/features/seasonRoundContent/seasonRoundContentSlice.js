@@ -69,21 +69,25 @@ export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidate
     })
 })
 
-export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', async (requestData) => {
-    const response = await axios
-        .post(
-            `${SECTION_MARKS}`,
-            {
-                candidate_list: requestData['candidate_list'],
-                section_list: requestData['section_list'],
+export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
+    return axios
+    .post(
+        `${SECTION_MARKS}`,
+        {
+            candidate_list: requestData['candidate_list'],
+            section_list: requestData['section_list'],
+        },
+        {
+            headers: {
+                "X-CSRFToken": Cookies.get('ferret_csrftoken'),
             },
-            {
-                headers: {
-                    "X-CSRFToken": Cookies.get('ferret_csrftoken'),
-                },
-                withCredentials: true
-            });
-    return response.data;
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
 })
 
 export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandidates', (filterData) => {

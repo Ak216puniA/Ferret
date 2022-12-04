@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS, CANDIDATE_ROUND } from '../../urls'
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -8,6 +8,7 @@ const initialState = {
     error: '',
     open_candidate_modal: false,
     candidate_id: 0,
+    candidateRoundId: 0,
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
@@ -163,6 +164,13 @@ export const chooseCandidateInterviewQuestion = createAsyncThunk('candidateModal
     })
 })
 
+export const updateCandidateRoundStatus = createAsyncThunk('candidateModal/updateCandidateRoundStatus', (candidateRoundData) => {
+    return axios
+    .patch(
+        `${CANDIDATE_ROUND}`
+    )
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -170,6 +178,7 @@ const candidateModalSlice = createSlice({
         openCandidateModal: (state,action) => {
             state.open_candidate_modal = action.payload['open']
             state.candidate_id = action.payload['candidate_id']
+            state.candidateRoundId = action.payload['candidateRoundId']
         },
         selectSection: (state,action) => {
             state.section_name = action.payload['section_name']
@@ -187,6 +196,7 @@ const candidateModalSlice = createSlice({
             state.error = ''
             state.open_candidate_modal = false
             state.candidate_id = 0
+            state.candidateRoundId = 0
             state.candidate = []
             state.candidate_section_marks = []
             state.candidate_question_data = []

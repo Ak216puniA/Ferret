@@ -1,11 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { tabClicked, openCreateRoundDialog, fetchSections, fetchCandidateMarks } from "../../features/roundTab/roundTabSlice";
+import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
-import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 
 function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)

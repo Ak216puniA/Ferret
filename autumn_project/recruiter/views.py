@@ -391,6 +391,7 @@ class IndividualCandidateSectionMarks(APIView):
 
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
+        print(request.data)
         filter_data = {
             'round_id': request.data['round_id'],
             'section': int(request.data['section']),

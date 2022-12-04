@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Checkbox } from '@mui/material'
+import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { AiOutlineReload } from 'react-icons/ai'
@@ -113,7 +113,7 @@ function FilterStatusContent() {
   }
 
   const resetButtonHandler = () => {
-    dispatch(setStatus(-1))
+    dispatch(setStatus(''))
   }
 
   console.log(roundTabState.currentTabType)

@@ -14,7 +14,7 @@ import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 
 function RoundTableRow(props){
-    const {candidate, status, index} = props
+    const {candidate, status, index, candidateRoundId} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -34,7 +34,8 @@ function RoundTableRow(props){
         dispatch(
             openCandidateModal({
                 open: true,
-                candidate_id: candidate['id']
+                candidate_id: candidate['id'],
+                candidateRoundId: candidateRoundId
             })
         )
         dispatch(fetchCandidate(candidate['id']))
@@ -113,7 +114,7 @@ function RoundContent(props) {
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
-    },[seasonRoundContentState.candidate_list,roundTabState.current_sections,dispatch])
+    },[seasonRoundContentState.candidate_list])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
@@ -179,7 +180,7 @@ function RoundContent(props) {
     
     let roundTable = (
         seasonRoundContentState.candidate_list.length>0 ? 
-        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} candidateRoundId={candidate['id']} status={candidate['status']} index={index+1}/>) : 
         <div></div>
     )
 
