@@ -1,119 +1,17 @@
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
-import { IoMdDoneAll } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { fetchQuestions } from '../../features/question/questionSlice'
+import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
+import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
+import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
+import CandidateModalQuestion from '../candidate_modal_question'
+import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import './index.css';
-
-function CandidateModalQuestion(props) {
-    const {question,index} = props
-    const candidateModalState = useSelector((state) => state.candidateModal)
-    const roundTabState = useSelector((state) => state.roundTab)
-    const dispatch = useDispatch()
-
-    const [questionMarks, setQuestionMarks] = useState()
-    const [questionRemarks, setQuestionRemarks] = useState()
-
-    const remarkChangeHandler = (event) => {
-        setQuestionRemarks(event.target.value)
-    }
-
-    const marksChangeHandler = (event) => {
-        setQuestionMarks(event.target.value)
-        dispatch(
-            updateCandidateQuestionMarks({
-                id: question['id'],
-                marks: event.target.value
-            })
-        )
-        dispatch(
-            fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidateModalState.candidate_id],
-                section_list: roundTabState.current_sections.map(section => section['id'])
-            })
-        )
-    }
-
-    const markQuestionChecked = () => {
-        dispatch(
-            updateCandidateQuestionStatus({
-                id: question['id'],
-                remarks: questionRemarks
-            })
-        )
-    }
-
-    useEffect(() => {
-        setQuestionMarks(question['marks'])
-        setQuestionRemarks(question['remarks']=='' ? '' : question['remarks'])
-    },[])
-
-    return (
-        <>
-        <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
-            <div className='candidateModalRowFlex'>
-                <div className='candidateModalQuestionNo'>Q.{index+1}</div>
-                <div>({question['assignee']['username']})</div>
-            </div>
-            <div className='candidateModalColumnFlex'>
-                <div className='candidateModalQuestionText'>{question['question']['text']}</div>
-                <div className='candidateModalQuestionMarks'>
-                    <TextField 
-                    type='number' 
-                    value={questionMarks}
-                    variant='outlined'
-                    onChange={marksChangeHandler}
-                    size='small'
-                    sx={{
-                        justifyContent:"flex-end",
-                        width: '64px',
-                        padding: '8px 0px',
-                        display: 'flex',
-                        marginRight: '8px'
-                    }}
-                    />
-                    /{question['question']['marks']}
-                </div>
-            </div>
-            <div className='candidateModalColumnFlex'>
-                <div>Remarks:</div>
-                <TextField 
-                type='text' 
-                value={questionRemarks}
-                variant='outlined'
-                fullWidth
-                multiline={true}
-                rows='2'
-                onChange={remarkChangeHandler}
-                sx={{
-                    width: '100%',
-                    fontSize: '14px',
-                    margin: '4px 0px'
-                }}
-                />
-            </div>
-            <div className='candidateModalColumnFlex2'>
-                <div className='candidateModalCheckButtonDiv'>
-                    <button className='candidateModalCheckButton' onClick={markQuestionChecked}><IoMdDoneAll className='tickIcon' size={20}/></button>
-                </div>
-                <div>Status : {question['status']}</div>
-            </div>
-        </div>
-        <Divider 
-        style={{
-            width:'100%', 
-            backgroundColor: '#F5B041',
-            marginTop: '4px',
-            marginBottom: '12px'
-        }}
-        />
-        </>
-    )
-}
 
 function CandidateModal() {
     const candidateModalState = useSelector((state) => state.candidateModal)
@@ -131,11 +29,27 @@ function CandidateModal() {
                 section_id: section_id
             })
         )
-        dispatch(selectSection(section_name))
+        dispatch(selectSection({
+            'section_name':section_name,
+            'section_id':section_id
+        }))
         dispatch(
             fetchSelectedCandidateSectionMarks({
                 candidate_list: [candidateModalState.candidate_id],
                 section_list: roundTabState.current_sections.map(section => section['id'])
+            })
+        )
+        dispatch(fetchQuestions(section_id))
+    }
+
+    const dialogCloseHandler = () => {
+        dispatch(openDeleteCofirmationDialog(false))
+    }
+
+    const agreeActionClickHandler = () => {
+        dispatch(
+            deleteCandidateInterviewQuestion({
+                candidateMarksId: candidateModalState.deleteQuestionId
             })
         )
     }
@@ -172,12 +86,19 @@ function CandidateModal() {
     }) :
     []
 
-    let sectionName = candidateModalState.section_name!='' ? candidateModalState.section_name : 'No section selected!'
+    let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
 
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
+
+    let addNewQuestionOption = (candidateModalState.section_name!=='' && roundTabState.currentTabType==='interview') ? 
+    <>
+    <CandidateModalInterviewAddQuestion />
+    <CandidateModalInterviewChooseQuestion />
+    </> : 
+    <></>
 
     const flexBoxRow = {
         display:'flex',
@@ -194,12 +115,31 @@ function CandidateModal() {
         alignItems:'center',
     }
 
+    useEffect(() => {
+        if(candidateModalState.interviewQuestionsChanged===true){
+            dispatch(
+                fetchQuestionWiseCandidateSectionMarks({
+                    candidate_id: candidateModalState.candidate['id'],
+                    section_id: candidateModalState.section_id
+                })
+            )
+            dispatch(updatedCandidateSectionQuestionList())
+            dispatch(
+                fetchCurrentSectionsTotalMarks({
+                    candidateId: candidateModalState.candidate['id'],
+                    sectionList: roundTabState.current_sections.map(section => section['id'])
+                })
+            )
+        }
+    },[candidateModalState.interviewQuestionsChanged])
+
     return (
+        <>
         <Dialog
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
         className='candidateModal'
-        PaperProps={{ sx: { width: "60%", backgroundColor: '#EEEEEE' } }}
+        PaperProps={{ sx: { width: "75%", backgroundColor: '#EEEEEE' } }}
         >
             <div className='crossDiv' onClick={closeModalHandler}><GrClose size={12}/></div>
             <DialogTitle>
@@ -251,10 +191,17 @@ function CandidateModal() {
                     <div className='candidateModalSectionDescDiv'>
                         <div className='candidateModalHeading1'>{sectionName}</div>
                         {sectionQuestionData}
+                        {addNewQuestionOption}
                     </div>
                 </Box>
             </DialogContent>
         </Dialog>
+        <DeleteConfirmationDialog
+        open={candidateModalState.openDeleteDialog} 
+        dialogCloseHandler={dialogCloseHandler} 
+        agreeActionClickHandler={agreeActionClickHandler}
+        />
+        </>
     )
 }
 

@@ -15,7 +15,7 @@ export const logoutUser = createAsyncThunk('logout/logoutUser', () => {
         localStorage.setItem('authenticated',!response.data['logged_out'])
         return response.data
     })
-    .catch((error) => console.log(error))
+    // .catch((error) => console.log(error))
 })
 
 const logoutSlice = createSlice({

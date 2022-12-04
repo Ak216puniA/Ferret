@@ -1,11 +1,11 @@
 from cmath import exp
 from urllib import response
 from rest_framework.response import Response
-from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
-from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
-from .utilities.questions_update import create_question
-from .utilities.candidate_marks_update import create_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks
-from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
+from .utilities.csv import *
+from .utilities.candidate_round_update import *
+from .utilities.questions_update import *
+from .utilities.candidate_marks_update import *
+from .utilities.filter import *
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -107,23 +107,42 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
             return QuestionsNestedSerializer
         return QuestionsSerializer
 
-    def create(self, request, *args, **kwargs):
-        question_id = create_question(request.data)
-
+    def create(self, request):
         section = Sections.objects.get(id=request.data['section_id'])
         round = Rounds.objects.get(id=section.round_id.id)
         if round.type=='test':
+            question_id = create_question(request.data)
             data = {
                 'round_id':round.id,
                 'question_id':question_id
             }
-            # print(data)
-            create_candidate_marks_with_question(data)
+            create_test_candidate_marks_with_question(data)
+        if round.type=='interview':
+            question_data = {
+                'section_id': request.data['section_id'],
+                'text': request.data['text'],
+                'marks': int(request.data['total_marks']),
+                'assignee': None
+            }
+            question_id = create_question(question_data)
+            
+            data = {
+                'candidate_id': request.data['candidate_id'],
+                'question_id': question_id,
+                'marks': int(request.data['marks']),
+                'remarks': request.data['remarks']
+            }
+            create_interview_candidate_marks_with_question(data)
 
         response_data = {
             'status': 'success'
         }
         return Response(response_data,status.HTTP_201_CREATED)
+
+    def destroy(self, request, pk=None):
+        delete_question(pk)
+        delete_question_for_all_candidates(pk)
+        return Response({'status':'success'},status.HTTP_200_OK)
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     queryset=InterviewPanel.objects.all()
@@ -261,13 +280,11 @@ class LoginView(APIView):
                         res = Response(status=status.HTTP_202_ACCEPTED)
                         res['Access-Control-Allow-Origin']='http://localhost:3000'
                         res['Access-Control-Allow-Credentials']='true'
-                        # print(request.user)
                         
         return redirect('http://localhost:3000/logging')
 
 class isUserAuthenticated(APIView):
     def get(self, request):
-        # print(request.user)
         return Response({'authenticated': request.user.is_authenticated})
 
 class LogoutView(APIView):
@@ -284,8 +301,6 @@ class UploadCSV(APIView):
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
 
-        # print("CSV...")
-        # print(csv_file)
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
 
@@ -330,7 +345,6 @@ class SectionMarksView(APIView):
                 }
                 candidate_section_marks = get_candidate_section_marks(candidate_section_data)
                 candidate_section_marks_list.append(candidate_section_marks)
-        # print(candidate_section_marks_list)
         
         response_data={
             'status':'success',
@@ -347,6 +361,17 @@ class IndividualCandidateSectionMarks(APIView):
         }
         question_data = get_question_wise_candidate_section_marks(candidate_section_data)
         return Response(question_data)
+
+    def post(self, request, format=None):
+        print(request.data)
+        section_total_marks = get_interview_candidate_all_section_total_marks(request.data)
+        print(section_total_marks)
+
+        response_data = {
+            'status':'success',
+            'data':section_total_marks
+        }
+        return Response(response_data)
 
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
@@ -377,7 +402,6 @@ class FilterCandidatesView(APIView):
             'candidate_list': candidate_list
         }
         candidate_list = filter_by_marks(filter_marks_data)
-        # print(candidate_list)
 
         filtered_candidates = []
         for candidate_marks_pair in candidate_list:

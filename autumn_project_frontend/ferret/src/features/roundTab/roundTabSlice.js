@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { ROUNDS, SECTIONS } from "../../urls";
+import { CANDIDATE_SECTION_MARKS, ROUNDS, SECTIONS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -10,7 +10,7 @@ const initialState = {
     round_list: [],
     currentTab : '',
     currentTabId : -1,
-    // currentTabType: '',
+    currentTabType: '',
     open : false,
     current_sections: [],
     current_sections_total_marks: []
@@ -64,6 +64,26 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
     })
 })
 
+export const fetchCurrentSectionsTotalMarks = createAsyncThunk('roundTab/fetchCurrentSectionsTotalMarks', (candidateSectionData) => {
+    return axios
+    .post(
+        `${CANDIDATE_SECTION_MARKS}`,
+        {
+            candidate_id: candidateSectionData['candidateId'],
+            section_list: candidateSectionData['sectionList']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const roundTabSlice = createSlice({
     name : 'roundTab',
     initialState,
@@ -71,7 +91,7 @@ const roundTabSlice = createSlice({
         tabClicked: (state,action) => {
             state.currentTab = action.payload['tab_name']
             state.currentTabId = action.payload['tab_id']
-            // state.currentTabType = action.payload['tab_type']
+            state.currentTabType = action.payload['tab_type']
         },
         openCreateRoundDialog: (state) => {
             state.open = true
@@ -99,15 +119,13 @@ const roundTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
-            console.log("ROUND_LIST...")
-            console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {
             state.loading = false
             state.round_list = []
             state.currentTab = ''
             state.error = action.error.message
-            console.log(action.error.message)
+            console.log("Rounds list not fetched!")
         })
         .addCase(createRound.pending, (state) => {
             state.loading = true
@@ -132,7 +150,6 @@ const roundTabSlice = createSlice({
             state.error = ''
             state.current_sections = action.payload['section_list']
             state.current_sections_total_marks = action.payload['section_total_marks_list']
-            console.log("Sections fetched successfully!")
         })
         .addCase(fetchSections.rejected, (state, action) => {
             state.loading = false
@@ -140,6 +157,19 @@ const roundTabSlice = createSlice({
             state.current_sections = []
             state.current_sections_total_marks = []
             console.log("Sections' fetch unsuccessful!")
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.current_sections_total_marks = action.payload['data']
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Current sections total marks fetch unsuccessful!")
         })
     }
 })

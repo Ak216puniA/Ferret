@@ -2,7 +2,7 @@ from recruiter.models import *
 from recruiter.serializers import QuestionsSerializer, UserNameSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
-def create_candidate_marks_with_question(data):
+def create_test_candidate_marks_with_question(data):
     try:
         candidate_rounds = CandidateRound.objects.filter(round_id=data['round_id'])
     except:
@@ -18,6 +18,22 @@ def create_candidate_marks_with_question(data):
                     )
             candidate_marks.save()
 
+def create_interview_candidate_marks_with_question(data):
+    try:
+        candidate_marks = CandidateMarks.objects.get(candidate_id=data['candidate_id'], question_id=data['question_id'])
+    except ObjectDoesNotExist:
+        candidate_marks = CandidateMarks(
+            candidate_id=Candidates.objects.get(id=data['candidate_id']),
+            question_id=Questions.objects.get(id=data['question_id']),
+            marks=data['marks'],
+            remarks=data['remarks']
+        )
+    else:
+        candidate_marks.marks=data['marks']
+        candidate_marks.remarks=data['remarks']
+    candidate_marks.save()
+    print(candidate_marks)
+
 def get_section_total_marks(section_data):
     section_total_marks=[]
     for section_id in section_data:
@@ -28,6 +44,16 @@ def get_section_total_marks(section_data):
         section_total_marks.append(section_marks)
     return section_total_marks
 
+def get_interview_candidate_all_section_total_marks(candidate_section_data):
+    total_marks=[]
+    for section_id in candidate_section_data['section_list']:
+        section_total_marks=0
+        candidate_marks = CandidateMarks.objects.filter(question_id__section_id=section_id, candidate_id=candidate_section_data['candidate_id'])
+        for candidate_question in candidate_marks:
+            question = Questions.objects.get(id=candidate_question.question_id.id)
+            section_total_marks+=question.marks
+        total_marks.append(section_total_marks)
+    return total_marks
 
 def get_candidate_section_marks(candidate_section_data):
     candidate_section_marks = [candidate_section_data['candidate_id']]
@@ -72,3 +98,9 @@ def get_question_wise_candidate_section_marks(candidate_section_data):
         }
         candidate_section_marks.append(question_data)
     return candidate_section_marks
+
+def delete_question_for_all_candidates(question_id):
+    candidate_marks = CandidateMarks.objects.filter(question_id=question_id)
+    for candidate in candidate_marks:
+        candidate.delete()
+    

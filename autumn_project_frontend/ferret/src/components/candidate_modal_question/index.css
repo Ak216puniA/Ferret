@@ -1,0 +1,8 @@
+.candidateModalQuestionDeleteIconDiv{
+    padding: 4px 4px 0px 4px;
+    border-radius: 4px;
+}
+
+.candidateModalQuestionDeleteIconDiv:hover{
+    background-color: #F2D7D5;
+}

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS } from '../../urls'
 import Cookies from "js-cookie";
 
 const initialState = {
@@ -11,7 +11,11 @@ const initialState = {
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
-    section_name: ''
+    section_name: '',
+    section_id: 0,
+    interviewQuestionsChanged: false,
+    openDeleteDialog: false,
+    deleteQuestionId: 0
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -99,6 +103,66 @@ export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/up
     })
 })
 
+export const createCandidateInterviewQuestion = createAsyncThunk('candidateModal/createCandidateInterviewQuestion', (questionData) => {
+    return axios
+    .post(
+        `${QUESTIONS}`,
+        {
+            candidate_id: questionData['candidate_id'],
+            section_id: questionData['section_id'],
+            text: questionData['questionText'],
+            marks: questionData['questionMarks'],
+            total_marks: questionData['questionTotalMarks'],
+            remarks: questionData['questionRemarks']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const deleteCandidateInterviewQuestion = createAsyncThunk('candidateModal/deleteCandidateInterviewQuestion', (questionData) => {
+    return axios
+    .delete(
+        `${CANDIDATE_MARKS}${questionData['candidateMarksId']}`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const chooseCandidateInterviewQuestion = createAsyncThunk('candidateModal/chooseCandidateInterviewQuestion', (candidateQuestionData) => {
+    return axios
+    .post(
+        `${CANDIDATE_MARKS}`,
+        {
+            candidate_id: candidateQuestionData['candidateId'],
+            question_id: candidateQuestionData['questionId']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -108,7 +172,15 @@ const candidateModalSlice = createSlice({
             state.candidate_id = action.payload['candidate_id']
         },
         selectSection: (state,action) => {
-            state.section_name = action.payload
+            state.section_name = action.payload['section_name']
+            state.section_id = action.payload['section_id']
+        },
+        updatedCandidateSectionQuestionList: (state) => {
+            state.interviewQuestionsChanged = false
+        },
+        openDeleteCofirmationDialog: (state,action) => {
+            state.openDeleteDialog = action.payload['open']
+            state.deleteQuestionId = action.payload['questionId']
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -143,8 +215,6 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_section_marks = action.payload['data'][0]
-            console.log("CANDIDATE_SECTION_MARKS_FOR_ONE_CANDIDATE...")
-            console.log(state.candidate_section_marks)
         })
         .addCase(fetchSelectedCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
@@ -158,8 +228,6 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_question_data = action.payload
-            console.log("CANDIDATE_QUESTION_DATA...")
-            console.log(state.candidate_question_data)
         })
         .addCase(fetchQuestionWiseCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
@@ -172,7 +240,6 @@ const candidateModalSlice = createSlice({
         .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            console.log("Candidate question's marks update successful!")
         })
         .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
             state.loading = false
@@ -185,15 +252,60 @@ const candidateModalSlice = createSlice({
         .addCase(updateCandidateQuestionStatus.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            console.log("Candidate question's status update successful!")
         })
         .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             console.log("Candidate question's status update unsucessful!")
         })
+        .addCase(createCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createCandidateInterviewQuestion.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.interviewQuestionsChanged = true
+        })
+        .addCase(createCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.interviewQuestionsChanged = false
+            console.log("Interview candidate question not created!")
+        })
+        .addCase(deleteCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteCandidateInterviewQuestion.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.interviewQuestionsChanged = true
+            state.openDeleteDialog = false
+            state.deleteQuestionId = 0
+        })
+        .addCase(deleteCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.interviewQuestionsChanged = false
+            state.openDeleteDialog = false
+            state.deleteQuestionId = 0
+            console.log("Interview candidate question not deleted!")
+        })
+        .addCase(chooseCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(chooseCandidateInterviewQuestion.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.interviewQuestionsChanged = true
+        })
+        .addCase(chooseCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.interviewQuestionsChanged = false
+            console.log("Cannot choose candidate interview!")
+        })
     }
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog } = candidateModalSlice.actions

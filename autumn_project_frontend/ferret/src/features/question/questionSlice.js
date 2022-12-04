@@ -8,6 +8,9 @@ const initialState = {
     error: '',
     questions: [],
     open: false,
+    openDeleteDialog: false,
+    questionsChanged: false,
+    deleteQuestionId: 0
 }
 
 export const createQuestion = createAsyncThunk('question/createQuestion', (questionData) => {
@@ -28,7 +31,6 @@ export const createQuestion = createAsyncThunk('question/createQuestion', (quest
         },
     )
     .then((response) => {
-        console.log("Question created successful!")
         return response.data
     })
     .catch((error) => alert("Error creating question: "+error.message))
@@ -63,7 +65,22 @@ export const updateQuestion = createAsyncThunk('question/updateQuestion', (quest
         },
     )
     .then((response) => {
-        console.log("Question patch successful!")
+        return response.data
+    })
+})
+
+export const deleteQuestion = createAsyncThunk('question/deleteQuestion', (questionData) => {
+    return axios
+    .delete(
+        `${QUESTIONS}${questionData['questionId']}`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
         return response.data
     })
 })
@@ -77,6 +94,13 @@ const questionSlice = createSlice({
         },
         closeCreateQuestionDialog: (state) => {
             state.open = false
+        },
+        openQuestionDeleteConfirmationDialog:  (state,action) => {
+            state.openDeleteDialog = action.payload['open']
+            state.deleteQuestionId = action.payload['deleteQuestionId']
+        },
+        updatedQuestionList: (state) => {
+            state.questionsChanged = false
         },
         resetQuestionsState: (state) => {
             state.loading = false
@@ -94,7 +118,7 @@ const questionSlice = createSlice({
             state.loading = false
             state.error = ''
             state.questions = action.payload
-            console.log("Questions fetched successfully!")
+            // console.log("Questions fetched successfully!")
         })
         .addCase(fetchQuestions.rejected, (state, action) => {
             state.loading = false
@@ -112,7 +136,7 @@ const questionSlice = createSlice({
         .addCase(updateQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Question not updated!")
         })
         .addCase(createQuestion.pending, (state) => {
             state.loading = true
@@ -124,10 +148,31 @@ const questionSlice = createSlice({
         .addCase(createQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
-            console.log(state.error)
+            console.log("Question not created!")
+        })
+        .addCase(deleteQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteQuestion.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.openDeleteDialog = false
+            state.questionsChanged = true
+            state.deleteQuestionId = 0
+            // console.log("TEST_QUESTION_DELETED...")
+            // console.log(action.payload)
+        })
+        .addCase(deleteQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.openDeleteDialog = false
+            state.questionsChanged = false
+            state.deleteQuestionId = 0
+            console.log("Question not deleted")
+            // console.log(action.error.message)
         })
     }
 })
 
 export default questionSlice.reducer
-export const { openCreateQuestionDialog, closeCreateQuestionDialog, resetQuestionsState } = questionSlice.actions
+export const { openCreateQuestionDialog, closeCreateQuestionDialog, resetQuestionsState, openQuestionDeleteConfirmationDialog, updatedQuestionList } = questionSlice.actions
