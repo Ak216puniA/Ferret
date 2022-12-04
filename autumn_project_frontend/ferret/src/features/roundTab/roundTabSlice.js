@@ -64,8 +64,6 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
     })
 })
 
-// export const updateSectionTotalMarks = 
-
 const roundTabSlice = createSlice({
     name : 'roundTab',
     initialState,
@@ -101,8 +99,6 @@ const roundTabSlice = createSlice({
             state.loading = false
             state.round_list = action.payload
             state.error = ''
-            // console.log("ROUND_LIST...")
-            // console.log(state.round_list)
         })
         .addCase(listRounds.rejected, (state,action) => {
             state.loading = false
@@ -134,7 +130,6 @@ const roundTabSlice = createSlice({
             state.error = ''
             state.current_sections = action.payload['section_list']
             state.current_sections_total_marks = action.payload['section_total_marks_list']
-            // console.log("Sections fetched successfully!")
         })
         .addCase(fetchSections.rejected, (state, action) => {
             state.loading = false

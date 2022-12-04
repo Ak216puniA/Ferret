@@ -5,8 +5,7 @@ import { useEffect } from 'react'
 import { IoMdDoneAll } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
-import DeleteConfirmationDialog from '../delete_confirmation_dialog'
+import { fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
 import './index.css'
 
 function CandidateModalQuestion(props) {
@@ -15,8 +14,8 @@ function CandidateModalQuestion(props) {
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const [questionMarks, setQuestionMarks] = useState()
-    const [questionRemarks, setQuestionRemarks] = useState()
+    const [questionMarks, setQuestionMarks] = useState(0)
+    const [questionRemarks, setQuestionRemarks] = useState('')
 
     const remarkChangeHandler = (event) => {
         setQuestionRemarks(event.target.value)
@@ -59,6 +58,24 @@ function CandidateModalQuestion(props) {
             })
         )
     }
+
+    const questionDivider = candidateModalState.candidate_question_data.length-1===index ? 
+    <Divider 
+    style={{
+        width:'100%', 
+        backgroundColor: '#00ADB5',
+        marginTop: '4px',
+        marginBottom: '12px'
+    }}
+    /> :
+    <Divider 
+    style={{
+        width:'100%', 
+        backgroundColor: '#F5B041',
+        marginTop: '4px',
+        marginBottom: '12px'
+    }}
+    />
 
     useEffect(() => {
         setQuestionMarks(question['marks'])
@@ -116,14 +133,7 @@ function CandidateModalQuestion(props) {
                 <div>Status : {question['status']}</div>
             </div>
         </div>
-        <Divider 
-        style={{
-            width:'100%', 
-            backgroundColor: '#F5B041',
-            marginTop: '4px',
-            marginBottom: '12px'
-        }}
-        />
+        {questionDivider}
         </>
     )
 }

@@ -132,7 +132,7 @@ function CandidateModal() {
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
         className='candidateModal'
-        PaperProps={{ sx: { width: "60%", backgroundColor: '#EEEEEE' } }}
+        PaperProps={{ sx: { width: "75%", backgroundColor: '#EEEEEE' } }}
         >
             <div className='crossDiv' onClick={closeModalHandler}><GrClose size={12}/></div>
             <DialogTitle>

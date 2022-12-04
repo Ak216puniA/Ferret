@@ -54,7 +54,7 @@ function CandidateModalInterviewAddQuestion() {
 
     return (
         <>
-        <div className='addCandidateQuestionHeadingDiv'>+ Question</div>
+        <div className='addCandidateQuestionHeadingDiv'>Create Question</div>
         <div className='candidateModalColumnFlex candidateModalQuestionDiv'>
             <div className='candidateModalRowFlex'>
                 <div className='candidateModalQuestionNo'>Q.</div>
@@ -134,7 +134,7 @@ function CandidateModalInterviewAddQuestion() {
         <Divider 
         style={{
             width:'100%', 
-            backgroundColor: '#F5B041',
+            backgroundColor: '#00ADB5',
             marginTop: '4px',
             marginBottom: '12px'
         }}

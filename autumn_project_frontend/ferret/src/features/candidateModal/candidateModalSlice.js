@@ -143,6 +143,26 @@ export const deleteCandidateInterviewQuestion = createAsyncThunk('candidateModal
     })
 })
 
+export const chooseCandidateInterviewQuestion = createAsyncThunk('candidateModal/chooseCandidateInterviewQuestion', (candidateQuestionData) => {
+    return axios
+    .post(
+        `${CANDIDATE_MARKS}`,
+        {
+            candidate_id: candidateQuestionData['candidateId'],
+            question_id: candidateQuestionData['questionId']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -195,8 +215,6 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_section_marks = action.payload['data'][0]
-            // console.log("CANDIDATE_SECTION_MARKS_FOR_ONE_CANDIDATE...")
-            // console.log(state.candidate_section_marks)
         })
         .addCase(fetchSelectedCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
@@ -210,8 +228,6 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_question_data = action.payload
-            // console.log("CANDIDATE_QUESTION_DATA...")
-            // console.log(state.candidate_question_data)
         })
         .addCase(fetchQuestionWiseCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
@@ -224,7 +240,6 @@ const candidateModalSlice = createSlice({
         .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            // console.log("Candidate question's marks update successful!")
         })
         .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
             state.loading = false
@@ -237,7 +252,6 @@ const candidateModalSlice = createSlice({
         .addCase(updateCandidateQuestionStatus.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            // console.log("Candidate question's status update successful!")
         })
         .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
             state.loading = false
@@ -251,26 +265,22 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.interviewQuestionsChanged = true
-            // console.log("INTERVIEW_QUESTION_CREATED...")
         })
         .addCase(createCandidateInterviewQuestion.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.interviewQuestionsChanged = false
             console.log("Interview candidate question not created!")
-            // console.log(action.error.message)
         })
         .addCase(deleteCandidateInterviewQuestion.pending, (state) => {
             state.loading = true
         })
-        .addCase(deleteCandidateInterviewQuestion.fulfilled, (state,action) => {
+        .addCase(deleteCandidateInterviewQuestion.fulfilled, (state) => {
             state.loading = false
             state.error = ''
             state.interviewQuestionsChanged = true
             state.openDeleteDialog = false
             state.deleteQuestionId = 0
-            // console.log("INTERVIEW_QUESTION_DELETED...")
-            // console.log(action.payload)
         })
         .addCase(deleteCandidateInterviewQuestion.rejected, (state,action) => {
             state.loading = false
@@ -279,7 +289,20 @@ const candidateModalSlice = createSlice({
             state.openDeleteDialog = false
             state.deleteQuestionId = 0
             console.log("Interview candidate question not deleted!")
-            // console.log(action.error.message)
+        })
+        .addCase(chooseCandidateInterviewQuestion.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(chooseCandidateInterviewQuestion.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.interviewQuestionsChanged = true
+        })
+        .addCase(chooseCandidateInterviewQuestion.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.interviewQuestionsChanged = false
+            console.log("Cannot choose candidate interview!")
         })
     }
 })
