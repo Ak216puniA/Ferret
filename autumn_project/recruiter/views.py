@@ -363,10 +363,7 @@ class IndividualCandidateSectionMarks(APIView):
         return Response(question_data)
 
     def post(self, request, format=None):
-        print(request.data)
         section_total_marks = get_interview_candidate_all_section_total_marks(request.data)
-        print(section_total_marks)
-
         response_data = {
             'status':'success',
             'data':section_total_marks
@@ -378,7 +375,7 @@ class FilterCandidatesView(APIView):
         filter_data = {
             'round_id': request.data['round_id'],
             'section': int(request.data['section']),
-            'status': int(request.data['status']),
+            'status': request.data['status'],
             'marks': int(request.data['marks']),
             'marks_criteria': request.data['marks_criteria']
         }

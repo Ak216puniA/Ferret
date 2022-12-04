@@ -18,7 +18,8 @@ function RoundTabs() {
                 dispatch(
                     tabClicked({
                         tab_name: roundTabState.round_list[0]['name'],
-                        tab_id: roundTabState.round_list[0]['id']
+                        tab_id: roundTabState.round_list[0]['id'],
+                        tab_type: roundTabState.round_list[0]['type']
                     })
                 )
                 dispatch(fetchRoundCandidates(roundTabState.round_list[0]['id']))

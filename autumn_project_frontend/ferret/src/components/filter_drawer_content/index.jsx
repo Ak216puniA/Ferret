@@ -105,6 +105,7 @@ function FilterSectionContent() {
 
 function FilterStatusContent() {
   const filterState = useSelector((state) => state.filter)
+  const roundTabState = useSelector((state) => state.roundTab)
   const dispatch = useDispatch()
 
   const radioGroupChangeHandler = (event) => { 
@@ -115,7 +116,10 @@ function FilterStatusContent() {
     dispatch(setStatus(-1))
   }
 
-  const filterDrawerStatusContentList = [[1,'Done'],[2,'Pending']]
+  console.log(roundTabState.currentTabType)
+  const filterDrawerStatusContentList = roundTabState.currentTabType==='test' ? 
+  [['done','Done'],['pending','Pending']] :
+  [['done','Done'],['pending','Pending'],['not_notified','Not Notified'],['notified','Notified'],['waiting_room','In Waiting Room'],['interview','In Interview']]
   const filterDrawerStatusContent = filterDrawerStatusContentList.map(status => <FormControlLabel key={status[0]} value={status[0]} control={<Radio />} label={status[1]} />)
 
   return (
