@@ -44,6 +44,16 @@ def get_section_total_marks(section_data):
         section_total_marks.append(section_marks)
     return section_total_marks
 
+def get_interview_candidate_all_section_total_marks(candidate_section_data):
+    total_marks=[]
+    for section_id in candidate_section_data['section_list']:
+        section_total_marks=0
+        candidate_marks = CandidateMarks.objects.filter(question_id__section_id=section_id, candidate_id=candidate_section_data['candidate_id'])
+        for candidate_question in candidate_marks:
+            question = Questions.objects.get(id=candidate_question.question_id.id)
+            section_total_marks+=question.marks
+        total_marks.append(section_total_marks)
+    return total_marks
 
 def get_candidate_section_marks(candidate_section_data):
     candidate_section_marks = [candidate_section_data['candidate_id']]

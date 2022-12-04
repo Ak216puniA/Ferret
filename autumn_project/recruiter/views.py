@@ -1,11 +1,11 @@
 from cmath import exp
 from urllib import response
 from rest_framework.response import Response
-from .utilities.csv import create_or_update_csv_candidates, create_csv_candidate_marks
-from .utilities.candidate_round_update import update_previous_candidate_round_status, create_candidate_round, delete_candidate_round
-from .utilities.questions_update import create_question, delete_question
-from .utilities.candidate_marks_update import create_test_candidate_marks_with_question, get_candidate_section_marks, get_section_total_marks, get_question_wise_candidate_section_marks, get_candidate_total_marks, create_interview_candidate_marks_with_question, delete_question_for_all_candidates
-from .utilities.filter import filter_by_status, filter_by_section, filter_by_marks
+from .utilities.csv import *
+from .utilities.candidate_round_update import *
+from .utilities.questions_update import *
+from .utilities.candidate_marks_update import *
+from .utilities.filter import *
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -280,13 +280,11 @@ class LoginView(APIView):
                         res = Response(status=status.HTTP_202_ACCEPTED)
                         res['Access-Control-Allow-Origin']='http://localhost:3000'
                         res['Access-Control-Allow-Credentials']='true'
-                        # print(request.user)
                         
         return redirect('http://localhost:3000/logging')
 
 class isUserAuthenticated(APIView):
     def get(self, request):
-        # print(request.user)
         return Response({'authenticated': request.user.is_authenticated})
 
 class LogoutView(APIView):
@@ -303,8 +301,6 @@ class UploadCSV(APIView):
         serializer.is_valid(raise_exception=True)
         csv_file = serializer.validated_data['csv_file']
 
-        # print("CSV...")
-        # print(csv_file)
         csv_reader = pandas.read_csv(csv_file)
         for _, row in csv_reader.iterrows():
 
@@ -366,6 +362,17 @@ class IndividualCandidateSectionMarks(APIView):
         question_data = get_question_wise_candidate_section_marks(candidate_section_data)
         return Response(question_data)
 
+    def post(self, request, format=None):
+        print(request.data)
+        section_total_marks = get_interview_candidate_all_section_total_marks(request.data)
+        print(section_total_marks)
+
+        response_data = {
+            'status':'success',
+            'data':section_total_marks
+        }
+        return Response(response_data)
+
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
         filter_data = {
@@ -395,7 +402,6 @@ class FilterCandidatesView(APIView):
             'candidate_list': candidate_list
         }
         candidate_list = filter_by_marks(filter_marks_data)
-        # print(candidate_list)
 
         filtered_candidates = []
         for candidate_marks_pair in candidate_list:

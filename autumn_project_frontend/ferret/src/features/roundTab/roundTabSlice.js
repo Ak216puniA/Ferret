@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { ROUNDS, SECTIONS } from "../../urls";
+import { CANDIDATE_SECTION_MARKS, ROUNDS, SECTIONS } from "../../urls";
 
 const initialState = {
     loading : false,
@@ -57,6 +57,26 @@ export const fetchSections = createAsyncThunk('roundTab/fetchSections', (round_i
         `${SECTIONS}?round_id=${round_id}`,
         {
             withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const fetchCurrentSectionsTotalMarks = createAsyncThunk('roundTab/fetchCurrentSectionsTotalMarks', (candidateSectionData) => {
+    return axios
+    .post(
+        `${CANDIDATE_SECTION_MARKS}`,
+        {
+            candidate_id: candidateSectionData['candidateId'],
+            section_list: candidateSectionData['sectionList']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
         }
     )
     .then((response) => {
@@ -137,6 +157,19 @@ const roundTabSlice = createSlice({
             state.current_sections = []
             state.current_sections_total_marks = []
             console.log("Sections' fetch unsuccessful!")
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.current_sections_total_marks = action.payload['data']
+        })
+        .addCase(fetchCurrentSectionsTotalMarks.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Current sections total marks fetch unsuccessful!")
         })
     }
 })

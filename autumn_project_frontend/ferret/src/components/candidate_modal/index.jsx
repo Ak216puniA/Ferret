@@ -6,6 +6,7 @@ import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
+import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
 import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
@@ -123,6 +124,12 @@ function CandidateModal() {
                 })
             )
             dispatch(updatedCandidateSectionQuestionList())
+            dispatch(
+                fetchCurrentSectionsTotalMarks({
+                    candidateId: candidateModalState.candidate['id'],
+                    sectionList: roundTabState.current_sections.map(section => section['id'])
+                })
+            )
         }
     },[candidateModalState.interviewQuestionsChanged])
 

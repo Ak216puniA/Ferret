@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { openQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice"
 import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
@@ -12,6 +11,7 @@ import CandidateModal from "../candidate_modal";
 import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
+import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 
 function RoundTableRow(props){
     const {candidate, status, index} = props
@@ -44,6 +44,12 @@ function RoundTableRow(props){
                 section_list: roundTabState.current_sections.map((section) => section['id'])
             })
         )
+        dispatch(
+            fetchCurrentSectionsTotalMarks({
+                candidateId: candidate['id'],
+                sectionList: roundTabState.current_sections.map((section) => section['id'])
+            })
+        )
     }
 
     let candidate_marks = <></>
@@ -72,7 +78,6 @@ function RoundTableRow(props){
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
             {candidate_marks}
         </div>
-        {/* <CandidateModal /> */}
         </>
     )
 }
