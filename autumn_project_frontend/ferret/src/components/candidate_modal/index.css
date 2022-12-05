@@ -150,3 +150,21 @@
 .candidateModalQuestionNo{
     font-size: 18px;
 }
+
+.candidateModalContentStatusDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.candidateModalStatusHeading{
+    margin-right: 8px;
+}
+
+.candidateModalStatusOptionsDiv{
+    width: 40%;
+}

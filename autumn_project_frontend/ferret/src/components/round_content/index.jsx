@@ -35,7 +35,8 @@ function RoundTableRow(props){
             openCandidateModal({
                 open: true,
                 candidate_id: candidate['id'],
-                candidateRoundId: candidateRoundId
+                candidateRoundId: candidateRoundId,
+                candidateRoundStatus: status
             })
         )
         dispatch(fetchCandidate(candidate['id']))
@@ -77,13 +78,6 @@ function RoundTableRow(props){
     return (
         <>
         <div className='roundCandidateRow'>
-            {/* <div className={`roundContentCheckbox  singleElementRowFlex`}>
-                <Checkbox 
-                size="small" 
-                sx={{color: '#00ADB5'}}
-                onChange={checkboxClickHandler}
-                />
-            </div> */}
             {yearWiseCheckbox}
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidate['name']}</div>
@@ -134,11 +128,6 @@ function RoundContent(props) {
     const moveClickHandler = (() => {
         dispatch(openMoveCandidatesDialog())
     })
-
-    // const openQuestionsHandler = () => {
-    //     dispatch(openQuestions())
-    //     localStorage.setItem('openQuestions',true)
-    // }
 
     const filterCandidatesHandler = () => {
         dispatch(openFilterDrawer(true))
@@ -215,7 +204,6 @@ function RoundContent(props) {
             </div>
             <div className="roundContentDiv">
                 <div className='roundHeadingRow'>
-                    {/* <div className={`roundContentCheckbox  singleElementRowFlex`}></div> */}
                     {yearWiseCheckboxHeadingRowPadding}
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>

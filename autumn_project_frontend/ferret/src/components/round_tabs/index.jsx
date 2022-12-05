@@ -39,7 +39,6 @@ function RoundTabs() {
                 tab_type: tab_data['tab_type']
             })
         )
-        // dispatch(closeQuestions())
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
     }
@@ -60,7 +59,6 @@ function RoundTabs() {
     return (
         <>
             {tabs}
-            {/* <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div> */}
             {yearWiseAddRoundButton}
         </>
     )

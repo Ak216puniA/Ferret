@@ -62,7 +62,6 @@ function FilterDrawer() {
             >
             <ListItemButton
             className='filterCategoryButton'
-            alignItems='center'
             style={{
                 backgroundColor: '#F5B041',
             }}

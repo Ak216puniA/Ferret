@@ -1,11 +1,10 @@
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
@@ -19,10 +18,8 @@ function CandidateModal() {
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const [candidateRoundStatus, setCandidateRoundStatus] = useState()
-
-    const closeModalHandler = () => {
-        dispatch(resetCandidateModalState())
+    const closeModalHandler = (event,reason) => {
+        if(reason!=='backdropClick' && reason!=='escapeKeyDown') dispatch(resetCandidateModalState())
     }
 
     function sectionCardClickHandler(section_id,section_name){
@@ -57,6 +54,36 @@ function CandidateModal() {
         )
     }
 
+    const candidateRoundStatusChangeHandler = (event) => {
+        dispatch(updateCandidateModalCandidateRoundStatus(event.target.value))
+    }
+
+    const candidateRoundStatusOptionsForSeniorYear = roundTabState.currentTabType==='test' ?
+    [
+        ['pending','Pending'],
+        ['done','Done']
+    ] :
+    [
+        ['pending','Pending'],
+        ['not_notified','Not Notified'],
+        ['notified','Notified'],
+        ['waiting_room','In Waiting Room'],
+        ['interview','In Interview'],
+        ['done','Done']
+    ]
+
+    const candidateRoundStatusOptionsForJuniorYear = roundTabState.currentTabType==='test' ?
+    [] :
+    [
+        ['pending','Pending'],
+        ['not_notified','Not Notified'],
+        ['notified','Notified'],
+        ['waiting_room','In Waiting Room'],
+        ['interview','In Interview']
+    ]
+
+    let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
+
     let sectionCards = roundTabState.current_sections.length>0 ?
     roundTabState.current_sections.map((section,index) => {
         return (
@@ -89,8 +116,9 @@ function CandidateModal() {
     }) :
     []
 
-    let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
-
+    let candidateRoundStatusMenuItems = localStorage.getItem('year')>2 ? 
+    candidateRoundStatusOptionsForSeniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>) :
+    candidateRoundStatusOptionsForJuniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
@@ -108,6 +136,27 @@ function CandidateModal() {
         {sectionCards}
     </div> :
     <></>
+
+    const yearWiseCandidateRoundStatus = localStorage.getItem('year')<3 && roundTabState.currentTabType=='test' ?
+    <></> :
+    <div className='candidateModalContentStatusDiv'>
+        <div className='candidateModalStatusHeading'>
+            Status: 
+        </div>
+        <div className='candidateModalStatusOptionsDiv'>
+        <FormControl fullWidth>
+            <Select 
+            required
+            value={candidateModalState.candidateRoundStatus}
+            placeholder='Filtering criteria' 
+            variant='outlined'
+            onChange={candidateRoundStatusChangeHandler}
+            >
+                {candidateRoundStatusMenuItems}
+            </Select>
+        </FormControl>
+        </div>
+    </div>
 
     const yearWiseSectionDesc = localStorage.getItem('year')>2 ?
     <div className='candidateModalSectionDescDiv'>
@@ -149,7 +198,16 @@ function CandidateModal() {
                 })
             )
         }
-    },[candidateModalState.interviewQuestionsChanged])
+        if(candidateModalState.candidateRoundStatusModified===true){
+            dispatch(
+                updateCandidateRoundStatus({
+                    candidateRoundId: candidateModalState.candidateRoundId,
+                    candidateRoundStatus: candidateModalState.candidateRoundStatus
+                })
+            )
+            dispatch(updatedCandidateRoundStatus())
+        }
+    },[candidateModalState.interviewQuestionsChanged, candidateModalState.candidateRoundStatusModified])
 
     return (
         <>
@@ -157,7 +215,9 @@ function CandidateModal() {
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
         className='candidateModal'
-        PaperProps={{ sx: { width: "75%", backgroundColor: '#EEEEEE' } }}
+        PaperProps={{ sx: { width: "80%", backgroundColor: '#EEEEEE' } }}
+        fullWidth
+        maxWidth='100%'
         >
             <div className='crossDiv' onClick={closeModalHandler}><GrClose size={12}/></div>
             <DialogTitle>
@@ -196,34 +256,8 @@ function CandidateModal() {
                             <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
                         </div>
                     </div>
-                    {/* <div className='candidateModalContentDiv'>
-                        {sectionCards}
-                    </div> */}
                     {yearWiseSectionCards}
-                    <div>
-                        <div>
-                            Status: 
-                        </div>
-                        <div>
-                        <FormControl fullWidth>
-                            <InputLabel id='criteria'>Filtering Criteria</InputLabel>
-                            <Select 
-                            required 
-                            labelid='criteria' 
-                            label='Filtering Criteria'
-                            // value={filterState.marksCriteria}
-                            placeholder='Filtering criteria' 
-                            variant='outlined'
-                            // onChange={marksCriteriaChangeHandler}
-                            >
-                                <MenuItem value={'topPercentage'}>Top rankers based on Percentage</MenuItem>
-                                <MenuItem value={'topMarks'}>Top rankers based on Marks</MenuItem>
-                                <MenuItem value={'absoluteMarks'}>Absolute marks</MenuItem>
-                            </Select>
-                        </FormControl>
-                        </div>
-                        {candidateModalState.candidateRoundId}
-                    </div>
+                    {yearWiseCandidateRoundStatus}
                     <Divider 
                     style={{
                         width:'100%', 
@@ -231,11 +265,6 @@ function CandidateModal() {
                         margin: '8px 0px'
                     }}
                     />
-                    {/* <div className='candidateModalSectionDescDiv'>
-                        <div className='candidateModalHeading1'>{sectionName}</div>
-                        {sectionQuestionData}
-                        {addNewQuestionOption}
-                    </div> */}
                     {yearWiseSectionDesc}
                 </Box>
             </DialogContent>

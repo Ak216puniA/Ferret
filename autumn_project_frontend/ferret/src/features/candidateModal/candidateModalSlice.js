@@ -9,6 +9,8 @@ const initialState = {
     open_candidate_modal: false,
     candidate_id: 0,
     candidateRoundId: 0,
+    candidateRoundStatus: '',
+    candidateRoundStatusModified: false,
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
@@ -16,7 +18,7 @@ const initialState = {
     section_id: 0,
     interviewQuestionsChanged: false,
     openDeleteDialog: false,
-    deleteQuestionId: 0
+    deleteQuestionId: 0,
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -167,8 +169,20 @@ export const chooseCandidateInterviewQuestion = createAsyncThunk('candidateModal
 export const updateCandidateRoundStatus = createAsyncThunk('candidateModal/updateCandidateRoundStatus', (candidateRoundData) => {
     return axios
     .patch(
-        `${CANDIDATE_ROUND}`
+        `${CANDIDATE_ROUND}${candidateRoundData['candidateRoundId']}/`,
+        {
+            status: candidateRoundData['candidateRoundStatus']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
     )
+    .then((response) => {
+        return response.data
+    })
 })
 
 const candidateModalSlice = createSlice({
@@ -179,6 +193,7 @@ const candidateModalSlice = createSlice({
             state.open_candidate_modal = action.payload['open']
             state.candidate_id = action.payload['candidate_id']
             state.candidateRoundId = action.payload['candidateRoundId']
+            state.candidateRoundStatus = action.payload['candidateRoundStatus']
         },
         selectSection: (state,action) => {
             state.section_name = action.payload['section_name']
@@ -191,12 +206,18 @@ const candidateModalSlice = createSlice({
             state.openDeleteDialog = action.payload['open']
             state.deleteQuestionId = action.payload['questionId']
         },
+        updateCandidateModalCandidateRoundStatus: (state,action) => {
+            state.candidateRoundStatus = action.payload
+            state.candidateRoundStatusModified = true
+        },
+        updatedCandidateRoundStatus: (state) => {
+            state.candidateRoundStatusModified = false
+        },
         resetCandidateModalState: (state) => {
             state.loading = false
             state.error = ''
             state.open_candidate_modal = false
             state.candidate_id = 0
-            state.candidateRoundId = 0
             state.candidate = []
             state.candidate_section_marks = []
             state.candidate_question_data = []
@@ -314,8 +335,20 @@ const candidateModalSlice = createSlice({
             state.interviewQuestionsChanged = false
             console.log("Cannot choose candidate interview!")
         })
+        .addCase(updateCandidateRoundStatus.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateCandidateRoundStatus.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+        })
+        .addCase(updateCandidateRoundStatus.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Candidate round status not updated!")
+        })
     }
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus } = candidateModalSlice.actions
