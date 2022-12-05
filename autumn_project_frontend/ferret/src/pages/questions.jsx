@@ -10,9 +10,8 @@ import { Navigate } from "react-router-dom";
 import { fetchRound } from "../features/round/roundSlice";
 import QuestionsContent from "../components/questions";
 
-function Questions(props){
+function Questions(){
     const {season_id,round_id} = useParams()
-    const {round_name} = props
     const logoutState = useSelector((state) => state.logout.authenticated)
     const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated')
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)

@@ -67,9 +67,6 @@ function HomeContent(props){
                 {seasonTable}
             </div>
         </div>
-        {/* <div className='createSeasonButtonDiv'>
-            <button className='createSeasonButton' onClick={() => dispatch(openCreateSeasonDialog())}>Create Season</button>
-        </div> */}
         {yearWiseCreateSeason}
         <CreateSeasonDialog />
     </div>

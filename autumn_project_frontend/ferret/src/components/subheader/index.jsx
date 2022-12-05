@@ -10,18 +10,23 @@ import { listRounds } from "../../features/roundTab/roundTabSlice";
 import SectionTabs from "../section_tabs";
 
 function SubHeader(props){
-    const {page, initialTabs} = props
+    const {page, initialTabs, noTabs} = props
 
     const {season_id} = useParams()
-    const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader.open_questions)
     const roundTabState = useSelector((state) => state.roundTab.current_sections)
     const dispatch = useDispatch()
 
-    const tabs = season_id>0 ? 
-    // (seasonSubHeaderState ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
-    // (seasonSubHeaderState || localStorage.getItem('openQuestions')=='true' ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
-    (localStorage.getItem('questions')=='open' ? <SectionTabs section_tabs={roundTabState}/> : <RoundTabs />)  : 
-    <HomeTabs homeTabs={initialTabs}/>
+    const tabs = noTabs===true ?
+    <></> :
+    (
+        season_id>0 ? 
+        (
+            localStorage.getItem('questions')=='open' ? 
+            <SectionTabs section_tabs={roundTabState}/> : 
+            <RoundTabs />
+        ) : 
+        <HomeTabs homeTabs={initialTabs}/>
+    )
 
     useEffect(() => {
         if(season_id>0) dispatch(listRounds(season_id))
