@@ -145,9 +145,20 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
         return Response({'status':'success'},status.HTTP_200_OK)
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
-    queryset=InterviewPanel.objects.all()
-    serializer_class=InterviewPanelSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        season_id = self.request.query_params.get('season_id')
+        if season_id is not None:
+            if int(season_id)>0:
+                return InterviewPanel.objects.filter(season_id=season_id)
+            return InterviewPanel.objects.all()
+        return InterviewPanel.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return InterviewPanelNestedSerializer
+        return InterviewPanelSerializer
 
 class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
@@ -216,7 +227,6 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         r_id = self.request.query_params.get('round_id')
-        # print(r_id)
         if r_id is not None:
             return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
         return CandidateMarks.objects.all()

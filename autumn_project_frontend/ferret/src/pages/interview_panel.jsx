@@ -5,6 +5,7 @@ import Header from '../components/header'
 import NavigationBar from '../components/navbar'
 import PanelPageContent from '../components/panels_page_content'
 import SubHeader from '../components/subheader'
+import { fetchInterviewPanels } from '../features/interviewPanel/interviewPanelSlice'
 import { fetchCurrentSeason } from '../features/seasonSubHeader/seasonSubHeaderSlice'
 
 function InterviewPanel() {
@@ -27,7 +28,8 @@ function InterviewPanel() {
 
     useEffect(() => {
         if(season_id>0) dispatch(fetchCurrentSeason(season_id))
-    },[dispatch])
+        dispatch(fetchInterviewPanels(season_id))
+    },[])
 
     if(userAuthenticated && logoutState){
         return (

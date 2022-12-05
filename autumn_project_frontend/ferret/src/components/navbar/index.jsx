@@ -10,11 +10,14 @@ import { useDispatch } from "react-redux";
 import { resetRoundTabState } from "../../features/roundTab/roundTabSlice";
 import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { resetQuestionsState } from "../../features/question/questionSlice";
+import { fetchInterviewPanels } from "../../features/interviewPanel/interviewPanelSlice";
 
 function NavigationBar() {
-    const dispatch = useDispatch()
     const {season_id} = useParams()
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    // const seasonId = season_id>0 ? season_id : 0
 
     const routeChange = (address) => {
         const url = `/${address}`
@@ -31,6 +34,7 @@ function NavigationBar() {
     }
 
     const interviewPanelClickHandler = () => {
+        // dispatch(fetchInterviewPanels(seasonId))
         const address = season_id>0 ? `season/${season_id}/interview_panels` : 'season/0/interview_panels'
         routeChange(address)
     }

@@ -21,6 +21,7 @@ export const CANDIDATE_SECTION_MARKS = `${BACKEND_BASE_URL}api/candidate_section
 export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 export const CSV = `${BACKEND_BASE_URL}api/csv/`
 export const FILTER_CANDIDATES = `${BACKEND_BASE_URL}api/filter_candidates/`
+export const INTERVIEW_PANEL = `${BACKEND_BASE_URL}interview_panel/`
 
 
 // Frontend URLs
