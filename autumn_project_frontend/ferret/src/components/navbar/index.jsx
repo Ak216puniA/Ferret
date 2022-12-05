@@ -6,7 +6,7 @@ import { IoMdSettings } from "react-icons/io";
 import { MdHelpCenter } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetRoundTabState } from "../../features/roundTab/roundTabSlice";
 import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { resetQuestionsState } from "../../features/question/questionSlice";
@@ -14,7 +14,7 @@ import { resetQuestionsState } from "../../features/question/questionSlice";
 function NavigationBar() {
     const dispatch = useDispatch()
     const {season_id} = useParams()
-    let navigate = useNavigate()
+    const navigate = useNavigate()
 
     const routeChange = (address) => {
         const url = `/${address}`

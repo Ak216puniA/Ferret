@@ -14,8 +14,19 @@ function InterviewPanel() {
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)
     const dispatch = useDispatch()
 
+    const page = season_id>0 ? 
+    [
+        ['Home','home'],
+        [`Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`,`season/${season_id}`],
+        ['Interview Panel',`season/${season_id}/interview_panels`]
+    ] :
+    [
+        ['Home','home'],
+        ['Interview Panel',`season/0/interview_panels`]
+    ]
+
     useEffect(() => {
-        dispatch(fetchCurrentSeason(season_id))
+        if(season_id>0) dispatch(fetchCurrentSeason(season_id))
     },[dispatch])
 
     if(userAuthenticated && logoutState){
@@ -23,7 +34,7 @@ function InterviewPanel() {
             <>
             <Header />
             <NavigationBar />
-            <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type}) / Interview Panels`} noTabs={true}/>
+            <SubHeader page={page} noTabs={true}/>
             <PanelPageContent />
             </>
     )

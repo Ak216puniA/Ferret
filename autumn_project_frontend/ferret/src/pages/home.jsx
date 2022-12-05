@@ -10,12 +10,16 @@ function Home() {
   const logoutState = useSelector((state) => state.logout.authenticated)
   const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated')
 
+  const page = [
+    ['Home','home']
+  ]
+
   if(userAuthenticated && logoutState){
     return (
       <>
         <Header />
         <NavigationBar />
-        <SubHeader page='Home' initialTabs={['Developer','Designer']} />
+        <SubHeader page={page} initialTabs={['Developer','Designer']} />
         <HomeContent contentHeading='Recruitment Seasons'/>
       </>
     )

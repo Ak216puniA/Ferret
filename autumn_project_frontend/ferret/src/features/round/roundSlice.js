@@ -39,8 +39,6 @@ const roundSlice = createSlice({
             state.round['id'] = action.payload['id']
             state.round['name'] = action.payload['name']
             state.round['type'] = action.payload['type']
-            // console.log("RESPONSE_FETCH_ROUND")
-            // console.log(action.payload)
         })
         .addCase(fetchRound.rejected, (state,action) => {
             state.loading = false
@@ -49,7 +47,6 @@ const roundSlice = createSlice({
             state.round['name'] = ''
             state.round['type'] = ''
             console.log("Round not fetched!")
-            // console.log(state.error)
         })
     }
 })

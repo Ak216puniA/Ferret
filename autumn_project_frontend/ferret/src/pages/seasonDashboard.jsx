@@ -16,17 +16,21 @@ function SeasonDashboard() {
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)
     const dispatch = useDispatch()
 
+    const page = [
+        ['Home','home'],
+        [`Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`,`season/${season_id}`]
+    ]
+
     useEffect(() => {
         dispatch(fetchCurrentSeason(season_id))
     },[dispatch])
-
 
     if(userAuthenticated && logoutState){
         return (
             <>
             <Header />
             <NavigationBar />
-            <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`} />
+            <SubHeader page={page} />
             <RoundContent s_id={season_id} />
             </>
         )

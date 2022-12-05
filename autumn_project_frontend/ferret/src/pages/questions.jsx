@@ -18,6 +18,13 @@ function Questions(){
     const roundState = useSelector((state) => state.round.round)
     const dispatch = useDispatch()
 
+    const page = [
+        ['Home','home'],
+        [`Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`,`season/${season_id}`],
+        [`${roundState['name']}`,`season/${season_id}`],
+        ['Questions',`season/${season_id}/${roundState['id']}/questions`]
+    ]
+
     useEffect(() => {
         localStorage.setItem('questions','open')
         dispatch(fetchCurrentSeason(season_id))
@@ -30,7 +37,7 @@ function Questions(){
             <>
             <Header />
             <NavigationBar />
-            <SubHeader page={`Home / Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type}) / ${roundState['name']} / Questions`} />
+            <SubHeader page={page} />
             <QuestionsContent />
             </>
         )

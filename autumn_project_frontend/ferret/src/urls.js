@@ -26,5 +26,5 @@ export const FILTER_CANDIDATES = `${BACKEND_BASE_URL}api/filter_candidates/`
 // Frontend URLs
 
 export const FRONTEND_BASE_URL = 'http://localhost:3000/'
-export const HOME = `${FRONTEND_BASE_URL}home`
-export const SEASON_DASHBOARD = `${FRONTEND_BASE_URL}season/`
+export const HOME = `/home`
+export const SEASON_DASHBOARD = `/season`
