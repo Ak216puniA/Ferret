@@ -214,7 +214,6 @@ function CandidateModal() {
         <Dialog
         open={candidateModalState.open_candidate_modal}
         onClose={closeModalHandler}
-        className='candidateModal'
         PaperProps={{ sx: { width: "80%", backgroundColor: '#EEEEEE' } }}
         fullWidth
         maxWidth='100%'

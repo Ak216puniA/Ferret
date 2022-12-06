@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['id','username','year','name','userpart','email']
+        fields = ['id','username','year','name','userpart','email','image']
 
 
 # RecruitmentSeasons model serializers

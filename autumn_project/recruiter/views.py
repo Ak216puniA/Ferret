@@ -175,9 +175,15 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
 
     def get_queryset(self):
-        r_id = self.request.query_params.get('round_id')
-        if r_id is not None:
-            return CandidateRound.objects.filter(round_id=r_id)
+        round_id = self.request.query_params.get('round_id')
+        candidate_id = self.request.query_params.get('candidate_id')
+        ready = self.request.query_params.get('ready_for_interview')
+        if round_id is not None:
+            if ready:
+                return CandidateRound.objects.filter(round_id=round_id, status__in=['notified','waiting_room'])
+            return CandidateRound.objects.filter(round_id=round_id)
+        if candidate_id is not None:
+            return CandidateRound.objects.filter(candidate_id=candidate_id)
         return CandidateRound.objects.all()
 
     def get_serializer_class(self):

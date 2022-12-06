@@ -1,0 +1,63 @@
+.interviewModalPanelistsDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.interviewModalPanelist{
+    margin: 0px 8px 16px 8px;
+    font-size: 16px;
+    background-color: #F5B041;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.interviewDialogContentDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.interviewDialogContentFieldDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 45%;
+    margin: 4px 8px;
+    min-width: 200px;
+}
+
+.interviewDialogContentFieldName{
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.interviewDialogContentFieldOptions{
+    flex-grow: 1;
+}
+
+.interviewModalAssignButtonDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.interviewModalAssignButton{
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00ADB5;
+    color: #EEEEEE;
+    font-size: 18px;
+}
+
+.interviewModalAssignButton:hover{
+    background-color: #00BCC5;
+}

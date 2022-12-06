@@ -21,20 +21,23 @@ function SubHeader(props){
     let navigate = useNavigate()
 
     const routeChange = (address) => {
-        if(address==='home'){
+        if(address[1]==='home'){
             dispatch(resetRoundTabState())
             dispatch(resetSeasonRoundContentState())
             dispatch(resetQuestionsState())
             dispatch(resetSectionTabState())
             localStorage.setItem('questions','close')
         }
-        const url = `/${address}`
+        if(address[0]!=='Questions'){
+            localStorage.setItem('questions','close')
+        }
+        const url = `/${address[1]}`
         console.log(url)
         navigate(url)
     }
 
     const pageHeading = page.length>0 ?
-    page.map((link,index) => <div className="subHeaderLinkDiv" key={index} onClick={() => routeChange(link[1])}>{link[0]} /</div>) :
+    page.map((link,index) => <div className="subHeaderLinkDiv" key={index} onClick={() => routeChange(link)}>{link[0]} /</div>) :
     <></>
 
     const tabs = noTabs===true ?

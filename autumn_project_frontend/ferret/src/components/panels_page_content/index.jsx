@@ -1,13 +1,22 @@
 import { Card, CardContent, CardHeader } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { openInterviewDialog } from '../../features/interviewPanel/interviewPanelSlice'
+import InterviewModal from '../interview_modal'
 import './index.css'
 
 function PanelCard(props) {
     const { panel } = props
+    const dispatch = useDispatch()
 
     const panelCardClickHandler = () => {
         console.log(panel['id'])
+        dispatch(
+            openInterviewDialog({
+                open: true,
+                panel: panel
+            })
+        )
     }
 
     const panelists = panel['panelist'].length>0 ?
@@ -44,12 +53,15 @@ function PanelCard(props) {
     )
 }
 
-function PanelPageContent() {
+function PanelPageContent(props) {
+    const { seasonId } = props
     const interviewPanelState = useSelector((state) => state.interviewPanel)
 
     const panelCards = interviewPanelState.panelList.length>0 ?
     interviewPanelState.panelList.map((panel) => <PanelCard key={panel['id']} panel={panel}/>) :
     <></>
+
+    const interviewModal = seasonId>0 ? <InterviewModal /> : <></>
 
     return (
         <div className='panelPageContentDiv'>
@@ -60,6 +72,7 @@ function PanelPageContent() {
             <div className='panelCardsDiv'>
                 {panelCards}
             </div>
+            {interviewModal}
         </div>
     )
 }
