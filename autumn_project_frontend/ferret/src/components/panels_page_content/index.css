@@ -60,21 +60,25 @@
     width: 16em;
     height: 14em;
     margin: 8px 8px;
-    position: relative;
 }
 
-.interviewModalReAssignButton{
+.panelCardAssignButton{
     position: absolute;
     right: 12px;
-    bottom: 8px;
+    bottom: 12px;
     padding: 8px 12px;
     border: none;
     border-radius: 4px;
     background-color: #00ADB5;
     color: #EEEEEE;
     font-size: 14px;
+    z-index: 1;
 }
 
-.interviewModalReAssignButton:hover{
+.panelCardAssignButton:hover{
     background-color: #008990;
+}
+
+.panelCardOuterDiv{
+    position: relative;
 }

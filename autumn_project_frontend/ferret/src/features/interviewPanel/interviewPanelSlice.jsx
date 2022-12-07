@@ -16,9 +16,10 @@ const initialState = {
         status: '',
     },
     panelList: [],
-    openDialog: false,
+    openAssignModal: false,
     panelRoundList: [],
     panelCandidateList: [],
+    openInterviewModal: false
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -68,6 +69,20 @@ export const updatePanelCandidateOptions = createAsyncThunk('interviewPanel/upda
     })
 })
 
+export const updateInInterviewCandidateOptions = createAsyncThunk('interviewPanel/updateInInterviewCandidateOptions', (inInterviewRoundData) => {
+    return axios
+    .get(
+        `${CANDIDATE_ROUND}?round_id=${inInterviewRoundData['roundId']}&interview_panel_id=${inInterviewRoundData['interviewPanelId']}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        console.log(response.data)
+        return response.data
+    })
+})
+
 export const updatePanelRoundOptions = createAsyncThunk('interviewPanel/updatePanelRoundOptions', (panelRoundData) => {
     return axios
     .get(
@@ -86,7 +101,8 @@ export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPan
     .patch(
         `${CANDIDATE_ROUND}${candidateInterviewData['candidateRoundId']}/`,
         {
-            interview_panel: candidateInterviewData['interviewPanelId']
+            interview_panel: candidateInterviewData['interviewPanelId'],
+            status: 'interview'
         },
         {
             headers: {
@@ -104,9 +120,32 @@ const interviewPanelSlice = createSlice({
     name: 'interviewPanel',
     initialState,
     reducers: {
-        openInterviewDialog: (state,action) => {
-            state.openDialog = action.payload['open']
+        openAssignInterviewPanelModal: (state,action) => {
+            state.openAssignModal = action.payload['open']
             state.panel = action.payload['panel']
+            state.panelCandidateList = action.payload['open']===false ? [] : state.panelCandidateList
+        },
+        openInterviewModal: (state,action) => {
+            state.openInterviewModal = action.payload['open']
+            state.panel = action.payload['panel']
+            state.panelCandidateList = action.payload['open']===false ? [] : state.panelCandidateList
+        },
+        resetInterviewPanelState: (state) => {
+            state.loading = false
+            state.error = ''
+            state.panel = {
+                id: 0,
+                season_id: 0,
+                panel_name: '',
+                panelist: [],
+                location: '',
+                status: '',
+            }
+            state.panelList = []
+            state.openAssignModal = false
+            state.panelRoundList = []
+            state.panelCandidateList = []
+            state.openInterviewModal = false
         }
     },
     extraReducers: builder => {
@@ -183,8 +222,21 @@ const interviewPanelSlice = createSlice({
             state.error = action.error.message
             console.log("Interview panel not updated in candidate round!")
         })
+        .addCase(updateInInterviewCandidateOptions.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateInInterviewCandidateOptions.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.panelCandidateList = action.payload
+        })
+        .addCase(updateInInterviewCandidateOptions.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Cannot update inInterview candidate options!")
+        })
     }
 })
 
 export default interviewPanelSlice.reducer
-export const { openInterviewDialog } = interviewPanelSlice.actions
+export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState } = interviewPanelSlice.actions

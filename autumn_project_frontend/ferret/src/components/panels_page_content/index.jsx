@@ -1,8 +1,9 @@
 import { Card, CardContent } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { openInterviewDialog } from '../../features/interviewPanel/interviewPanelSlice'
+import { openAssignInterviewPanelModal, openInterviewModal } from '../../features/interviewPanel/interviewPanelSlice'
 import AssignInterviewPanelModal from '../assign_interview_panel_modal'
+import InterviewModal from '../interview_modal'
 import './index.css'
 
 function PanelCard(props) {
@@ -13,9 +14,15 @@ function PanelCard(props) {
         if(seasonId>0){
             if(localStorage.getItem('year')>2){
                 console.log("Open interview candidate round model...")
+                dispatch(
+                    openInterviewModal({
+                        open: true,
+                        panel: panel
+                    })
+                )
             }else{
                 dispatch(
-                    openInterviewDialog({
+                    openAssignInterviewPanelModal({
                         open: true,
                         panel: panel
                     })
@@ -25,8 +32,9 @@ function PanelCard(props) {
     }
 
     const openCandidateAssignmentDialogHandler = () => {
+        console.log("Clicked...")
         dispatch(
-            openInterviewDialog({
+            openAssignInterviewPanelModal({
                 open: true,
                 panel: panel
             })
@@ -38,10 +46,11 @@ function PanelCard(props) {
     <></>
 
     const interviewPanelAssignButton = seasonId>0 && localStorage.getItem('year')>2 ?
-    <button className='interviewModalReAssignButton' onClick={openCandidateAssignmentDialogHandler}>Assign</button> :
+    <button className='panelCardAssignButton' onClick={openCandidateAssignmentDialogHandler}>Assign</button> :
     <></>
 
     return (
+        <div className='panelCardOuterDiv'>
         <div onClick={panelCardClickHandler} className="panelCardDiv">
             <Card
             raised={true}
@@ -66,8 +75,9 @@ function PanelCard(props) {
                         <div className='panelPanelistsDiv'>{panelists}</div>
                     </div>
                 </CardContent>
-                {interviewPanelAssignButton}
             </Card>
+        </div>
+        {interviewPanelAssignButton}
         </div>
     )
 }
@@ -90,6 +100,7 @@ function PanelPageContent(props) {
                 {panelCards}
             </div>
             <AssignInterviewPanelModal />
+            <InterviewModal />
         </div>
     )
 }

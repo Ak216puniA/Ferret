@@ -11,6 +11,7 @@ import SectionTabs from "../section_tabs";
 import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { resetQuestionsState } from "../../features/question/questionSlice";
 import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice";
+import { resetInterviewPanelState } from "../../features/interviewPanel/interviewPanelSlice";
 
 function SubHeader(props){
     const {season_id} = useParams()
@@ -26,6 +27,7 @@ function SubHeader(props){
             dispatch(resetSeasonRoundContentState())
             dispatch(resetQuestionsState())
             dispatch(resetSectionTabState())
+            dispatch(resetInterviewPanelState())
             localStorage.setItem('questions','close')
         }
         if(address[0]!=='Questions'){
@@ -45,7 +47,7 @@ function SubHeader(props){
     (
         season_id>0 ? 
         (
-            localStorage.getItem('questions')=='open' ? 
+            localStorage.getItem('questions')==='open' ? 
             <SectionTabs section_tabs={roundTabState}/> : 
             <RoundTabs />
         ) : 

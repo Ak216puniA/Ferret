@@ -177,10 +177,13 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         round_id = self.request.query_params.get('round_id')
         candidate_id = self.request.query_params.get('candidate_id')
-        ready = self.request.query_params.get('ready_for_interview')
+        ready_for_interview = self.request.query_params.get('ready_for_interview')
+        interview_panel_id = self.request.query_params.get('interview_panel_id')
         if round_id is not None:
-            if ready:
+            if ready_for_interview:
                 return CandidateRound.objects.filter(round_id=round_id, status__in=['notified','waiting_room'])
+            if interview_panel_id:
+                return CandidateRound.objects.filter(round_id=round_id, interview_panel=interview_panel_id)
             return CandidateRound.objects.filter(round_id=round_id)
         if candidate_id is not None:
             return CandidateRound.objects.filter(candidate_id=candidate_id)
@@ -190,6 +193,17 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
         if self.action == 'list' or self.action == 'retrieve':
             return CandidateRoundNestedSerializer
         return CandidateRoundSerializer
+
+    # def list(self):
+    #     ready_for_interview = self.request.query_params.get('ready_for_interview')
+    #     queryset = self.get_queryset()
+    #     serializer_class = self.get_serializer_class()
+    #     if ready_for_interview:
+    #         for candidate_round in queryset:
+    #             candidate_round.status = 'interview'
+    #     serializer = serializer_class(queryset, many=True)
+    #     return Response(serializer.data)
+
 
     def create(self, request, *args, **kwargs):
         serializer = MoveCandidateListSerializer(data=request.data)

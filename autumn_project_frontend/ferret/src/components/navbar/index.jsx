@@ -10,31 +10,34 @@ import { useDispatch } from "react-redux";
 import { resetRoundTabState } from "../../features/roundTab/roundTabSlice";
 import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { resetQuestionsState } from "../../features/question/questionSlice";
-import { fetchInterviewPanels } from "../../features/interviewPanel/interviewPanelSlice";
+import { resetInterviewPanelState } from "../../features/interviewPanel/interviewPanelSlice";
 
 function NavigationBar() {
     const {season_id} = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    // const seasonId = season_id>0 ? season_id : 0
-
     const routeChange = (address) => {
         const url = `/${address}`
         navigate(url)
     }
 
-    const homeClickHandler = () => {
+    function resetSeasonDashboardState(){
         dispatch(resetRoundTabState())
         dispatch(resetSeasonRoundContentState())
         dispatch(resetQuestionsState())
         dispatch(resetSectionTabState())
         localStorage.setItem('questions','close')
+    }
+
+    const homeClickHandler = () => {
+        resetSeasonDashboardState()
+        dispatch(resetInterviewPanelState())
         routeChange('home')
     }
 
     const interviewPanelClickHandler = () => {
-        // dispatch(fetchInterviewPanels(seasonId))
+        resetSeasonDashboardState()
         const address = season_id>0 ? `season/${season_id}/interview_panels` : 'season/0/interview_panels'
         routeChange(address)
     }
