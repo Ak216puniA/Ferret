@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useParams } from 'react-router-dom'
 import Header from '../components/header'
+import InterviewPanelsContent from '../components/interview_panels_content'
 import NavigationBar from '../components/navbar'
-import PanelPageContent from '../components/panels_page_content'
 import SubHeader from '../components/subheader'
 import { fetchInterviewPanels } from '../features/interviewPanel/interviewPanelSlice'
 import { listRounds } from '../features/roundTab/roundTabSlice'
@@ -39,7 +39,7 @@ function InterviewPanel() {
             <Header />
             <NavigationBar />
             <SubHeader page={page} noTabs={true}/>
-            <PanelPageContent seasonId={season_id}/>
+            <InterviewPanelsContent seasonId={season_id}/>
             </>
     )
     }else{

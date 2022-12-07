@@ -10,8 +10,8 @@ function AssignInterviewPanelModal() {
     const interviewPanelState = useSelector((state) => state.interviewPanel)
     const dispatch = useDispatch()
 
-    const [panelCandidate, setPanelCandidate] = useState(0)
-    const [panelRound, setPanelRound] = useState(0)
+    const [panelCandidate, setPanelCandidate] = useState('')
+    const [panelRound, setPanelRound] = useState('')
 
     const panelCandidateChangeHandler = (event) => {
         setPanelCandidate(event.target.value)
@@ -41,8 +41,8 @@ function AssignInterviewPanelModal() {
                     }
                 })
             )
-            setPanelCandidate(0)
-            setPanelRound(0)
+            setPanelCandidate('')
+            setPanelRound('')
         }
     }
 

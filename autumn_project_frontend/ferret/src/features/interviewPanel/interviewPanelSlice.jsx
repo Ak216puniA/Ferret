@@ -31,7 +31,6 @@ export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterv
         }
     )
     .then((response) => {
-        console.log(response.data)
         return response.data
     })
 })
@@ -174,7 +173,6 @@ const interviewPanelSlice = createSlice({
             state.panelList.forEach(panel => {
                 panel['status'] = panel['id']===state.panel['id'] ? action.payload['status'] : panel['status']
             })
-            console.log(state.panel)
         })
         .addCase(updateInterviewPanelStatus.rejected, (state,action) => {
             state.loading = false

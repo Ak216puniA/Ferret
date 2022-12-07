@@ -20,7 +20,7 @@ function InterviewModal() {
     const dispatch = useDispatch()
 
     const [panelCandidate, setPanelCandidate] = useState('')
-    const [panelRound, setPanelRound] = useState(0)
+    const [panelRound, setPanelRound] = useState('')
     const [candidateSet, setCandidateSet] = useState(false)
 
     const panelCandidateChangeHandler = (event) => {
@@ -81,7 +81,7 @@ function InterviewModal() {
                 })
             )
             setPanelCandidate('')
-            setPanelRound(0)
+            setPanelRound('')
             setCandidateSet(false)
         }
     }

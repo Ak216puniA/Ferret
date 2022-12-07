@@ -32,7 +32,6 @@ function PanelCard(props) {
     }
 
     const openCandidateAssignmentDialogHandler = () => {
-        console.log("Clicked...")
         dispatch(
             openAssignInterviewPanelModal({
                 open: true,
@@ -82,7 +81,7 @@ function PanelCard(props) {
     )
 }
 
-function PanelPageContent(props) {
+function InterviewPanelsContent(props) {
     const { seasonId } = props
     const interviewPanelState = useSelector((state) => state.interviewPanel)
 
@@ -105,4 +104,4 @@ function PanelPageContent(props) {
     )
 }
 
-export default PanelPageContent
+export default InterviewPanelsContent
