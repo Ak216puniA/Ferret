@@ -10,7 +10,7 @@ import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTab
 import CandidateModalQuestion from '../candidate_modal_question'
 import './index.css';
 
-function CandidateModal() {
+function CandidateTestModal() {
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -228,4 +228,4 @@ function CandidateModal() {
     )
 }
 
-export default CandidateModal
+export default CandidateTestModal

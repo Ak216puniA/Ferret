@@ -8,19 +8,17 @@ const initialState = {
     loading: false,
     error: '',
     panel: {
-        'id': 0,
-        'season_id': 0,
-        'panel_name': '',
-        'panelist': [],
-        'location': '',
-        'status': ''
+        id: 0,
+        season_id: 0,
+        panel_name: '',
+        panelist: [],
+        location: '',
+        status: '',
     },
     panelList: [],
     openDialog: false,
     panelRoundList: [],
     panelCandidateList: [],
-    panelCandidateRoundId: 0,
-    panelCandidateSet: false
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -83,6 +81,25 @@ export const updatePanelRoundOptions = createAsyncThunk('interviewPanel/updatePa
     })
 })
 
+export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPanel/updateCandidateRoundInterviewPanel', (candidateInterviewData) => {
+    return axios
+    .patch(
+        `${CANDIDATE_ROUND}${candidateInterviewData['candidateRoundId']}/`,
+        {
+            interview_panel: candidateInterviewData['interviewPanelId']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const interviewPanelSlice = createSlice({
     name: 'interviewPanel',
     initialState,
@@ -90,10 +107,6 @@ const interviewPanelSlice = createSlice({
         openInterviewDialog: (state,action) => {
             state.openDialog = action.payload['open']
             state.panel = action.payload['panel']
-        },
-        choosePanelCandidateRound: (state,action) => {
-            state.panelCandidateRoundId = action.payload['candidateRoundId']
-            state.panelCandidateSet = action.payload['setCandidate']
         }
     },
     extraReducers: builder => {
@@ -118,10 +131,11 @@ const interviewPanelSlice = createSlice({
         .addCase(updateInterviewPanelStatus.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
-            state.panel = action.payload
+            state.panel['status'] = action.payload['status']
             state.panelList.forEach(panel => {
                 panel['status'] = panel['id']===state.panel['id'] ? action.payload['status'] : panel['status']
             })
+            console.log(state.panel)
         })
         .addCase(updateInterviewPanelStatus.rejected, (state,action) => {
             state.loading = false
@@ -157,8 +171,20 @@ const interviewPanelSlice = createSlice({
         .addCase(listRounds.fulfilled, (state,action) => {
             state.panelRoundList = action.payload
         })
+        .addCase(updateCandidateRoundInterviewPanel.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateCandidateRoundInterviewPanel.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+        })
+        .addCase(updateCandidateRoundInterviewPanel.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Interview panel not updated in candidate round!")
+        })
     }
 })
 
 export default interviewPanelSlice.reducer
-export const { openInterviewDialog, choosePanelCandidateRound } = interviewPanelSlice.actions
+export const { openInterviewDialog } = interviewPanelSlice.actions

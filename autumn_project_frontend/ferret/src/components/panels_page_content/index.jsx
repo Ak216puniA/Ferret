@@ -1,16 +1,30 @@
-import { Card, CardContent, CardHeader } from '@mui/material'
+import { Card, CardContent } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openInterviewDialog } from '../../features/interviewPanel/interviewPanelSlice'
-import InterviewModal from '../interview_modal'
+import AssignInterviewPanelModal from '../assign_interview_panel_modal'
 import './index.css'
 
 function PanelCard(props) {
-    const { panel } = props
+    const { panel, seasonId } = props
     const dispatch = useDispatch()
 
     const panelCardClickHandler = () => {
-        console.log(panel['id'])
+        if(seasonId>0){
+            if(localStorage.getItem('year')>2){
+                console.log("Open interview candidate round model...")
+            }else{
+                dispatch(
+                    openInterviewDialog({
+                        open: true,
+                        panel: panel
+                    })
+                )
+            }
+        }
+    }
+
+    const openCandidateAssignmentDialogHandler = () => {
         dispatch(
             openInterviewDialog({
                 open: true,
@@ -21,6 +35,10 @@ function PanelCard(props) {
 
     const panelists = panel['panelist'].length>0 ?
     panel['panelist'].map(panelist => <div key={panelist['id']} className='panelPanelist'>{panelist['name']}</div>) :
+    <></>
+
+    const interviewPanelAssignButton = seasonId>0 && localStorage.getItem('year')>2 ?
+    <button className='interviewModalReAssignButton' onClick={openCandidateAssignmentDialogHandler}>Assign</button> :
     <></>
 
     return (
@@ -48,6 +66,7 @@ function PanelCard(props) {
                         <div className='panelPanelistsDiv'>{panelists}</div>
                     </div>
                 </CardContent>
+                {interviewPanelAssignButton}
             </Card>
         </div>
     )
@@ -58,10 +77,8 @@ function PanelPageContent(props) {
     const interviewPanelState = useSelector((state) => state.interviewPanel)
 
     const panelCards = interviewPanelState.panelList.length>0 ?
-    interviewPanelState.panelList.map((panel) => <PanelCard key={panel['id']} panel={panel}/>) :
+    interviewPanelState.panelList.map((panel) => <PanelCard key={panel['id']} panel={panel} seasonId={seasonId}/>) :
     <></>
-
-    const interviewModal = seasonId>0 ? <InterviewModal /> : <></>
 
     return (
         <div className='panelPageContentDiv'>
@@ -72,7 +89,7 @@ function PanelPageContent(props) {
             <div className='panelCardsDiv'>
                 {panelCards}
             </div>
-            {interviewModal}
+            <AssignInterviewPanelModal />
         </div>
     )
 }

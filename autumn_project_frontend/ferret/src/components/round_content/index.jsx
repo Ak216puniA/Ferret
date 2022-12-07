@@ -7,12 +7,12 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CandidateModal from "../candidate_modal";
 import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
+import CandidateTestModal from "../candidate_test_modal";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -186,7 +186,7 @@ function RoundContent(props) {
     <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
     <></>
 
-    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateModal /> : <CandidateInterviewModal />
+    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateTestModal /> : <CandidateInterviewModal />
 
     return (
         <div className="seasonTestContent">
