@@ -106,8 +106,10 @@ const roundTabSlice = createSlice({
             state.round_list = []
             state.currentTab = ''
             state.currentTabId = -1
+            state.currentTabType = ''
             state.open = false
             state.current_sections = []
+            state.current_sections_total_marks = []
         }
     },
     extraReducers: builder => {

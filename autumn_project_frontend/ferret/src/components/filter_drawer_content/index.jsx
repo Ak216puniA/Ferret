@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Checkbox } from '@mui/material'
+import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { AiOutlineReload } from 'react-icons/ai'
@@ -105,6 +105,7 @@ function FilterSectionContent() {
 
 function FilterStatusContent() {
   const filterState = useSelector((state) => state.filter)
+  const roundTabState = useSelector((state) => state.roundTab)
   const dispatch = useDispatch()
 
   const radioGroupChangeHandler = (event) => { 
@@ -112,10 +113,13 @@ function FilterStatusContent() {
   }
 
   const resetButtonHandler = () => {
-    dispatch(setStatus(-1))
+    dispatch(setStatus(''))
   }
 
-  const filterDrawerStatusContentList = [[1,'Done'],[2,'Pending']]
+  console.log(roundTabState.currentTabType)
+  const filterDrawerStatusContentList = roundTabState.currentTabType==='test' ? 
+  [['done','Done'],['pending','Pending']] :
+  [['done','Done'],['pending','Pending'],['not_notified','Not Notified'],['notified','Notified'],['waiting_room','In Waiting Room'],['interview','In Interview']]
   const filterDrawerStatusContent = filterDrawerStatusContentList.map(status => <FormControlLabel key={status[0]} value={status[0]} control={<Radio />} label={status[1]} />)
 
   return (

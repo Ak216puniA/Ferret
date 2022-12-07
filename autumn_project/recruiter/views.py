@@ -145,9 +145,20 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
         return Response({'status':'success'},status.HTTP_200_OK)
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
-    queryset=InterviewPanel.objects.all()
-    serializer_class=InterviewPanelSerializer
     permission_classes=[YearWisePermission]
+
+    def get_queryset(self):
+        season_id = self.request.query_params.get('season_id')
+        if season_id is not None:
+            if int(season_id)>0:
+                return InterviewPanel.objects.filter(season_id=season_id)
+            return InterviewPanel.objects.all()
+        return InterviewPanel.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return InterviewPanelNestedSerializer
+        return InterviewPanelSerializer
 
 class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
@@ -164,15 +175,35 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
 
     def get_queryset(self):
-        r_id = self.request.query_params.get('round_id')
-        if r_id is not None:
-            return CandidateRound.objects.filter(round_id=r_id)
+        round_id = self.request.query_params.get('round_id')
+        candidate_id = self.request.query_params.get('candidate_id')
+        ready_for_interview = self.request.query_params.get('ready_for_interview')
+        interview_panel_id = self.request.query_params.get('interview_panel_id')
+        if round_id is not None:
+            if ready_for_interview:
+                return CandidateRound.objects.filter(round_id=round_id, status__in=['notified','waiting_room'])
+            if interview_panel_id:
+                return CandidateRound.objects.filter(round_id=round_id, interview_panel=interview_panel_id)
+            return CandidateRound.objects.filter(round_id=round_id)
+        if candidate_id is not None:
+            return CandidateRound.objects.filter(candidate_id=candidate_id)
         return CandidateRound.objects.all()
 
     def get_serializer_class(self):
         if self.action == 'list' or self.action == 'retrieve':
             return CandidateRoundNestedSerializer
         return CandidateRoundSerializer
+
+    # def list(self):
+    #     ready_for_interview = self.request.query_params.get('ready_for_interview')
+    #     queryset = self.get_queryset()
+    #     serializer_class = self.get_serializer_class()
+    #     if ready_for_interview:
+    #         for candidate_round in queryset:
+    #             candidate_round.status = 'interview'
+    #     serializer = serializer_class(queryset, many=True)
+    #     return Response(serializer.data)
+
 
     def create(self, request, *args, **kwargs):
         serializer = MoveCandidateListSerializer(data=request.data)
@@ -216,7 +247,6 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         r_id = self.request.query_params.get('round_id')
-        # print(r_id)
         if r_id is not None:
             return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
         return CandidateMarks.objects.all()
@@ -285,7 +315,26 @@ class LoginView(APIView):
 
 class isUserAuthenticated(APIView):
     def get(self, request):
-        return Response({'authenticated': request.user.is_authenticated})
+        print(request.user.name)
+        if request.user.is_authenticated==True:
+            response_data = {
+                'authenticated': request.user.is_authenticated,
+                'username': request.user.username,
+                'name': request.user.name,
+                'email': request.user.email,
+                'year': request.user.year,
+                'userpart': request.user.userpart
+            }
+        else:
+            response_data = {
+                'authenticated': request.user.is_authenticated,
+                'username': '',
+                'name': '',
+                'email': '',
+                'year': 0,
+                'userpart': ''
+            }
+        return Response(response_data)
 
 class LogoutView(APIView):
     def get(self, request, format=None):
@@ -363,10 +412,7 @@ class IndividualCandidateSectionMarks(APIView):
         return Response(question_data)
 
     def post(self, request, format=None):
-        print(request.data)
         section_total_marks = get_interview_candidate_all_section_total_marks(request.data)
-        print(section_total_marks)
-
         response_data = {
             'status':'success',
             'data':section_total_marks
@@ -375,10 +421,11 @@ class IndividualCandidateSectionMarks(APIView):
 
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
+        print(request.data)
         filter_data = {
             'round_id': request.data['round_id'],
             'section': int(request.data['section']),
-            'status': int(request.data['status']),
+            'status': request.data['status'],
             'marks': int(request.data['marks']),
             'marks_criteria': request.data['marks_criteria']
         }

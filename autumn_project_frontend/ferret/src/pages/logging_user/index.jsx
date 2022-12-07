@@ -20,6 +20,11 @@ function LoggingUser() {
         )
         .then((response) => {
             localStorage.setItem('authenticated', response.data['authenticated'])
+            localStorage.setItem('username', response.data['username'])
+            localStorage.setItem('name', response.data['name'])
+            localStorage.setItem('email', response.data['email'])
+            localStorage.setItem('year', response.data['year'])
+            localStorage.setItem('userpart', response.data['userpart'])
             setUserAuthenticated(response.data['authenticated'])
             return response.data
         })

@@ -7,14 +7,15 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CandidateModal from "../candidate_modal";
 import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
+import CandidateInterviewModal from "../candidate_interview_modal";
+import CandidateTestModal from "../candidate_test_modal";
 
 function RoundTableRow(props){
-    const {candidate, status, index} = props
+    const {candidate, status, index, candidateRoundId} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -34,7 +35,9 @@ function RoundTableRow(props){
         dispatch(
             openCandidateModal({
                 open: true,
-                candidate_id: candidate['id']
+                candidate_id: candidate['id'],
+                candidateRoundId: candidateRoundId,
+                candidateRoundStatus: status
             })
         )
         dispatch(fetchCandidate(candidate['id']))
@@ -53,7 +56,7 @@ function RoundTableRow(props){
     }
 
     let candidate_marks = <></>
-    if(candidate_section_marks!=null){
+    if(candidate_section_marks!=null && localStorage.getItem('year')>2){
         candidate_marks = (
             candidate_section_marks.length>0 ?
             candidate_section_marks.map((marks,index) => {
@@ -63,16 +66,20 @@ function RoundTableRow(props){
         )
     }
 
+    const yearWiseCheckbox = localStorage.getItem('year')>2 ?
+    <div className={`roundContentCheckbox  singleElementRowFlex`}>
+        <Checkbox 
+        size="small" 
+        sx={{color: '#00ADB5'}}
+        onChange={checkboxClickHandler}
+        />
+    </div> :
+    <></>
+
     return (
         <>
         <div className='roundCandidateRow'>
-            <div className={`roundContentCheckbox  singleElementRowFlex`}>
-                <Checkbox 
-                size="small" 
-                sx={{color: '#00ADB5'}}
-                onChange={checkboxClickHandler}
-                />
-            </div>
+            {yearWiseCheckbox}
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidate['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
@@ -102,7 +109,7 @@ function RoundContent(props) {
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
-    },[seasonRoundContentState.candidate_list,roundTabState.current_sections,dispatch])
+    },[seasonRoundContentState.candidate_list])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
@@ -123,18 +130,15 @@ function RoundContent(props) {
         dispatch(openMoveCandidatesDialog())
     })
 
-    // const openQuestionsHandler = () => {
-    //     dispatch(openQuestions())
-    //     localStorage.setItem('openQuestions',true)
-    // }
-
     const filterCandidatesHandler = () => {
         dispatch(openFilterDrawer(true))
     }
 
-    const move_button = <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button>
+    const move_button = localStorage.getItem('year')>2 ? 
+    <button id="moveCandidateButton" className="seasonTestContentButton" onClick={moveClickHandler}>Move</button> :
+    <></>
 
-    const csv_button = current_round_index===0 ?
+    const csv_button = current_round_index===0 && localStorage.getItem('year')>2 ?
     <div className="rightButton">
         <label htmlFor="uploadCSV">
             <input
@@ -166,15 +170,23 @@ function RoundContent(props) {
     
     let roundTable = (
         seasonRoundContentState.candidate_list.length>0 ? 
-        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} status={candidate['status']} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} candidateRoundId={candidate['id']} status={candidate['status']} index={index+1}/>) : 
         <div></div>
     )
 
-    let roundTableSectionHeading = (
+    let roundTableSectionHeading = localStorage.getItem('year')>2 ? 
+    (
         roundTabState.current_sections.length>0 ?
         roundTabState.current_sections.map((section) => <div key={section['id']} className={`roundContentCandidateSection singleElementRowFlex`}>{section['name']}</div>) :
         <div></div>
-    )
+    ) :
+    <></>
+
+    const yearWiseCheckboxHeadingRowPadding = localStorage.getItem('year')>2 ? 
+    <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
+    <></>
+
+    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateTestModal /> : <CandidateInterviewModal />
 
     return (
         <div className="seasonTestContent">
@@ -195,7 +207,7 @@ function RoundContent(props) {
             </div>
             <div className="roundContentDiv">
                 <div className='roundHeadingRow'>
-                    <div className={`roundContentCheckbox  singleElementRowFlex`}></div>
+                    {yearWiseCheckboxHeadingRowPadding}
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>
                     <div className={`roundContentCandidateStatus singleElementRowFlex`}>Status</div>
@@ -205,7 +217,7 @@ function RoundContent(props) {
             </div>
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
-            <CandidateModal />
+            {candidateModal}
             <MoveCandidatesDialog />
             <FilterDrawer />
         </div>

@@ -4,11 +4,8 @@ from .candidate_marks_update import get_candidate_section_marks, get_candidate_t
 
 def filter_by_status(status_round_data):
     candidate_list=[]
-    if status_round_data['status'] is not None and status_round_data['status']>0:
-        if status_round_data['status']==1:
-            candidate_list = CandidateRound.objects.filter(round_id=status_round_data['round_id'], status='done')
-        if status_round_data['status']==2:
-            candidate_list = CandidateRound.objects.filter(round_id=status_round_data['round_id'], status='pending')
+    if status_round_data['status'] is not None and status_round_data['status']!='':
+        candidate_list = CandidateRound.objects.filter(round_id=status_round_data['round_id'], status=status_round_data['status'])
     else:
         candidate_list = CandidateRound.objects.filter(round_id=status_round_data['round_id'])
     return candidate_list

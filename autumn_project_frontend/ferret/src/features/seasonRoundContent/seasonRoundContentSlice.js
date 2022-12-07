@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
 import Cookies from "js-cookie";
+import { updateCandidateRoundStatus } from "../candidateModal/candidateModalSlice";
 
 const initialState = {
     loading: false,
@@ -69,21 +70,24 @@ export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidate
     })
 })
 
-export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', async (requestData) => {
-    const response = await axios
-        .post(
-            `${SECTION_MARKS}`,
-            {
-                candidate_list: requestData['candidate_list'],
-                section_list: requestData['section_list'],
+export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
+    return axios
+    .post(
+        `${SECTION_MARKS}`,
+        {
+            candidate_list: requestData['candidate_list'],
+            section_list: requestData['section_list'],
+        },
+        {
+            headers: {
+                "X-CSRFToken": Cookies.get('ferret_csrftoken'),
             },
-            {
-                headers: {
-                    "X-CSRFToken": Cookies.get('ferret_csrftoken'),
-                },
-                withCredentials: true
-            });
-    return response.data;
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
 })
 
 export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandidates', (filterData) => {
@@ -156,7 +160,6 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_list = action.payload
-            // console.log("Candidates' retrieval successful!")
         })
         .addCase(fetchRoundCandidates.rejected, (state,action) => {
             state.loading = false
@@ -172,7 +175,6 @@ const seasonRoundContentSlice = createSlice({
             state.error = ''
             state.candidate_list = action.payload['data']
             state.csv_uploaded = true
-            // console.log("CSV upload successful!")
         })
         .addCase(uploadCSV.rejected, (state,action) => {
             state.loading = false
@@ -188,7 +190,6 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.move_candidate_list = []
-            // console.log("Candidates moved sucessfully!")
         })
         .addCase(moveCandidates.rejected, (state,action) => {
             state.loading = false
@@ -202,7 +203,6 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.section_marks = action.payload['data']
             state.error = ''
-            // console.log("Section marks fetch successful!")
         })
         .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
@@ -217,12 +217,16 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_list = action.payload['data']
-            // console.log("FILTER_CANDIDATES_SUCCESSFUL...")
         })
         .addCase(filterCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             console.log("Candidates not filtered!")
+        })
+        .addCase(updateCandidateRoundStatus.fulfilled, (state,action) => {
+            state.candidate_list.forEach(candidateRound => {
+                if(candidateRound['id']===action.payload['id']) candidateRound['status']=action.payload['status']
+            })
         })
     }
 })

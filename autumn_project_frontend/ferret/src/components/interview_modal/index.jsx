@@ -1,25 +1,89 @@
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openCandidateModal, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { openInterviewModal, updateInInterviewCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
-import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
+import { fetchCurrentSectionsTotalMarks, fetchSections, resetRoundTabState } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
 import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
-import './index.css';
 
-function CandidateModal() {
+function InterviewModal() {
+    const interviewPanelState = useSelector((state) => state.interviewPanel)
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const closeModalHandler = () => {
+    const [panelCandidate, setPanelCandidate] = useState('')
+    const [panelRound, setPanelRound] = useState('')
+    const [candidateSet, setCandidateSet] = useState(false)
+
+    const panelCandidateChangeHandler = (event) => {
+        setPanelCandidate(event.target.value)
+        dispatch(
+            openCandidateModal({
+                open: false,
+                candidate_id: event.target.value['candidate_id']['id'],
+                candidateRoundId: event.target.value['id'],
+                candidateRoundStatus: event.target.value['status']
+            })
+        )
+        dispatch(fetchCandidate(event.target.value['candidate_id']['id']))
+        dispatch(
+            fetchSelectedCandidateSectionMarks({
+                candidate_list: [event.target.value['candidate_id']['id']],
+                section_list: roundTabState.current_sections.map((section) => section['id'])
+            })
+        )
+        dispatch(
+            fetchCurrentSectionsTotalMarks({
+                candidateId: event.target.value['candidate_id']['id'],
+                sectionList: roundTabState.current_sections.map((section) => section['id'])
+            })
+        )
+        setCandidateSet(true)
+    }
+
+    const panelRoundChangeHandler = (event) => {
+        setPanelRound(event.target.value)
+        dispatch(
+            updateInInterviewCandidateOptions({
+                roundId: event.target.value,
+                interviewPanelId: interviewPanelState.panel['id']
+            })
+        )
+        dispatch(fetchSections(event.target.value))
         dispatch(resetCandidateModalState())
+        setPanelCandidate('')
+        setCandidateSet(false)
+    }
+
+    const closeModalHandler = (event,reason) => {
+        if(reason!=='backdropClick' && reason!=='escapeKeyDown') {
+            dispatch(resetCandidateModalState())
+            dispatch(resetRoundTabState())
+            dispatch(
+                openInterviewModal({
+                    open: false,
+                    panel: {
+                        'id': 0,
+                        'season_id': 0,
+                        'panel_name': '',
+                        'panelist': [],
+                        'location': '',
+                        'status': ''
+                    }
+                })
+            )
+            setPanelCandidate('')
+            setPanelRound('')
+            setCandidateSet(false)
+        }
     }
 
     function sectionCardClickHandler(section_id,section_name){
@@ -29,10 +93,12 @@ function CandidateModal() {
                 section_id: section_id
             })
         )
-        dispatch(selectSection({
-            'section_name':section_name,
-            'section_id':section_id
-        }))
+        dispatch(
+            selectSection({
+                'section_name':section_name,
+                'section_id':section_id
+            })
+        )
         dispatch(
             fetchSelectedCandidateSectionMarks({
                 candidate_list: [candidateModalState.candidate_id],
@@ -54,7 +120,19 @@ function CandidateModal() {
         )
     }
 
-    let sectionCards = roundTabState.current_sections.length>0 ?
+    let interviewPanelRoundMenuItems = interviewPanelState.panelRoundList.length>0 ?
+    interviewPanelState.panelRoundList.map(round => {
+        if(round['type']==='interview') return <MenuItem key={round['id']} value={round['id']}>{round['name']}</MenuItem>
+    }) :
+    []
+
+    let interviewPanelCandidateMenuItems = interviewPanelState.panelCandidateList.length>0 ?
+    interviewPanelState.panelCandidateList.map(candidateRound => <MenuItem key={candidateRound['id']} value={candidateRound}>{candidateRound['candidate_id']['name']}</MenuItem>) :
+    []
+
+    let sectionName = candidateSet ? (candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!') : ''
+
+    let sectionCards = roundTabState.current_sections.length>0 && candidateSet ?
     roundTabState.current_sections.map((section,index) => {
         return (
             <div key={section['id']} onClick={() => sectionCardClickHandler(section['id'],section['name'])}>
@@ -86,14 +164,11 @@ function CandidateModal() {
     }) :
     []
 
-    let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
-
-
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
 
-    let addNewQuestionOption = (candidateModalState.section_name!=='' && roundTabState.currentTabType==='interview') ? 
+    let addNewQuestionOption = candidateModalState.section_name!=='' && candidateSet? 
     <>
     <CandidateModalInterviewAddQuestion />
     <CandidateModalInterviewChooseQuestion />
@@ -136,19 +211,58 @@ function CandidateModal() {
     return (
         <>
         <Dialog
-        open={candidateModalState.open_candidate_modal}
+        open={interviewPanelState.openInterviewModal}
         onClose={closeModalHandler}
-        className='candidateModal'
-        PaperProps={{ sx: { width: "75%", backgroundColor: '#EEEEEE' } }}
+        PaperProps={{ sx: { width: "80%", backgroundColor: '#EEEEEE' } }}
+        fullWidth
+        maxWidth='100%'
         >
             <div className='crossDiv' onClick={closeModalHandler}><GrClose size={12}/></div>
             <DialogTitle>
                 <Box
                 sx={flexBoxRow}
                 >
-                    <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div>
-                    <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div>
+                    <div className='dialogTitleText'>{interviewPanelState.panel['location']}</div>
+                    <div className='dialogTitleText'>{interviewPanelState.panel['panel_name']}</div>
                 </Box>
+                <div className='interviewDialogContentDiv'>
+                        <div className='interviewDialogContentFieldDiv'>
+                            <div className='interviewDialogContentFieldName'>
+                                Round: 
+                            </div>
+                            <div className='interviewDialogContentFieldOptions'>
+                            <FormControl fullWidth>
+                                <Select 
+                                required
+                                value={panelRound}
+                                placeholder='Interview Round' 
+                                variant='outlined'
+                                onChange={panelRoundChangeHandler}
+                                >
+                                    {interviewPanelRoundMenuItems}
+                                </Select>
+                            </FormControl>
+                            </div>
+                        </div>
+                        <div className='interviewDialogContentFieldDiv'>
+                            <div className='interviewDialogContentFieldName'>
+                                Candidate: 
+                            </div>
+                            <div className='interviewDialogContentFieldOptions'>
+                            <FormControl fullWidth>
+                                <Select 
+                                required
+                                value={panelCandidate}
+                                placeholder='Candidate' 
+                                variant='outlined'
+                                onChange={panelCandidateChangeHandler}
+                                >
+                                    {interviewPanelCandidateMenuItems}
+                                </Select>
+                            </FormControl>
+                            </div>
+                        </div>
+                    </div>
             </DialogTitle>
             <Divider 
             style={{
@@ -205,4 +319,4 @@ function CandidateModal() {
     )
 }
 
-export default CandidateModal
+export default InterviewModal

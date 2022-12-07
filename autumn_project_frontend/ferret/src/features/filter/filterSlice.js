@@ -8,7 +8,7 @@ const initialState = {
     marksCriteria: '',
     marks: -1,
     section: -1,
-    status: -1
+    status: ''
 }
 
 const filterSlice = createSlice({
@@ -40,7 +40,7 @@ const filterSlice = createSlice({
             state.marksCriteria= ''
             state.marks= -1
             state.section= -1
-            state.status= -1
+            state.status= ''
         }
     }
 })

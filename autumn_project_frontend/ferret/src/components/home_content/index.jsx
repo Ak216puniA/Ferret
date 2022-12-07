@@ -43,6 +43,12 @@ function HomeContent(props){
         <div></div>
     )
 
+    const yearWiseCreateSeason = localStorage.getItem('year')>2 ? 
+    <div className='createSeasonButtonDiv'>
+        <button className='createSeasonButton' onClick={() => dispatch(openCreateSeasonDialog())}>Create Season</button>
+    </div> :
+    <></>
+
     return (
     <div className='homepageContent'>
         <div className='contentTriangleDiv'>
@@ -61,9 +67,7 @@ function HomeContent(props){
                 {seasonTable}
             </div>
         </div>
-        <div className='createSeasonButtonDiv'>
-            <button className='createSeasonButton' onClick={() => dispatch(openCreateSeasonDialog())}>Create Season</button>
-        </div>
+        {yearWiseCreateSeason}
         <CreateSeasonDialog />
     </div>
     )

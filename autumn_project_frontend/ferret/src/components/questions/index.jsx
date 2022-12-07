@@ -117,9 +117,15 @@ function QuestionSegment(props) {
         {questionAssigneeComponent}
     </>
 
-    let edit_button = questionEdit ?
+    let yearWiseEditButton = localStorage.getItem('year')>2 ? 
+    (questionEdit ?
     <button className="questionContentButton" onClick={saveClickHandler}>Save</button> :
-    <button className="questionContentButton" onClick={editClickhandler}>Edit</button>
+    <button className="questionContentButton" onClick={editClickhandler}>Edit</button>) : 
+    <></>
+
+    const yearWiseDeleteButton = localStorage.getItem('year')>2 ?
+    <div className='candidateModalQuestionDeleteIconDiv' onClick={questionDeleteHandler}><MdDelete color='#C0392B' size={18} /></div> :
+    <></>
 
     return (
         <>
@@ -127,10 +133,11 @@ function QuestionSegment(props) {
             <div className="editQuestionDiv">
                 <div className="questionNumberDiv">
                     <div className="questionNumber">Q.{index}</div>
-                    <div className='candidateModalQuestionDeleteIconDiv' onClick={questionDeleteHandler}><MdDelete color='#C0392B' size={18} /></div>
+                    {/* <div className='candidateModalQuestionDeleteIconDiv' onClick={questionDeleteHandler}><MdDelete color='#C0392B' size={18} /></div> */}
+                    {yearWiseDeleteButton}
                 </div>
                 <div>
-                    {edit_button}
+                    {yearWiseEditButton}
                 </div>
             </div>
             <div className="questionText">{question['text']}</div>
@@ -179,8 +186,10 @@ function QuestionsContent() {
         questionState.questions.map((question,index) => <QuestionSegment key={question['id']} question={question} index={index+1} />) : 
         [])
 
-    const add_question_button = roundTabState.current_sections.length>0 ?
+    const year_wise_add_question_button = localStorage.getItem('year')>2 ? 
+    (roundTabState.current_sections.length>0 ?
     <button className="questionContentButton" onClick={() => dispatch(openCreateQuestionDialog())}>+ Question</button> :
+    <></>) :
     <></>
 
     useEffect(() => {
@@ -203,7 +212,7 @@ function QuestionsContent() {
                         <div className="backButtonText" onClick={() => routeChange()}>Back</div>
                     </div>
                     <div>
-                        {add_question_button}
+                        {year_wise_add_question_button}
                     </div>
                 </div>
                 <div className="questionsHeading">Questions</div>

@@ -79,3 +79,25 @@
     flex-direction: column;
     align-items: center;
 }
+
+.subHeaderPageHeadingDiv{
+    font-size: 18px;
+    display: flex;
+    flex-direction: row;
+}
+
+.subHeaderLinkDiv:hover{
+    color: #00ADB5;
+}
+
+.panelTabRightDiv{
+    display: flex;
+    flex-direction: row;
+}
+
+.panelDashboardNavigationDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 16px;
+}

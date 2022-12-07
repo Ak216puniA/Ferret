@@ -1,11 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { tabClicked, openCreateRoundDialog, fetchSections, fetchCandidateMarks } from "../../features/roundTab/roundTabSlice";
+import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
-import { closeQuestions } from "../../features/seasonSubHeader/seasonSubHeaderSlice";
 
 function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)
@@ -18,7 +17,8 @@ function RoundTabs() {
                 dispatch(
                     tabClicked({
                         tab_name: roundTabState.round_list[0]['name'],
-                        tab_id: roundTabState.round_list[0]['id']
+                        tab_id: roundTabState.round_list[0]['id'],
+                        tab_type: roundTabState.round_list[0]['type']
                     })
                 )
                 dispatch(fetchRoundCandidates(roundTabState.round_list[0]['id']))
@@ -39,7 +39,6 @@ function RoundTabs() {
                 tab_type: tab_data['tab_type']
             })
         )
-        // dispatch(closeQuestions())
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
     }
@@ -53,10 +52,14 @@ function RoundTabs() {
         )
     }) : []
 
+    const yearWiseAddRoundButton = localStorage.getItem('year')>2 ?
+    <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div> :
+    <></>
+
     return (
         <>
             {tabs}
-            <div className="addRoundDiv"><MdAddBox className="addIcon" onClick={() => dispatch(openCreateRoundDialog())} size={28}/></div>
+            {yearWiseAddRoundButton}
         </>
     )
 }

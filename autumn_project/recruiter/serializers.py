@@ -7,7 +7,7 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['id','username','email','password','userpart','year','image','is_active']
+        fields = ['id','username','email','password','userpart','year','image','is_active','name']
         extra_kwargs = {
             'password':{ 'write_only' : True }
         }
@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['id','username']
+        fields = ['id','username','year','name','userpart','email','image']
 
 
 # RecruitmentSeasons model serializers
@@ -111,16 +111,16 @@ class CandidatesNameSerializer(serializers.ModelSerializer):
 # InterviewPanel model serializers
 
 class InterviewPanelSerializer(serializers.ModelSerializer):
-    season_id = RecruitmentSeasonsNameSerializer()
-    panelist = UserNameSerializer(many=True)
-    class Model:
+    class Meta:
         model = InterviewPanel
         fields = '__all__'
 
-class InterviewPanelNameSerializer(serializers.ModelSerializer):
+class InterviewPanelNestedSerializer(serializers.ModelSerializer):
+    season_id = RecruitmentSeasonsNameSerializer()
+    panelist = UserNameSerializer(many=True)
     class Meta:
         model = InterviewPanel
-        fields = ['panel_name']
+        fields = '__all__'
 
 
 # CandidateMarks model serializers
@@ -143,7 +143,7 @@ class CandidateMarksSerializer(serializers.ModelSerializer):
 class CandidateRoundNestedSerializer(serializers.ModelSerializer):
     candidate_id = CandidatesSerializer()
     round_id = RoundsSerializer()
-    interview_panel = InterviewPanelNameSerializer()
+    interview_panel = InterviewPanelSerializer()
     class Meta:
         model = CandidateRound
         fields = '__all__'

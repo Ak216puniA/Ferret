@@ -43,9 +43,13 @@ function FilterDrawer() {
         }
     }
 
-    const categories = [
+    const categories = localStorage.getItem('year')>2 ? 
+    [
         'Section',
         'Marks',
+        'Status'
+    ] :
+    [
         'Status'
     ]
 
@@ -58,7 +62,6 @@ function FilterDrawer() {
             >
             <ListItemButton
             className='filterCategoryButton'
-            alignItems='center'
             style={{
                 backgroundColor: '#F5B041',
             }}

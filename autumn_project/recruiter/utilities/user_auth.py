@@ -29,7 +29,8 @@ def get_user_data(token):
             if is_maintainer:
                 required_user_data = {
                     'is_maintainer' : is_maintainer,
-                    'username' : user_data['person']['fullName'],
+                    'username' : user_data['student']['enrolmentNumber'],
+                    'name' : user_data['person']['fullName'],
                     'email' : user_data['contactInformation']['instituteWebmailAddress'],
                     'password' : token,
                     'year' : user_data['student']['currentYear'],
@@ -53,6 +54,7 @@ def check_and_create_user(user_data):
     except ObjectDoesNotExist:
         user = Users(
             username=user_data['username'],
+            name=user_data['name'],
             email=user_data['email'],
             password=user_data['password'],
             is_superuser=False,

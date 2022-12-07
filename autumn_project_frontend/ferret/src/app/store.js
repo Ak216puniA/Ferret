@@ -11,6 +11,7 @@ import userReducer from '../features/user/userSlice'
 import roundReducer from '../features/round/roundSlice'
 import candidateModalReducer from '../features/candidateModal/candidateModalSlice'
 import filterReducer from '../features/filter/filterSlice'
+import interviewPanelReducer from '../features/interviewPanel/interviewPanelSlice'
 
 const store = configureStore({
     reducer: {
@@ -25,7 +26,8 @@ const store = configureStore({
         user : userReducer,
         round : roundReducer,
         candidateModal : candidateModalReducer,
-        filter : filterReducer
+        filter : filterReducer,
+        interviewPanel : interviewPanelReducer
     },
 })
 

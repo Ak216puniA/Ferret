@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/header/index";
 import HomeContent from "../components/home_content/index";
@@ -10,16 +10,16 @@ function Home() {
   const logoutState = useSelector((state) => state.logout.authenticated)
   const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated')
 
-  useEffect(() => {
-    
-  },[])
+  const page = [
+    ['Home','home']
+  ]
 
   if(userAuthenticated && logoutState){
     return (
       <>
         <Header />
         <NavigationBar />
-        <SubHeader page='Home' initialTabs={['Developer','Designer']} />
+        <SubHeader page={page} initialTabs={['Developer','Designer']} />
         <HomeContent contentHeading='Recruitment Seasons'/>
       </>
     )

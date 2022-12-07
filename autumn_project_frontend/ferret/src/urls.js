@@ -21,10 +21,11 @@ export const CANDIDATE_SECTION_MARKS = `${BACKEND_BASE_URL}api/candidate_section
 export const LOGOUT = `${BACKEND_BASE_URL}auth/logout/`
 export const CSV = `${BACKEND_BASE_URL}api/csv/`
 export const FILTER_CANDIDATES = `${BACKEND_BASE_URL}api/filter_candidates/`
+export const INTERVIEW_PANEL = `${BACKEND_BASE_URL}interview_panel/`
 
 
 // Frontend URLs
 
 export const FRONTEND_BASE_URL = 'http://localhost:3000/'
-export const HOME = `${FRONTEND_BASE_URL}home`
-export const SEASON_DASHBOARD = `${FRONTEND_BASE_URL}season/`
+export const HOME = `/home`
+export const SEASON_DASHBOARD = `/season`
