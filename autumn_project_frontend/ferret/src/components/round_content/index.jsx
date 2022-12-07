@@ -12,6 +12,7 @@ import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal 
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
+import CandidateInterviewModal from "../candidate_interview_modal";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -185,6 +186,8 @@ function RoundContent(props) {
     <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
     <></>
 
+    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateModal /> : <CandidateInterviewModal />
+
     return (
         <div className="seasonTestContent">
             <div className='contentTriangleDiv'>
@@ -214,7 +217,7 @@ function RoundContent(props) {
             </div>
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
-            <CandidateModal />
+            {candidateModal}
             <MoveCandidatesDialog />
             <FilterDrawer />
         </div>

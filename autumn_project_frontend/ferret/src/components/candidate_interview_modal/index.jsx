@@ -4,13 +4,15 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
+import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
+import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
-import './index.css';
+import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 
-function CandidateModal() {
+function CandidateInterviewModal() {
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -39,13 +41,37 @@ function CandidateModal() {
         dispatch(fetchQuestions(section_id))
     }
 
+    const dialogCloseHandler = () => {
+        dispatch(openDeleteCofirmationDialog(false))
+    }
+
+    const agreeActionClickHandler = () => {
+        dispatch(
+            deleteCandidateInterviewQuestion({
+                candidateMarksId: candidateModalState.deleteQuestionId
+            })
+        )
+    }
+
     const candidateRoundStatusChangeHandler = (event) => {
         dispatch(updateCandidateModalCandidateRoundStatus(event.target.value))
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
         ['pending','Pending'],
+        ['not_notified','Not Notified'],
+        ['notified','Notified'],
+        ['waiting_room','In Waiting Room'],
+        ['interview','In Interview'],
         ['done','Done']
+    ]
+
+    const candidateRoundStatusOptionsForJuniorYear = [
+        ['pending','Pending'],
+        ['not_notified','Not Notified'],
+        ['notified','Notified'],
+        ['waiting_room','In Waiting Room'],
+        ['interview','In Interview']
     ]
 
     let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
@@ -82,11 +108,20 @@ function CandidateModal() {
     }) :
     []
 
-    const candidateRoundStatusMenuItems = candidateRoundStatusOptionsForSeniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
+    let candidateRoundStatusMenuItems = localStorage.getItem('year')>2 ? 
+    candidateRoundStatusOptionsForSeniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>) :
+    candidateRoundStatusOptionsForJuniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
+
+    let addNewQuestionOption = candidateModalState.section_name!=='' ? 
+    <>
+    <CandidateModalInterviewAddQuestion />
+    <CandidateModalInterviewChooseQuestion />
+    </> : 
+    <></>
 
     const yearWiseSectionCards = localStorage.getItem('year')>2 ?
     <div className='candidateModalContentDiv'>
@@ -94,31 +129,11 @@ function CandidateModal() {
     </div> :
     <></>
 
-    const yearWiseCandidateRoundStatus = localStorage.getItem('year')>2 ?
-    <div className='candidateModalContentStatusDiv'>
-        <div className='candidateModalStatusHeading'>
-            Status: 
-        </div>
-        <div className='candidateModalStatusOptionsDiv'>
-        <FormControl fullWidth>
-            <Select 
-            required
-            value={candidateModalState.candidateRoundStatus}
-            placeholder='Filtering criteria' 
-            variant='outlined'
-            onChange={candidateRoundStatusChangeHandler}
-            >
-                {candidateRoundStatusMenuItems}
-            </Select>
-        </FormControl>
-        </div>
-    </div> :
-    <></>
-
     const yearWiseSectionDesc = localStorage.getItem('year')>2 ?
     <div className='candidateModalSectionDescDiv'>
         <div className='candidateModalHeading1'>{sectionName}</div>
         {sectionQuestionData}
+        {addNewQuestionOption}
     </div> :
     <></>
 
@@ -212,7 +227,24 @@ function CandidateModal() {
                         </div>
                     </div>
                     {yearWiseSectionCards}
-                    {yearWiseCandidateRoundStatus}
+                    <div className='candidateModalContentStatusDiv'>
+                        <div className='candidateModalStatusHeading'>
+                            Status: 
+                        </div>
+                        <div className='candidateModalStatusOptionsDiv'>
+                        <FormControl fullWidth>
+                            <Select 
+                            required
+                            value={candidateModalState.candidateRoundStatus}
+                            placeholder='Filtering criteria' 
+                            variant='outlined'
+                            onChange={candidateRoundStatusChangeHandler}
+                            >
+                                {candidateRoundStatusMenuItems}
+                            </Select>
+                        </FormControl>
+                        </div>
+                    </div>
                     <Divider 
                     style={{
                         width:'100%', 
@@ -224,8 +256,13 @@ function CandidateModal() {
                 </Box>
             </DialogContent>
         </Dialog>
+        <DeleteConfirmationDialog
+        open={candidateModalState.openDeleteDialog} 
+        dialogCloseHandler={dialogCloseHandler} 
+        agreeActionClickHandler={agreeActionClickHandler}
+        />
         </>
     )
 }
 
-export default CandidateModal
+export default CandidateInterviewModal
