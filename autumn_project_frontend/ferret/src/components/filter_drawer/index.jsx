@@ -60,20 +60,28 @@ function FilterDrawer() {
         }
     }
 
-    const categories = localStorage.getItem('year')>2 ? 
-    [
-        'Section',
-        'Marks',
-        'Status',
-        'Checking Mode'
-    ] :
+    let categories = localStorage.getItem('year')>2 ? 
+    (
+        roundTabState.currentTabType==='test' ?
+        [
+            'Section',
+            'Marks',
+            'Status',
+            'Checking Mode'
+        ] :
+        [
+            'Section',
+            'Marks',
+            'Status',
+        ]
+    ) :
     [
         'Status'
     ]
 
     const categoryList = (
         categories.map((category,index) => {
-            const filterCategoryDivider = index===3 ?
+            const filterCategoryDivider = index===3 && roundTabState.currentTabType==='test' ?
             <Divider 
             style={{
                 width:'100%', 
