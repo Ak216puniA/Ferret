@@ -187,6 +187,56 @@ function FilterCheckingModeContent() {
   }) :
   []
 
+  let anyQuestionOption = filterState.assigneeQuestionList.length>1 ? <MenuItem value={0}>Any question*</MenuItem> : []
+
+  let questionStatusField = filterState.assignee!=='' ?
+  <FormControl
+  fullWidth
+  sx={{
+    marginTop: '5%'
+  }}
+  >
+    <InputLabel id='questionStatus'>Question Status</InputLabel>
+    <Select 
+    fullWidth
+    required 
+    labelid='questionStatus' 
+    label='Question Status'
+    value={filterState.questionStatus}
+    placeholder='Question status' 
+    variant='outlined'
+    onChange={questionStatusChangeHandler}
+    >
+        <MenuItem value={'checked'}>Checked</MenuItem>
+        <MenuItem value={'unchecked'}>Unchecked</MenuItem>
+    </Select>
+  </FormControl> :
+  <></>
+
+  let questionField = filterState.assignee!=='' && filterState.questionStatus!=='' ?
+  <FormControl 
+  fullWidth
+  sx={{
+    marginTop: '5%'
+  }}
+  >
+    <InputLabel id='question'>Question</InputLabel>
+    <Select 
+    fullWidth
+    required 
+    labelid='question' 
+    label='Question'
+    value={filterState.question}
+    placeholder='Question' 
+    variant='outlined'
+    onChange={questionChangeHandler}
+    >
+        {assigneeQuestionList}
+        {anyQuestionOption}
+    </Select>
+  </FormControl> :
+  <></>
+
   useEffect(() => {
     dispatch(
       fetchAssigneeQuestionList({
@@ -215,47 +265,8 @@ function FilterCheckingModeContent() {
             {assigneeList}
         </Select>
       </FormControl>
-      <FormControl
-      fullWidth
-      sx={{
-        marginTop: '5%'
-      }}
-      >
-        <InputLabel id='questionStatus'>Question Status</InputLabel>
-        <Select 
-        fullWidth
-        required 
-        labelid='questionStatus' 
-        label='Question Status'
-        value={filterState.questionStatus}
-        placeholder='Question status' 
-        variant='outlined'
-        onChange={questionStatusChangeHandler}
-        >
-            <MenuItem value={'checked'}>Checked</MenuItem>
-            <MenuItem value={'unchecked'}>Unchecked</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl 
-      fullWidth
-      sx={{
-        marginTop: '5%'
-      }}
-      >
-        <InputLabel id='question'>Question</InputLabel>
-        <Select 
-        fullWidth
-        required 
-        labelid='question' 
-        label='Question'
-        value={filterState.question}
-        placeholder='Question' 
-        variant='outlined'
-        onChange={questionChangeHandler}
-        >
-            {assigneeQuestionList}
-        </Select>
-      </FormControl>
+      {questionStatusField}
+      {questionField}
     </div>
     </>
   )

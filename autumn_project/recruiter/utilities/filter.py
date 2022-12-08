@@ -42,3 +42,19 @@ def filter_by_marks(filter_marks_data):
     else:
         filter_candidate_list = sorted(filter_marks_data['candidate_list'], key= lambda a: a[1], reverse=True)
     return filter_candidate_list
+
+def filter_by_question_and_status(filter_data):
+    if filter_data['question_id'] is not None and filter_data['question_id']>0:
+        candidate_marks = CandidateMarks.objects.filter(question_id=filter_data['question_id'])
+    else:
+        if filter_data['assignee_id'] is not None and filter_data['assignee_id']>0:
+            candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=filter_data['round_id'], question_id__assignee=filter_data['assignee_id'])
+        else:
+            candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=filter_data['round_id'])
+    
+    if filter_data['question_status'] is not None and len(filter_data['question_status'])>0:
+        candidate_marks = candidate_marks.filter(status=filter_data['question_status'])
+    
+    candidate_ids = [candidate_mark.candidate_id.id for candidate_mark in candidate_marks]
+    filter_candidates = CandidateRound.objects.filter(candidate_id__in=candidate_ids, round_id=filter_data['round_id'])
+    return filter_candidates

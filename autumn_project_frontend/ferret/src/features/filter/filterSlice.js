@@ -14,7 +14,8 @@ const initialState = {
     assignee: '',
     questionStatus: '',
     question: '',
-    assigneeQuestionList: []
+    assigneeQuestionList: [],
+    filterCheckingMode: false
 }
 
 export const fetchAssigneeQuestionList = createAsyncThunk('filter/fetchAssigneeQuestionList', (assigneeQuestionData) => {
@@ -39,6 +40,7 @@ const filterSlice = createSlice({
         },
         selectCategory: (state,action) => {
             state.category = action.payload
+            state.filterCheckingMode = action.payload==='Checking Mode' ? true : false
         },
         setMarksCriteria: (state,action) => {
             state.marksCriteria = action.payload
@@ -68,6 +70,12 @@ const filterSlice = createSlice({
             state.marks= -1
             state.section= -1
             state.status= ''
+        },
+        resetCheckingModeFilterState: (state) => {
+            state.assignee = ''
+            state.questionStatus = ''
+            state.question = ''
+            state.assigneeQuestionList = []
         }
     },
     extraReducers: builder => {
@@ -90,4 +98,4 @@ const filterSlice = createSlice({
 })
 
 export default filterSlice.reducer
-export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus, setAssignee, setQuestionStatus, setQuestion, resetFilterState} = filterSlice.actions
+export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus, setAssignee, setQuestionStatus, setQuestion, resetFilterState, resetCheckingModeFilterState } = filterSlice.actions

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { openFilterDrawer, resetFilterState, selectCategory } from '../../features/filter/filterSlice'
+import { openFilterDrawer, resetCheckingModeFilterState, resetFilterState, selectCategory } from '../../features/filter/filterSlice'
 import './index.css'
 import FilterDrawerContent from '../filter_drawer_content'
 import { AiOutlineReload } from 'react-icons/ai'
 import { MdFilterListAlt } from 'react-icons/md'
-import { filterCandidates } from '../../features/seasonRoundContent/seasonRoundContentSlice'
+import { filterCandidates, filterCandidatesForCheckingMode } from '../../features/seasonRoundContent/seasonRoundContentSlice'
 
 function FilterDrawer() {
     const filterState = useSelector((state) => state.filter)
@@ -22,19 +22,34 @@ function FilterDrawer() {
         for(let i=0 ; i<categories.length ; i++){
         document.getElementsByClassName('filterCategoryButton')[i].style.backgroundColor = i===index ? '#EEEEEE' : '#F5B041'
         }
-        if(category==='Checking Mode') dispatch(resetFilterState())
+        if(category==='Checking Mode'){
+            dispatch(resetFilterState())
+        }else{
+            dispatch(resetCheckingModeFilterState())
+        }
     }
 
     const filterClickHandler = () => {
-        dispatch(
-            filterCandidates({
-            currentRound: roundTabState.currentTabId,
-            section: filterState.section,
-            status: filterState.status,
-            marks: filterState.marks,
-            marksCriteria: filterState.marksCriteria
-            })
-        )
+        if (filterState.filterCheckingMode){
+            dispatch(
+                filterCandidatesForCheckingMode({
+                    currentRound: roundTabState.currentTabId,
+                    assigneeId: filterState.assignee==='' ? 0 : filterState.assignee,
+                    questionStatus: filterState.questionStatus,
+                    questionId: filterState.question==='' ? 0 : filterState.question
+                })
+            )
+        }else{
+            dispatch(
+                filterCandidates({
+                currentRound: roundTabState.currentTabId,
+                section: filterState.section,
+                status: filterState.status,
+                marks: filterState.marks,
+                marksCriteria: filterState.marksCriteria
+                })
+            )
+        }
     }
 
     const resetAllFiltersClickHandler = () => {

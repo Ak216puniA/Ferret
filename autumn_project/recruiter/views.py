@@ -423,42 +423,48 @@ class IndividualCandidateSectionMarks(APIView):
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
         print(request.data)
-        filter_data = {
-            'round_id': request.data['round_id'],
-            'section': int(request.data['section']),
-            'status': request.data['status'],
-            'marks': int(request.data['marks']),
-            'marks_criteria': request.data['marks_criteria']
-        }
+        if request.data['checking_mode']:
+            filter_data = request.data
+            candidates = filter_by_question_and_status(filter_data)
+            serializer = CandidateRoundNestedSerializer(candidates, many=True)
+            filtered_candidates = serializer.data
+        else:
+            filter_data = {
+                'round_id': request.data['round_id'],
+                'section': int(request.data['section']),
+                'status': request.data['status'],
+                'marks': int(request.data['marks']),
+                'marks_criteria': request.data['marks_criteria']
+            }
 
-        status_round_data = {
-            'status': filter_data['status'],
-            'round_id': filter_data['round_id']
-        }
-        candidate_list = filter_by_status(status_round_data)
+            status_round_data = {
+                'status': filter_data['status'],
+                'round_id': filter_data['round_id']
+            }
+            candidate_list = filter_by_status(status_round_data)
 
-        filter_section_data = {
-            'section': filter_data['section'],
-            'candidate_list': candidate_list,
-            'round_id': filter_data['round_id']
-        }
-        candidate_list = filter_by_section(filter_section_data)
+            filter_section_data = {
+                'section': filter_data['section'],
+                'candidate_list': candidate_list,
+                'round_id': filter_data['round_id']
+            }
+            candidate_list = filter_by_section(filter_section_data)
 
-        filter_marks_data = {
-            'marks': filter_data['marks'],
-            'marks_criteria': filter_data['marks_criteria'],
-            'candidate_list': candidate_list
-        }
-        candidate_list = filter_by_marks(filter_marks_data)
+            filter_marks_data = {
+                'marks': filter_data['marks'],
+                'marks_criteria': filter_data['marks_criteria'],
+                'candidate_list': candidate_list
+            }
+            candidate_list = filter_by_marks(filter_marks_data)
 
-        filtered_candidates = []
-        for candidate_marks_pair in candidate_list:
-            candidate = CandidateRound.objects.get(candidate_id=candidate_marks_pair[0], round_id=filter_data['round_id'])
-            serializer = CandidateRoundNestedSerializer(candidate)
-            filtered_candidates.append(serializer.data)
+            filtered_candidates = []
+            for candidate_marks_pair in candidate_list:
+                candidate = CandidateRound.objects.get(candidate_id=candidate_marks_pair[0], round_id=filter_data['round_id'])
+                serializer = CandidateRoundNestedSerializer(candidate)
+                filtered_candidates.append(serializer.data)
+
         response_data = {
             'status': 'success',
             'data': filtered_candidates
         }
-        
         return Response(response_data)
