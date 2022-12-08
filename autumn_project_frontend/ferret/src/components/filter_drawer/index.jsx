@@ -1,5 +1,5 @@
 import React from 'react'
-import { Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import { Divider, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { openFilterDrawer, resetFilterState, selectCategory } from '../../features/filter/filterSlice'
 import './index.css'
@@ -22,6 +22,7 @@ function FilterDrawer() {
         for(let i=0 ; i<categories.length ; i++){
         document.getElementsByClassName('filterCategoryButton')[i].style.backgroundColor = i===index ? '#EEEEEE' : '#F5B041'
         }
+        if(category==='Checking Mode') dispatch(resetFilterState())
     }
 
     const filterClickHandler = () => {
@@ -38,6 +39,7 @@ function FilterDrawer() {
 
     const resetAllFiltersClickHandler = () => {
         dispatch(resetFilterState())
+        dispatch(selectCategory(''))
         for(let i=0 ; i<categories.length ; i++){
             document.getElementsByClassName('filterCategoryButton')[i].style.backgroundColor = '#F5B041'
         }
@@ -47,7 +49,8 @@ function FilterDrawer() {
     [
         'Section',
         'Marks',
-        'Status'
+        'Status',
+        'Checking Mode'
     ] :
     [
         'Status'
@@ -55,24 +58,38 @@ function FilterDrawer() {
 
     const categoryList = (
         categories.map((category,index) => {
-        return (
-            <ListItem 
-            key={category} 
-            disablePadding
-            >
-            <ListItemButton
-            className='filterCategoryButton'
+            const filterCategoryDivider = index===3 ?
+            <Divider 
             style={{
-                backgroundColor: '#F5B041',
+                width:'100%', 
+                backgroundColor: '#EEEEEE',
+                margin: '12px 0px',
+                borderBottomWidth: '2px',
+                borderColor: '#EEEEEE'
             }}
-            onClick={() => categoryClickHandler(category,index)}
-            >
-                <ListItemText 
-                primary={category}
-                />
-            </ListItemButton>
-            </ListItem>
-        )
+            /> : 
+            <></>
+            return (
+                <>
+                    {filterCategoryDivider}
+                    <ListItem
+                    key={category}  
+                    disablePadding
+                    >
+                    <ListItemButton
+                    className='filterCategoryButton'
+                    style={{
+                        backgroundColor: '#F5B041',
+                    }}
+                    onClick={() => categoryClickHandler(category,index)}
+                    >
+                        <ListItemText 
+                        primary={category}
+                        />
+                    </ListItemButton>
+                    </ListItem>
+                </>
+            )
         })
     )
 

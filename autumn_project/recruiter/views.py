@@ -97,9 +97,21 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
 
     def get_queryset(self):
-        sc_id = self.request.query_params.get('section_id')
-        if sc_id is not None:
-            return Questions.objects.filter(section_id=sc_id)
+        round_id = self.request.query_params.get('round_id')
+        assignee_id = self.request.query_params.get('assignee_id')
+        question_status = self.request.query_params.get('question_status')
+        section_id = self.request.query_params.get('section_id')
+        if section_id is not None:
+            return Questions.objects.filter(section_id=section_id)
+        if round_id is not None and round_id!='':
+            queryset = Questions.objects.filter(section_id__round_id=round_id)
+            if assignee_id is not None and assignee_id!='':
+                queryset = queryset.filter(assignee=assignee_id)
+                if question_status is not None and question_status!='':
+                    candidate_marks = CandidateMarks.objects.filter(question_id__in=queryset, status=question_status)
+                    question_ids = [canidate_mark.question_id.id for canidate_mark in candidate_marks]
+                    queryset = queryset.filter(id__in=question_ids)
+            return queryset
         return Questions.objects.all()
 
     def get_serializer_class(self):
@@ -193,17 +205,6 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
         if self.action == 'list' or self.action == 'retrieve':
             return CandidateRoundNestedSerializer
         return CandidateRoundSerializer
-
-    # def list(self):
-    #     ready_for_interview = self.request.query_params.get('ready_for_interview')
-    #     queryset = self.get_queryset()
-    #     serializer_class = self.get_serializer_class()
-    #     if ready_for_interview:
-    #         for candidate_round in queryset:
-    #             candidate_round.status = 'interview'
-    #     serializer = serializer_class(queryset, many=True)
-    #     return Response(serializer.data)
-
 
     def create(self, request, *args, **kwargs):
         serializer = MoveCandidateListSerializer(data=request.data)
