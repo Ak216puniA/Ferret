@@ -54,7 +54,8 @@ function CandidateModalQuestion(props) {
         dispatch(
             updateCandidateQuestionStatus({
                 id: question['id'],
-                remarks: questionRemarks
+                remarks: questionRemarks,
+                status: question['status']==='unchecked' ? 'checked' : 'unchecked'
             })
         )
     }

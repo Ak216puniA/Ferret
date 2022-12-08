@@ -91,7 +91,7 @@ export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/up
     .patch(
         `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
         {
-            status: 'checked',
+            status: candidateQuestionData['status'],
             remarks: candidateQuestionData['remarks']
         },
         {
@@ -280,9 +280,13 @@ const candidateModalSlice = createSlice({
         .addCase(updateCandidateQuestionStatus.pending, (state) => {
             state.loading = true
         })
-        .addCase(updateCandidateQuestionStatus.fulfilled, (state) => {
+        .addCase(updateCandidateQuestionStatus.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
+            console.log(action.payload)
+            state.candidate_question_data.map(question => {
+                if(question['id']===action.payload['id']) question['status']=action.payload['status']
+            })
         })
         .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
             state.loading = false
