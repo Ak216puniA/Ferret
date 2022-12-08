@@ -7,7 +7,7 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
@@ -18,6 +18,8 @@ function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const roundTabState = useSelector((state) => state.roundTab)
+    const checkingMode = useSelector((state) => state.candidateModal.checkingMode)
+    const filterState = useSelector((state) => state.filter)
     const dispatch = useDispatch()
 
     let candidate_section_marks = section_marks[index-1]
@@ -41,18 +43,30 @@ function RoundTableRow(props){
             })
         )
         dispatch(fetchCandidate(candidate['id']))
-        dispatch(
-            fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidate['id']],
-                section_list: roundTabState.current_sections.map((section) => section['id'])
-            })
-        )
-        dispatch(
-            fetchCurrentSectionsTotalMarks({
-                candidateId: candidate['id'],
-                sectionList: roundTabState.current_sections.map((section) => section['id'])
-            })
-        )
+        if(checkingMode===true){
+            const questionId = filterState.question!=='' && filterState.question>0 ? 
+            [filterState.question] :
+            filterState.assigneeQuestionList.map(question => question['id'])
+            dispatch(
+                fetchCandidateQuestionDataInCheckingMode({
+                    candidateId: candidate['id'],
+                    questionId: questionId
+                })
+            )
+        }else{
+            dispatch(
+                fetchSelectedCandidateSectionMarks({
+                    candidate_list: [candidate['id']],
+                    section_list: roundTabState.current_sections.map((section) => section['id'])
+                })
+            )
+            dispatch(
+                fetchCurrentSectionsTotalMarks({
+                    candidateId: candidate['id'],
+                    sectionList: roundTabState.current_sections.map((section) => section['id'])
+                })
+            )
+        }
     }
 
     let candidate_marks = <></>

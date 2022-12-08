@@ -96,11 +96,34 @@ export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandi
         `${FILTER_CANDIDATES}`,
         {
             round_id: filterData['currentRound'],
-            round: filterData['round'],
+            checking_mode: false,
             section: filterData['section'],
             status: filterData['status'],
             marks: filterData['marks'],
             marks_criteria: filterData['marksCriteria']
+        },
+        {
+            headers: {
+                "X-CSRFToken": Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const filterCandidatesForCheckingMode = createAsyncThunk('seasonRoundContent/filterCandidatesForCheckingMode', (filterData) => {
+    return axios
+    .post(
+        `${FILTER_CANDIDATES}`,
+        {
+            round_id: filterData['currentRound'],
+            checking_mode: true,
+            assignee_id: filterData['assigneeId'],
+            question_status: filterData['questionStatus'],
+            question_id: filterData['questionId']
         },
         {
             headers: {
@@ -227,6 +250,19 @@ const seasonRoundContentSlice = createSlice({
             state.candidate_list.forEach(candidateRound => {
                 if(candidateRound['id']===action.payload['id']) candidateRound['status']=action.payload['status']
             })
+        })
+        .addCase(filterCandidatesForCheckingMode.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(filterCandidatesForCheckingMode.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.candidate_list = action.payload['data']
+        })
+        .addCase(filterCandidatesForCheckingMode.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Candidates not filtered!")
         })
     }
 })

@@ -3,7 +3,9 @@ import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel,
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { AiOutlineReload } from 'react-icons/ai'
-import { setMarks, setMarksCriteria, setSection, setStatus } from '../../features/filter/filterSlice'
+import { fetchAssigneeQuestionList, setAssignee, setMarks, setMarksCriteria, setQuestion, setQuestionStatus, setSection, setStatus } from '../../features/filter/filterSlice'
+import { useEffect } from 'react'
+import { fetchUsers } from '../../features/user/userSlice'
 
 function FilterMarksContent() {
   const filterState = useSelector((state) => state.filter)
@@ -139,15 +141,157 @@ function FilterStatusContent() {
   )
 }
 
+function FilterCheckingModeContent() {
+  const userState = useSelector((state) => state.user)
+  const filterState = useSelector((state) => state.filter)
+  const roundTabState = useSelector((state) => state.roundTab)
+  const dispatch = useDispatch()
+
+  const resetButtonHandler = () => {
+    dispatch(setAssignee(''))
+    dispatch(setQuestionStatus(''))
+    dispatch(setQuestion(''))
+    dispatch(fetchUsers(3))
+  }
+
+  const assigneeChangeHandler = (event) => {
+    dispatch(setAssignee(event.target.value))
+  }
+
+  const questionStatusChangeHandler = (event) => {
+    dispatch(setQuestionStatus(event.target.value))
+  }
+
+  const questionChangeHandler = (event) => {
+    dispatch(setQuestion(event.target.value))
+  }
+
+  const assigneeList = userState.users.length>0 ?
+  userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['name']} - {user['username']}</MenuItem>) :
+  []
+
+  let assigneeQuestionList = filterState.assigneeQuestionList.length>0 ?
+  filterState.assigneeQuestionList.map(question => {
+    return (
+      <MenuItem 
+      style={{
+        whiteSpace: 'normal',
+        maxWidth: '48em'
+      }} 
+      key={question['id']} 
+      value={question['id']}
+      >
+        {question['text']}
+      </MenuItem>
+    )
+  }) :
+  []
+
+  let anyQuestionOption = filterState.assigneeQuestionList.length>1 ? <MenuItem value={0}>Any question*</MenuItem> : []
+
+  let questionStatusField = filterState.assignee!=='' ?
+  <FormControl
+  fullWidth
+  sx={{
+    marginTop: '5%'
+  }}
+  >
+    <InputLabel id='questionStatus'>Question Status</InputLabel>
+    <Select 
+    fullWidth
+    required 
+    labelid='questionStatus' 
+    label='Question Status'
+    value={filterState.questionStatus}
+    placeholder='Question status' 
+    variant='outlined'
+    onChange={questionStatusChangeHandler}
+    >
+        <MenuItem value={'checked'}>Checked</MenuItem>
+        <MenuItem value={'unchecked'}>Unchecked</MenuItem>
+    </Select>
+  </FormControl> :
+  <></>
+
+  let questionField = filterState.assignee!=='' && filterState.questionStatus!=='' ?
+  <FormControl 
+  fullWidth
+  sx={{
+    marginTop: '5%'
+  }}
+  >
+    <InputLabel id='question'>Question</InputLabel>
+    <Select 
+    fullWidth
+    required 
+    labelid='question' 
+    label='Question'
+    value={filterState.question}
+    placeholder='Question' 
+    variant='outlined'
+    onChange={questionChangeHandler}
+    >
+        {assigneeQuestionList}
+        {anyQuestionOption}
+    </Select>
+  </FormControl> :
+  <></>
+
+  useEffect(() => {
+    dispatch(
+      fetchAssigneeQuestionList({
+        roundId: roundTabState.currentTabId,
+        assigneeId: filterState.assignee,
+        status: filterState.questionStatus
+      })
+    )
+  },[filterState.assignee, filterState.questionStatus])
+
+  return (
+    <>
+    <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
+    <div className='categoryContentDiv'>
+      <FormControl fullWidth>
+        <InputLabel id='assignee'>Assignee</InputLabel>
+        <Select 
+        required 
+        labelid='assignee' 
+        label='Assignee'
+        value={filterState.assignee}
+        placeholder='Assignee' 
+        variant='outlined'
+        onChange={assigneeChangeHandler}
+        >
+            {assigneeList}
+        </Select>
+      </FormControl>
+      {questionStatusField}
+      {questionField}
+    </div>
+    </>
+  )
+}
+
 function FilterDrawerContent() {
   const filterState = useSelector((state) => state.filter)
-  const filterDrawerCategoryContent = filterState.category==='Marks' ? 
-  <FilterMarksContent /> : 
-  (filterState.category==='Section' ? <FilterSectionContent /> : <FilterStatusContent />)
+  let filterDrawerContent = <></>
 
-  const filterDrawerContent = filterState.category==='' ? 
-  <div className='noFilterContentDiv'>No filter selected!</div> : 
-  <>{filterDrawerCategoryContent}</>
+  switch(filterState.category) {
+    case 'Marks':
+      filterDrawerContent =  <FilterMarksContent />
+      break
+    case 'Section':
+      filterDrawerContent =  <FilterSectionContent />
+      break
+    case 'Status':
+      filterDrawerContent =  <FilterStatusContent />
+      break
+    case 'Checking Mode':
+      filterDrawerContent = <FilterCheckingModeContent />
+      break
+    default:
+      filterDrawerContent =  <div className='noFilterContentDiv'>No filter selected!</div>
+  }
 
   return <>{filterDrawerContent}</>
 }
