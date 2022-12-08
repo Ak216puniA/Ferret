@@ -75,9 +75,13 @@ def get_candidate_total_marks(candidate_round_data):
     return candidate_total_marks
 
 
-def get_question_wise_candidate_section_marks(candidate_section_data):
+def get_candidate_question_data(candidate_section_data):
     candidate_section_marks = []
-    candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_section_data['candidate_id'], question_id__section_id=candidate_section_data['section_id'])
+    candidate_marks = []
+    if candidate_section_data['section_id'] is not None and candidate_section_data['section_id']!='':
+        candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_section_data['candidate_id'], question_id__section_id=candidate_section_data['section_id'])
+    if candidate_section_data['question_id_list'] is not None and candidate_section_data['question_id_list']!='':
+        candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_section_data['candidate_id'], question_id__in=candidate_section_data['question_id_list'])
     for candidate_question in candidate_marks:
         question = Questions.objects.get(id=candidate_question.question_id.id)
         marks = candidate_question.marks

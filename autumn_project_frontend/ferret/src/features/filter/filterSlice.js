@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { QUESTIONS } from "../../urls"
+import { filterCandidates, filterCandidatesForCheckingMode } from "../seasonRoundContent/seasonRoundContentSlice"
 
 const initialState = {
     loading: false,
@@ -93,6 +94,12 @@ const filterSlice = createSlice({
             state.error = action.error.message
             state.assigneeQuestionList = []
             console.log("Assignee question list fetch unsuccessful!")
+        })
+        .addCase(filterCandidates.fulfilled, (state) => {
+            state.open_filter_drawer = false
+        })
+        .addCase(filterCandidatesForCheckingMode.fulfilled, (state) => {
+            state.open_filter_drawer = false
         })
     }
 })

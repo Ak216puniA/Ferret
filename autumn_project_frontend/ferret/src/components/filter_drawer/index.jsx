@@ -7,6 +7,7 @@ import FilterDrawerContent from '../filter_drawer_content'
 import { AiOutlineReload } from 'react-icons/ai'
 import { MdFilterListAlt } from 'react-icons/md'
 import { filterCandidates, filterCandidatesForCheckingMode } from '../../features/seasonRoundContent/seasonRoundContentSlice'
+import { switchCheckingMode } from '../../features/candidateModal/candidateModalSlice'
 
 function FilterDrawer() {
     const filterState = useSelector((state) => state.filter)
@@ -26,6 +27,7 @@ function FilterDrawer() {
             dispatch(resetFilterState())
         }else{
             dispatch(resetCheckingModeFilterState())
+            dispatch(switchCheckingMode(false))
         }
     }
 

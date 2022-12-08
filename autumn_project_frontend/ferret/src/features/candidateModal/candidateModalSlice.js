@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS, CANDIDATE_ROUND } from '../../urls'
 import Cookies from "js-cookie";
+import { filterCandidatesForCheckingMode } from '../seasonRoundContent/seasonRoundContentSlice';
 
 const initialState = {
     loading: false,
@@ -19,6 +20,7 @@ const initialState = {
     interviewQuestionsChanged: false,
     openDeleteDialog: false,
     deleteQuestionId: 0,
+    checkingMode: false
 }
 
 export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
@@ -185,6 +187,19 @@ export const updateCandidateRoundStatus = createAsyncThunk('candidateModal/updat
     })
 })
 
+export const fetchCandidateQuestionDataInCheckingMode = createAsyncThunk('candidateModal/fetchCandidateQuestionDataInCheckingMode', (candidateQuestionData) => {
+    return axios
+    .get(
+        `${CANDIDATE_SECTION_MARKS}?candidate_id=${candidateQuestionData['candidateId']}&question_id=${candidateQuestionData['questionId']}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const candidateModalSlice = createSlice({
     name: 'candidateModal',
     initialState,
@@ -212,6 +227,9 @@ const candidateModalSlice = createSlice({
         },
         updatedCandidateRoundStatus: (state) => {
             state.candidateRoundStatusModified = false
+        },
+        switchCheckingMode: (state,action) => {
+            state.checkingMode = action.payload
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -351,8 +369,28 @@ const candidateModalSlice = createSlice({
             state.error = action.error.message
             console.log("Candidate round status not updated!")
         })
+        .addCase(filterCandidatesForCheckingMode.fulfilled, (state) => {
+            state.checkingMode = true
+        })
+        .addCase(filterCandidatesForCheckingMode.rejected, (state) => {
+            state.checkingMode = false
+        })
+        .addCase(fetchCandidateQuestionDataInCheckingMode.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCandidateQuestionDataInCheckingMode.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.candidate_question_data = action.payload
+        })
+        .addCase(fetchCandidateQuestionDataInCheckingMode.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.candidate_question_data = []
+            console.log("Candidate question data fetch in checking mode unsuccessful!")
+        })
     }
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode } = candidateModalSlice.actions

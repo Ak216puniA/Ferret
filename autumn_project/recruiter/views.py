@@ -247,9 +247,17 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
 
     def get_queryset(self):
-        r_id = self.request.query_params.get('round_id')
-        if r_id is not None:
-            return CandidateMarks.objects.filter(question_id__section_id__round_id=r_id)
+        round_id = self.request.query_params.get('round_id')
+        # candidate_id = self.request.query_params.get('candidate_id')
+        # question_id = self.request.query_params.get('question_id')
+        if round_id is not None:
+            return CandidateMarks.objects.filter(question_id__section_id__round_id=round_id)
+        # if candidate_id is not None:
+        #     candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_id)
+        #     if question_id is not None:
+        #         question_id_list = [int(id) for id in question_id.split(',')]
+        #         candidate_marks = candidate_marks.filter(question_id__in=question_id_list)
+        #     return candidate_marks
         return CandidateMarks.objects.all()
 
     def get_serializer_class(self):
@@ -407,9 +415,10 @@ class IndividualCandidateSectionMarks(APIView):
     def get(self, request, format=None):
         candidate_section_data = {
             'candidate_id': request.query_params.get('candidate_id'),
-            'section_id': request.query_params.get('section_id')
+            'section_id': request.query_params.get('section_id'),
+            'question_id_list': request.query_params.get('question_id')
         }
-        question_data = get_question_wise_candidate_section_marks(candidate_section_data)
+        question_data = get_candidate_question_data(candidate_section_data)
         return Response(question_data)
 
     def post(self, request, format=None):
@@ -425,9 +434,16 @@ class FilterCandidatesView(APIView):
         print(request.data)
         if request.data['checking_mode']:
             filter_data = request.data
-            candidates = filter_by_question_and_status(filter_data)
-            serializer = CandidateRoundNestedSerializer(candidates, many=True)
-            filtered_candidates = serializer.data
+            filtered_data = filter_by_question_and_status(filter_data)
+            candidate_round_serializer = CandidateRoundNestedSerializer(filtered_data['filter_candidates'], many=True)
+            # candidate_marks_serializer = CandidateMarksNestedSerializer(filtered_data['filter_candidate_marks'], many=True)
+
+            # response_data = {
+                # 'status': 'success',
+                # 'candidate_round_data': candidate_round_serializer.data,
+                # 'candidate_question_data': candidate_marks_serializer.data
+            # }
+            filtered_candidates = candidate_round_serializer.data
         else:
             filter_data = {
                 'round_id': request.data['round_id'],

@@ -5,6 +5,8 @@ import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features
 import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
+import { resetCheckingModeFilterState, resetFilterState } from "../../features/filter/filterSlice";
+import { switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
 
 function RoundTabs() {
     const roundTabState = useSelector((state) => state.roundTab)
@@ -41,6 +43,9 @@ function RoundTabs() {
         )
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
+        dispatch(resetFilterState())
+        dispatch(resetCheckingModeFilterState())
+        dispatch(switchCheckingMode(false))
     }
 
     let tabs = roundTabState.round_list.length>0 ? roundTabState.round_list.map(tab => {

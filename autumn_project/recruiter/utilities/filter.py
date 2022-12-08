@@ -57,4 +57,9 @@ def filter_by_question_and_status(filter_data):
     
     candidate_ids = [candidate_mark.candidate_id.id for candidate_mark in candidate_marks]
     filter_candidates = CandidateRound.objects.filter(candidate_id__in=candidate_ids, round_id=filter_data['round_id'])
-    return filter_candidates
+
+    data = {
+        'filter_candidates': filter_candidates,
+        'filter_candidate_marks': candidate_marks
+    }
+    return data

@@ -48,7 +48,9 @@ function CandidateTestModal() {
         ['done','Done']
     ]
 
-    let sectionName = candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!'
+    let sectionName = candidateModalState.checkingMode===true ? 
+    '' : 
+    (candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!')
 
     let sectionCards = roundTabState.current_sections.length>0 ?
     roundTabState.current_sections.map((section,index) => {
@@ -88,7 +90,7 @@ function CandidateTestModal() {
     candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
     []
 
-    const yearWiseSectionCards = localStorage.getItem('year')>2 ?
+    const yearWiseSectionCards = localStorage.getItem('year')>2 && candidateModalState.checkingMode!==true?
     <div className='candidateModalContentDiv'>
         {sectionCards}
     </div> :
@@ -122,6 +124,42 @@ function CandidateTestModal() {
     </div> :
     <></>
 
+    const dialogContent = candidateModalState.checkingMode===true ?
+    <>
+        {yearWiseSectionDesc}
+    </> :
+    (
+        <>
+        <div className='candidateModalContentDiv'>
+            <div className='candidateModalInnerInfoDivData'>
+                <div className='candidateModalInfoHeading'>Email:</div>
+                <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
+            </div>
+            <div className='candidateModalInnerInfoDivData'>
+                <div className='candidateModalInfoHeading'>Year:</div>
+                <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
+            </div>
+            <div className='candidateModalInnerInfoDivData'>
+                <div className='candidateModalInfoHeading'>Contact No.:</div>
+                <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
+            </div>
+            <div className='candidateModalInnerInfoDivData'>
+                <div className='candidateModalInfoHeading'>CG:</div>
+                <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
+            </div>
+        </div>
+        {yearWiseSectionCards}
+        {yearWiseCandidateRoundStatus}
+        <Divider 
+        style={{
+            width:'100%', 
+            backgroundColor: '#00BCC5',
+            margin: '8px 0px'
+        }}
+        />
+        {yearWiseSectionDesc}
+        </>
+    )
 
     const flexBoxRow = {
         display:'flex',
@@ -139,21 +177,6 @@ function CandidateTestModal() {
     }
 
     useEffect(() => {
-        if(candidateModalState.interviewQuestionsChanged===true){
-            dispatch(
-                fetchQuestionWiseCandidateSectionMarks({
-                    candidate_id: candidateModalState.candidate['id'],
-                    section_id: candidateModalState.section_id
-                })
-            )
-            dispatch(updatedCandidateSectionQuestionList())
-            dispatch(
-                fetchCurrentSectionsTotalMarks({
-                    candidateId: candidateModalState.candidate['id'],
-                    sectionList: roundTabState.current_sections.map(section => section['id'])
-                })
-            )
-        }
         if(candidateModalState.candidateRoundStatusModified===true){
             dispatch(
                 updateCandidateRoundStatus({
@@ -163,7 +186,7 @@ function CandidateTestModal() {
             )
             dispatch(updatedCandidateRoundStatus())
         }
-    },[candidateModalState.interviewQuestionsChanged, candidateModalState.candidateRoundStatusModified])
+    },[candidateModalState.candidateRoundStatusModified])
 
     return (
         <>
@@ -193,7 +216,7 @@ function CandidateTestModal() {
                 <Box
                 sx={flexBoxColumn}
                 >
-                    <div className='candidateModalContentDiv'>
+                    {/* <div className='candidateModalContentDiv'>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Email:</div>
                             <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
@@ -220,7 +243,8 @@ function CandidateTestModal() {
                         margin: '8px 0px'
                     }}
                     />
-                    {yearWiseSectionDesc}
+                    {yearWiseSectionDesc} */}
+                    {dialogContent}
                 </Box>
             </DialogContent>
         </Dialog>
