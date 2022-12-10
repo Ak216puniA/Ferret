@@ -1,10 +1,12 @@
 import { Card, CardContent } from '@mui/material'
 import React from 'react'
 import { useEffect } from 'react'
+import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { openAssignInterviewPanelModal, openInterviewModal } from '../../features/interviewPanel/interviewPanelSlice'
+import { deleteInterviewPanel, fetchInterviewPanels, openAssignInterviewPanelModal, openInterviewModal, openInterviewPanelDeleteConfirmationDialog } from '../../features/interviewPanel/interviewPanelSlice'
 import AssignInterviewPanelModal from '../assign_interview_panel_modal'
 import CreateInterviewPanelDialog from '../create_interview_panel_dialog'
+import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import InterviewModal from '../interview_modal'
 import './index.css'
 
@@ -42,12 +44,25 @@ function PanelCard(props) {
         )
     }
 
+    const deleteInterviewPanelClickHandler = () => {
+        dispatch(
+            openInterviewPanelDeleteConfirmationDialog({
+                open: true,
+                panelId: panel['id']
+            })
+        )
+    }
+
     const panelists = panel['panelist'].length>0 ?
     panel['panelist'].map(panelist => <div key={panelist['id']} className='panelPanelist'>{panelist['name']}</div>) :
     <></>
 
     const interviewPanelAssignButton = seasonId>0 && localStorage.getItem('year')>2 ?
     <button className='panelCardAssignButton' onClick={openCandidateAssignmentDialogHandler}>Assign</button> :
+    <></>
+
+    const deleteInterviewPanelButton = seasonId>0 && localStorage.getItem('year')>2 ? 
+    <div className='interviewPanelDeleteIconDiv' onClick={deleteInterviewPanelClickHandler}><MdDelete color='#C0392B' size={20} /></div> :
     <></>
 
     return (
@@ -79,6 +94,7 @@ function PanelCard(props) {
             </Card>
         </div>
         {interviewPanelAssignButton}
+        {deleteInterviewPanelButton}
         </div>
     )
 }
@@ -86,6 +102,25 @@ function PanelCard(props) {
 function InterviewPanelsContent(props) {
     const { seasonId } = props
     const interviewPanelState = useSelector((state) => state.interviewPanel)
+    const dispatch = useDispatch()
+
+    const deletedialogCloseHandler = () => {
+        dispatch(
+            openInterviewPanelDeleteConfirmationDialog({
+                open: false,
+                panelId: 0
+            })
+        )
+    }
+
+    const deleteagreeActionClickHandler = () => {
+        dispatch(
+            deleteInterviewPanel(interviewPanelState.deletePanelId)
+        )
+        dispatch(
+            fetchInterviewPanels(seasonId)
+        )
+    }
 
     const panelCards = interviewPanelState.panelList.length>0 ?
     interviewPanelState.panelList.map((panel) => <PanelCard key={panel['id']} panel={panel} seasonId={seasonId}/>) :
@@ -107,6 +142,11 @@ function InterviewPanelsContent(props) {
             <AssignInterviewPanelModal />
             <InterviewModal />
             <CreateInterviewPanelDialog seasonId={seasonId} />
+            <DeleteConfirmationDialog
+            open={interviewPanelState.openDeleteDialog}
+            dialogCloseHandler={deletedialogCloseHandler}
+            agreeActionClickHandler={deleteagreeActionClickHandler}
+            />
         </div>
     )
 }

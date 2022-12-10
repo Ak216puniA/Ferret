@@ -97,3 +97,15 @@
     color: black;
     border: none;
 }
+
+.interviewPanelDeleteIconDiv{
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.interviewPanelDeleteIconDiv:hover{
+    background-color: #F2D7D5;
+}

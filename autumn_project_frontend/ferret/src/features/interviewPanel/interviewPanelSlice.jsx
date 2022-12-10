@@ -21,6 +21,8 @@ const initialState = {
     panelCandidateList: [],
     openInterviewModal: false,
     openCreatePanelDialog: false,
+    openDeleteDialog: false,
+    deletePanelId: 0
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -134,7 +136,22 @@ export const createInterviewPanel = createAsyncThunk('interviewPanel/createInter
         }
     )
     .then((response) => {
-        alert(response.data)
+        return response.data
+    })
+})
+
+export const deleteInterviewPanel = createAsyncThunk('interviewPanel/deleteInterviewPanel', (panelId) => {
+    return axios
+    .delete(
+        `${INTERVIEW_PANEL}${panelId}/`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
         return response.data
     })
 })
@@ -155,6 +172,10 @@ const interviewPanelSlice = createSlice({
         },
         openCreateInterviewPanelDialog: (state,action) => {
             state.openCreatePanelDialog = action.payload
+        },
+        openInterviewPanelDeleteConfirmationDialog: (state,action) => {
+            state.openDeleteDialog = action.payload['open']
+            state.deletePanelId = action.payload['panelId']
         },
         resetInterviewPanelState: (state) => {
             state.loading = false
@@ -260,8 +281,36 @@ const interviewPanelSlice = createSlice({
             state.error = action.error.message
             console.log("Cannot update inInterview candidate options!")
         })
+        .addCase(createInterviewPanel.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createInterviewPanel.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+        })
+        .addCase(createInterviewPanel.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Create interview panel unsuccessful!")
+        })
+        .addCase(deleteInterviewPanel.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteInterviewPanel.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.openDeleteDialog = false
+            state.deletePanelId = 0
+        })
+        .addCase(deleteInterviewPanel.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.openDeleteDialog = false
+            state.deletePanelId = 0
+            console.log("Delete interview panel unsuccessful!")
+        })
     }
 })
 
 export default interviewPanelSlice.reducer
-export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog } = interviewPanelSlice.actions
+export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog, openInterviewPanelDeleteConfirmationDialog } = interviewPanelSlice.actions
