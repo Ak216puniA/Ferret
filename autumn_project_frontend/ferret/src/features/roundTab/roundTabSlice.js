@@ -132,12 +132,9 @@ const roundTabSlice = createSlice({
         .addCase(createRound.pending, (state) => {
             state.loading = true
         })
-        .addCase(createRound.fulfilled, (state,action) => {
+        .addCase(createRound.fulfilled, (state) => {
             state.loading = false
             state.error = ''
-            state.new_title = ' '
-            state.new_type = 'test'
-            alert("Round created: \n"+action.payload)
         })
         .addCase(createRound.rejected, (state,action) => {
             state.loading = false

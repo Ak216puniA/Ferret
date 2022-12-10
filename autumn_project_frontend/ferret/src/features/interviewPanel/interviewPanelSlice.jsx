@@ -19,7 +19,8 @@ const initialState = {
     openAssignModal: false,
     panelRoundList: [],
     panelCandidateList: [],
-    openInterviewModal: false
+    openInterviewModal: false,
+    openCreatePanelDialog: false,
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -115,6 +116,29 @@ export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPan
     })
 })
 
+export const createInterviewPanel = createAsyncThunk('interviewPanel/createInterviewPanel', (panelData) => {
+    return axios
+    .post(
+        `${INTERVIEW_PANEL}`,
+        {
+            season_id: panelData['seasonId'],
+            panel_name: panelData['panelName'],
+            panelist: panelData['panelist'],
+            location: panelData['location']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        alert(response.data)
+        return response.data
+    })
+})
+
 const interviewPanelSlice = createSlice({
     name: 'interviewPanel',
     initialState,
@@ -128,6 +152,9 @@ const interviewPanelSlice = createSlice({
             state.openInterviewModal = action.payload['open']
             state.panel = action.payload['panel']
             state.panelCandidateList = action.payload['open']===false ? [] : state.panelCandidateList
+        },
+        openCreateInterviewPanelDialog: (state,action) => {
+            state.openCreatePanelDialog = action.payload
         },
         resetInterviewPanelState: (state) => {
             state.loading = false
@@ -237,4 +264,4 @@ const interviewPanelSlice = createSlice({
 })
 
 export default interviewPanelSlice.reducer
-export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState } = interviewPanelSlice.actions
+export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog } = interviewPanelSlice.actions

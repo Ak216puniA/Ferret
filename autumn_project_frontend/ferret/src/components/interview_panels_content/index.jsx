@@ -1,8 +1,10 @@
 import { Card, CardContent } from '@mui/material'
 import React from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openAssignInterviewPanelModal, openInterviewModal } from '../../features/interviewPanel/interviewPanelSlice'
 import AssignInterviewPanelModal from '../assign_interview_panel_modal'
+import CreateInterviewPanelDialog from '../create_interview_panel_dialog'
 import InterviewModal from '../interview_modal'
 import './index.css'
 
@@ -89,6 +91,10 @@ function InterviewPanelsContent(props) {
     interviewPanelState.panelList.map((panel) => <PanelCard key={panel['id']} panel={panel} seasonId={seasonId}/>) :
     <></>
 
+    useEffect(() => {
+        document.getElementById("interviewPanelsDownArrow").style.display = 'block'
+    },[])
+
     return (
         <div className='panelPageContentDiv'>
             <div className='contentTriangleDiv'>
@@ -100,6 +106,7 @@ function InterviewPanelsContent(props) {
             </div>
             <AssignInterviewPanelModal />
             <InterviewModal />
+            <CreateInterviewPanelDialog seasonId={seasonId} />
         </div>
     )
 }
