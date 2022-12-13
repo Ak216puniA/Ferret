@@ -7,6 +7,7 @@ import RoundContent from "../components/round_content";
 import SubHeader from "../components/subheader";
 import { fetchCurrentSeason } from "../features/seasonSubHeader/seasonSubHeaderSlice"
 import { Navigate } from "react-router-dom";
+import { SEASON_ROUNDS_WEBSOCKET } from "../urls";
 
 
 function SeasonDashboard() {
@@ -23,7 +24,27 @@ function SeasonDashboard() {
 
     useEffect(() => {
         dispatch(fetchCurrentSeason(season_id))
-    },[dispatch])
+        // var ws = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`)
+        var ws = new WebSocket(`ws://127.0.0.1:8000/season_rounds/`)
+
+        ws.onopen = () => {
+            console.log("websocket connection opened!")
+        }
+
+        ws.onmessage = (event) => {
+            console.log("Message sent from backend...")
+            console.log(event)
+        }
+
+        ws.onerror = (event) => {
+            console.log("Error in websocket connection...")
+            console.log(event)
+        }
+
+        ws.onclose = () => {
+            console.log("Websocket connection closed!")
+        }
+    },[])
 
     if(userAuthenticated && logoutState){
         return (

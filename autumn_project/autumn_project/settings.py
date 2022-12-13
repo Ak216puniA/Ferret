@@ -25,6 +25,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,20 +48,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# SESSION_COOKIE_SAMESITE = 'None'
-
-
-# CORS_ALLOW_ALL_ORIGINS = True
-
-# CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ALLOWED_ORIGINS = (
-#     'http://localhost:3000',
-# )
-
 ROOT_URLCONF = 'autumn_project.urls'
 
 TEMPLATES = [
@@ -79,7 +66,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'autumn_project.wsgi.application'
+# WSGI_APPLICATION = 'autumn_project.wsgi.application'
+ASGI_APPLICATION = 'autumn_project.asgi.application'
 
 
 # Database
@@ -88,9 +76,7 @@ WSGI_APPLICATION = 'autumn_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
         'OPTIONS':{
-            # 'read_default_file': '../my.cnf',
             'charset': 'utf8mb4',
             'sql_mode':'STRICT_TRANS_TABLES'
         },
@@ -99,8 +85,6 @@ DATABASES = {
         'PASSWORD': env('DATABASE_PASS'),
         'HOST':'localhost',
         'PORT':'3306',
-        # default-character-set = utf8mb4
-        # sql_mode=STRICT_TRANS_TABLES
     }
 }
 
@@ -150,29 +134,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.SessionAuthentication',
-#         'rest_framework.authentication.BasicAuthentication',
-#     ]
-# }
-
-# CORS_ORIGIN_ALLOW_ALL = True
-
-
-# CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ALLOW_ORIGINS = [
-#     'http://localhost:3000',
-#     'http://127.0.0.1:3000',
-# ]
-
-# CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ORIGIN_WHITELIST = (
-#   'http://localhost:3000',
-# )
-
 
 CORS_ALLOW_CREDENTIALS = True
 
