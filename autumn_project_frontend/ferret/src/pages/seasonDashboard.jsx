@@ -8,6 +8,7 @@ import SubHeader from "../components/subheader";
 import { fetchCurrentSeason } from "../features/seasonSubHeader/seasonSubHeaderSlice"
 import { Navigate } from "react-router-dom";
 import { SEASON_ROUNDS_WEBSOCKET } from "../urls";
+// import { w3cwebsocket as W3CWebSocket } from "websocket"
 
 
 function SeasonDashboard() {
@@ -25,7 +26,7 @@ function SeasonDashboard() {
     useEffect(() => {
         dispatch(fetchCurrentSeason(season_id))
         // var ws = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`)
-        var ws = new WebSocket(`ws://127.0.0.1:8000/season_rounds/`)
+        var ws = new WebSocket(`ws://127.0.0.1:8000/ws/season_rounds/1/`)
 
         ws.onopen = () => {
             console.log("websocket connection opened!")

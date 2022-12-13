@@ -26,6 +26,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'autumn_project.wsgi.application'
+WSGI_APPLICATION = 'autumn_project.wsgi.application'
 ASGI_APPLICATION = 'autumn_project.asgi.application'
 
 
