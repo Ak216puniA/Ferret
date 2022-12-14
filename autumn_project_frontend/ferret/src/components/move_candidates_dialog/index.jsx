@@ -7,7 +7,8 @@ import { closeMoveCandidatesDialog, moveCandidates } from '../../features/season
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
 
-function MoveCandidatesDialog() {
+function MoveCandidatesDialog(props) {
+    const { wsSeasonRounds } = props
     const roundTabState = useSelector((state) => state.roundTab)
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const dispatch = useDispatch()
@@ -16,20 +17,32 @@ function MoveCandidatesDialog() {
 
     const [moveToRoundId, setMoveToRoundId] = useState()
 
+    wsSeasonRounds.onmessage = (event) => {
+        console.log("Message recieved from server...")
+        console.log(event.data)
+    }
+
     const moveToRoundChangehandler = (e) => {
         setMoveToRoundId(e.target.value)
-        // console.log(e.target.value)
     }
 
     const moveSelectedCandidates = () => {
-        // console.log("Move these")
-        dispatch(
-            moveCandidates({
-                candidate_list: seasonRoundContentState.move_candidate_list,
-                next_round_id: moveToRoundId,
-                current_round_id: moveFromRoundId
-            })
+        wsSeasonRounds.send(
+            JSON.stringify(
+                {
+                    candidate_list: seasonRoundContentState.move_candidate_list,
+                    next_round_id: moveToRoundId,
+                    current_round_id: moveFromRoundId 
+                }
+            )
         )
+        // dispatch(
+        //     moveCandidates({
+        //         candidate_list: seasonRoundContentState.move_candidate_list,
+        //         next_round_id: moveToRoundId,
+        //         current_round_id: moveFromRoundId
+        //     })
+        // )
     }
 
     let moveToRoundList = roundTabState.round_list.length>0 ?
@@ -48,32 +61,28 @@ function MoveCandidatesDialog() {
             <div className='crossDiv' onClick={() => dispatch(closeMoveCandidatesDialog())}><GrClose size={12}/></div>
             <DialogTitle>Move candidates to round</DialogTitle>
             <DialogContent>
-                <form id='createSeasonForm'>
-                    <div className='fieldsDiv'>
-                        <div className='field'>
-                            <FormControl fullWidth>
-                                <InputLabel id='assignee'>Round</InputLabel>
-                                <Select 
-                                required 
-                                labelId='round' 
-                                label="Round" 
-                                value={moveToRoundId}
-                                variant='outlined'
-                                onChange={moveToRoundChangehandler}
-                                >
-                                    {moveToRoundList}
-                                </Select>
-                            </FormControl>
-                        </div>
+                <div className='fieldsDiv'>
+                    <div className='field'>
+                        <FormControl fullWidth>
+                            <InputLabel id='assignee'>Round</InputLabel>
+                            <Select 
+                            required 
+                            labelId='round' 
+                            label="Round" 
+                            value={moveToRoundId}
+                            variant='outlined'
+                            onChange={moveToRoundChangehandler}
+                            >
+                                {moveToRoundList}
+                            </Select>
+                        </FormControl>
                     </div>
-                </form>
+                </div>
             </DialogContent>
             <DialogActions>
                 <div className='createButtonDiv'>
                     <button 
                     className='createButton' 
-                    type='submit' 
-                    form='createSeasonForm'
                     onClick={moveSelectedCandidates}
                     >
                         Move

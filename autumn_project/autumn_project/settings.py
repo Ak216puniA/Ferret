@@ -156,3 +156,12 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ALLOW_METHODS = [
     'PUT', 'GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS', 'PATCH'
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

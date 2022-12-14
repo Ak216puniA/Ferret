@@ -7,7 +7,7 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
@@ -104,7 +104,7 @@ function RoundTableRow(props){
 }
 
 function RoundContent(props) {
-    const { s_id } = props
+    const { s_id, wsSeasonRounds } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -232,7 +232,7 @@ function RoundContent(props) {
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
             {candidateModal}
-            <MoveCandidatesDialog />
+            <MoveCandidatesDialog wsSeasonRounds={wsSeasonRounds}/>
             <FilterDrawer />
         </div>
     )
