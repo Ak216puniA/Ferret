@@ -175,6 +175,24 @@ const seasonRoundContentSlice = createSlice({
             state.open_move_dialog = false
             state.candidate_marks = []
             state.section_marks = []
+        },
+        updateCandidateList: (state,action) => {
+            if(action.payload['action']==='add'){
+                state.candidate_list = state.candidate_list.concat(action.payload['candidate_list'])
+            }else if(action.payload['action']==='delete'){
+                let deleteList = action.payload['candidate_list']
+                let i, j 
+                state.candidate_list.forEach((candidateRound,index) => {
+                    i=index
+                    deleteList.forEach((candidate_id,index) => {
+                        j=index
+                        if(candidateRound['candidate_id']['id']===candidate_id){
+                            state.candidate_list.splice(i,1)
+                            deleteList.splice(j,1)
+                        }
+                    })
+                })
+            }
         }
     },
     extraReducers: builder => {
@@ -271,4 +289,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList, updateCandidateList } = seasonRoundContentSlice.actions

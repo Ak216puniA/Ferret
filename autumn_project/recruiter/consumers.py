@@ -50,6 +50,7 @@ class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json(candidates)
 
     async def connect(self):
+        print("Backend.............")
         self.group_name = 'season_rounds_'+str(self.scope['url_route']['kwargs']['pk'])
         await self.channel_layer.group_add(
             group=self.group_name, 
