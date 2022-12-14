@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
-import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchRoundCandidates, resetMoveCandidatesList } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
 import { resetCheckingModeFilterState, resetFilterState } from "../../features/filter/filterSlice";
 import { switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
@@ -44,6 +44,7 @@ function RoundTabs() {
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
         dispatch(resetFilterState())
+        dispatch(resetMoveCandidatesList())
         dispatch(resetCheckingModeFilterState())
         dispatch(switchCheckingMode(false))
     }

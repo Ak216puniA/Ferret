@@ -15,27 +15,24 @@ function MoveCandidatesDialog(props) {
 
     const moveFromRoundId = roundTabState.currentTabId
 
-    const [moveToRoundId, setMoveToRoundId] = useState()
-
-    wsSeasonRounds.onmessage = (event) => {
-        console.log("Message recieved from server...")
-        console.log(event.data)
-    }
+    const [moveToRoundId, setMoveToRoundId] = useState('')
 
     const moveToRoundChangehandler = (e) => {
         setMoveToRoundId(e.target.value)
     }
 
     const moveSelectedCandidates = () => {
-        wsSeasonRounds.send(
-            JSON.stringify(
-                {
-                    candidate_list: seasonRoundContentState.move_candidate_list,
-                    next_round_id: moveToRoundId,
-                    current_round_id: moveFromRoundId 
-                }
+        if(moveToRoundId!==''){
+            wsSeasonRounds.send(
+                JSON.stringify(
+                    {
+                        candidate_list: seasonRoundContentState.move_candidate_list,
+                        next_round_id: moveToRoundId,
+                        current_round_id: moveFromRoundId 
+                    }
+                )
             )
-        )
+        }
         // dispatch(
         //     moveCandidates({
         //         candidate_list: seasonRoundContentState.move_candidate_list,

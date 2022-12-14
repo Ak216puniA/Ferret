@@ -9,15 +9,17 @@ def create_candidate_round(candidate_data):
             candidate_id=Candidates.objects.get(id=candidate_data['candidate_id']),
             round_id=Rounds.objects.get(id=candidate_data['round_id'])
             )
-    candidate_round.save()
+        candidate_round.save()
+        return candidate_data['candidate_id']
 
 def delete_candidate_round(candidate_data):
     try:
         candidate_round = CandidateRound.objects.get(candidate_id=candidate_data['candidate_id'], round_id=candidate_data['round_id'])
     except ObjectDoesNotExist:
-        print("Requested object does not exist")
+        return None
     else:
         candidate_round.delete()
+        return candidate_data['candidate_id']
 
 def update_previous_candidate_round_status(candidate_data):
     try:

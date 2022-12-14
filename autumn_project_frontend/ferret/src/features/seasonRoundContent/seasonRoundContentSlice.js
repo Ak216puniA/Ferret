@@ -162,6 +162,9 @@ const seasonRoundContentSlice = createSlice({
         closeMoveCandidatesDialog: (state) => {
             state.open_move_dialog = false
         },
+        resetMoveCandidatesList: (state) => {
+            state.move_candidate_list = []
+        },
         resetSeasonRoundContentState: (state) => {
             state.loading = false
             state.error = ''
@@ -268,4 +271,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList } = seasonRoundContentSlice.actions

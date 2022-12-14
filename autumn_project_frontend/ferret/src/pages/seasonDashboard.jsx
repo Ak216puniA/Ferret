@@ -20,6 +20,14 @@ function SeasonDashboard() {
     wsSeasonRounds.onopen = () => {
         console.log("websocket connection opened!")
     }
+    wsSeasonRounds.onmessage = (event) => {
+        const movedCandidatesData = JSON.parse(event.data)
+        console.log(movedCandidatesData)
+    }
+    wsSeasonRounds.onerror = (event) => {
+        console.log("Error in websocket connection!")
+        console.log(event.data)
+    }
     wsSeasonRounds.onclose = () => {
         console.log("Websocket connection closed!")
     }
