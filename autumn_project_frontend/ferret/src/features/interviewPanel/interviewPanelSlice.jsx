@@ -38,24 +38,24 @@ export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterv
     })
 })
 
-export const updateInterviewPanelStatus = createAsyncThunk('interviewPanel/updateInterviewPanelStatus', (panelStatusData) => {
-    return axios
-    .patch(
-        `${INTERVIEW_PANEL}${panelStatusData['panelId']}/`,
-        {
-            status: panelStatusData['status']
-        },
-        {
-            headers: {
-                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-            },
-            withCredentials:true
-        }
-    )
-    .then((response) => {
-        return response.data
-    })
-})
+// export const updateInterviewPanelStatus = createAsyncThunk('interviewPanel/updateInterviewPanelStatus', (panelStatusData) => {
+//     return axios
+//     .patch(
+//         `${INTERVIEW_PANEL}${panelStatusData['panelId']}/`,
+//         {
+//             status: panelStatusData['status']
+//         },
+//         {
+//             headers: {
+//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+//             },
+//             withCredentials:true
+//         }
+//     )
+//     .then((response) => {
+//         return response.data
+//     })
+// })
 
 export const updatePanelCandidateOptions = createAsyncThunk('interviewPanel/updatePanelCandidateOptions', (panelRoundData) => {
     return axios
@@ -177,6 +177,12 @@ const interviewPanelSlice = createSlice({
             state.openDeleteDialog = action.payload['open']
             state.deletePanelId = action.payload['panelId']
         },
+        updatePanelStatus: (state,action) => {
+            state.panel['status'] = action.payload['status']
+            state.panelList.forEach(panel => {
+                if(panel['id']===action.payload['panel_id']) panel['status'] = action.payload['status']
+            })
+        },
         resetInterviewPanelState: (state) => {
             state.loading = false
             state.error = ''
@@ -211,22 +217,22 @@ const interviewPanelSlice = createSlice({
             state.panelList = []
             console.log("Interview panels fetch unsuccessful!")
         })
-        .addCase(updateInterviewPanelStatus.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(updateInterviewPanelStatus.fulfilled, (state,action) => {
-            state.loading = false
-            state.error = ''
-            state.panel['status'] = action.payload['status']
-            state.panelList.forEach(panel => {
-                panel['status'] = panel['id']===state.panel['id'] ? action.payload['status'] : panel['status']
-            })
-        })
-        .addCase(updateInterviewPanelStatus.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Interview panel status update unsuccessful!")
-        })
+        // .addCase(updateInterviewPanelStatus.pending, (state) => {
+        //     state.loading = true
+        // })
+        // .addCase(updateInterviewPanelStatus.fulfilled, (state,action) => {
+        //     state.loading = false
+        //     state.error = ''
+        //     state.panel['status'] = action.payload['status']
+        //     state.panelList.forEach(panel => {
+        //         panel['status'] = panel['id']===state.panel['id'] ? action.payload['status'] : panel['status']
+        //     })
+        // })
+        // .addCase(updateInterviewPanelStatus.rejected, (state,action) => {
+        //     state.loading = false
+        //     state.error = action.error.message
+        //     console.log("Interview panel status update unsuccessful!")
+        // })
         .addCase(updatePanelCandidateOptions.pending, (state) => {
             state.loading = true
         })
@@ -313,4 +319,4 @@ const interviewPanelSlice = createSlice({
 })
 
 export default interviewPanelSlice.reducer
-export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog, openInterviewPanelDeleteConfirmationDialog } = interviewPanelSlice.actions
+export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog, openInterviewPanelDeleteConfirmationDialog, updatePanelStatus } = interviewPanelSlice.actions

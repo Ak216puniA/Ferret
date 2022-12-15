@@ -43,14 +43,20 @@ def get_moved_candidates_data(move_data):
     serializer = CandidateRoundNestedSerializer(candidate_list, many=True)
     return serializer.data
 
+@database_sync_to_async
+def update_panel_status(panel_data):
+    panel = InterviewPanel.objects.get(id=panel_data['panel_id'])
+    panel.status = panel_data['status']
+    panel.save()
+    return panel_data
+
 class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
     
-    async def candidate_list(self,event):
+    async def candidates_moved(self,event):
         candidates = event['message']
         await self.send_json(candidates)
 
     async def connect(self):
-        print("Backend.............")
         self.group_name = 'season_rounds_'+str(self.scope['url_route']['kwargs']['pk'])
         await self.channel_layer.group_add(
             group=self.group_name, 
@@ -88,13 +94,48 @@ class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(
             self.group_name,
             {
-                'type': 'candidate.list',
+                'type': 'candidates.moved',
                 'message': response_data
             }
         )
 
     async def disconnect(self, code):
-        self.channel_layer.group_discard(
+        await self.channel_layer.group_discard(
+            self.group_name, 
+            channel=self.channel_name
+        )
+        await self.close()
+
+class AsyncInterviewPanelsConsumer(AsyncJsonWebsocketConsumer):
+
+    async def panel_updated(self,event):
+        panel = event['message']
+        await self.send_json(panel)
+
+    async def connect(self):
+        self.group_name = 'interview_panels_'+str(self.scope['url_route']['kwargs']['pk'])
+        await self.channel_layer.group_add(
+            group=self.group_name, 
+            channel=self.channel_name
+        )
+        await self.accept()
+
+    async def receive_json(self, content, **kwargs):
+        if content['panel_id'] is not None and content['panel_id']>0:
+            response_data = await update_panel_status(content)
+        else:
+            response_data = []
+        
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'panel.updated',
+                'message': response_data
+            }
+        )
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(
             self.group_name, 
             channel=self.channel_name
         )

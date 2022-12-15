@@ -100,7 +100,7 @@ function PanelCard(props) {
 }
 
 function InterviewPanelsContent(props) {
-    const { seasonId } = props
+    const { seasonId, wsInterviewPanels } = props
     const interviewPanelState = useSelector((state) => state.interviewPanel)
     const dispatch = useDispatch()
 
@@ -139,7 +139,7 @@ function InterviewPanelsContent(props) {
             <div className='panelCardsDiv'>
                 {panelCards}
             </div>
-            <AssignInterviewPanelModal />
+            <AssignInterviewPanelModal wsInterviewPanels={wsInterviewPanels} />
             <InterviewModal />
             <CreateInterviewPanelDialog seasonId={seasonId} />
             <DeleteConfirmationDialog

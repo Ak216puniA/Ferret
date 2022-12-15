@@ -12,7 +12,8 @@ import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/
 import { resetQuestionsState } from "../../features/question/questionSlice";
 import { resetInterviewPanelState } from "../../features/interviewPanel/interviewPanelSlice";
 
-function NavigationBar() {
+function NavigationBar(props) {
+    const { ws } = props
     const {season_id} = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -23,6 +24,7 @@ function NavigationBar() {
     }
 
     function resetSeasonDashboardState(){
+        if(ws!=='') ws.current.close()
         dispatch(resetRoundTabState())
         dispatch(resetSeasonRoundContentState())
         dispatch(resetQuestionsState())

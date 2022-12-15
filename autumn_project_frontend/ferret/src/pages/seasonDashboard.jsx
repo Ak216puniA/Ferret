@@ -50,7 +50,7 @@ function SeasonDashboard() {
         return (
             <>
             <Header />
-            <NavigationBar />
+            <NavigationBar ws={wsSeasonRounds} />
             <SubHeader page={page} />
             <RoundContent s_id={season_id} wsSeasonRounds={wsSeasonRounds}/>
             </>
