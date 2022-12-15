@@ -23,7 +23,7 @@ function MoveCandidatesDialog(props) {
 
     const moveSelectedCandidates = () => {
         if(moveToRoundId!==''){
-            wsSeasonRounds.send(
+            wsSeasonRounds.current.send(
                 JSON.stringify(
                     {
                         candidate_list: seasonRoundContentState.move_candidate_list,

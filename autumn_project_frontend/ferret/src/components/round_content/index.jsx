@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
@@ -13,6 +13,7 @@ import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
 import CandidateTestModal from "../candidate_test_modal";
+import { SEASON_ROUNDS_WEBSOCKET } from "../../urls";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -108,6 +109,30 @@ function RoundContent(props) {
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+    // const wsSeasonRounds = useRef('')
+
+    // if(wsSeasonRounds.current!==''){
+    //     wsSeasonRounds.current.onopen = () => {
+    //         console.log("websocket connection opened!")
+    //     }
+    //     wsSeasonRounds.current.onmessage = (event) => {
+    //         const movedCandidatesData = JSON.parse(event.data)
+    //         console.log("Data from backend consumer recieved!")
+    //         console.log(movedCandidatesData)
+    //         console.log(roundTabState.currentTabId)
+    //         // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+    //         //     console.log("Condition satisfied!...")
+    //         //     dispatch(updateCandidateList(movedCandidatesData))
+    //         // }
+    //     }
+    //     wsSeasonRounds.current.onerror = (event) => {
+    //         console.log("Error in websocket connection!")
+    //         console.log(event.data)
+    //     }
+    //     wsSeasonRounds.current.onclose = () => {
+    //         console.log("Websocket connection closed!")
+    //     }
+    // }
 
     let navigate = useNavigate()
     const routeChange = () => {
@@ -115,6 +140,30 @@ function RoundContent(props) {
         const url = `/season/${s_id}/${roundTabState.currentTabId}/questions`
         navigate(url)
     }
+
+    // useEffect(() => {
+    //     wsSeasonRounds.current = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${s_id}/`)
+    //     // wsSeasonRounds.current.onopen = () => {
+    //     //     console.log("websocket connection opened!")
+    //     // }
+    //     // wsSeasonRounds.current.onmessage = (event) => {
+    //     //     const movedCandidatesData = JSON.parse(event.data)
+    //     //     console.log("Data from backend consumer recieved!")
+    //     //     console.log(movedCandidatesData)
+    //     //     console.log(roundTabState.currentTabId)
+    //     //     // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+    //     //     //     console.log("Condition satisfied!...")
+    //     //     //     dispatch(updateCandidateList(movedCandidatesData))
+    //     //     // }
+    //     // }
+    //     // wsSeasonRounds.current.onerror = (event) => {
+    //     //     console.log("Error in websocket connection!")
+    //     //     console.log(event.data)
+    //     // }
+    //     // wsSeasonRounds.current.onclose = () => {
+    //     //     console.log("Websocket connection closed!")
+    //     // }
+    // },[])
 
     useEffect(() => {
         dispatch(

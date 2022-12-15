@@ -15,35 +15,86 @@ function SeasonDashboard() {
     const logoutState = useSelector((state) => state.logout.authenticated)
     const userAuthenticated= localStorage.getItem('authenticated')==null ? false : localStorage.getItem('authenticated')
     const seasonSubHeaderState = useSelector((state) => state.seasonSubHeader)
-    const roundTabState = useSelector((state) => state.roundTab)
+    let roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
-    const [wsSeasonRounds, setwsSeasonRounds] = useState(new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`))
+    // const [wsSeasonRounds, setwsSeasonRounds] = useState(new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`))
+    const wsSeasonRounds = useRef('')
+    // wsSeasonRounds.current = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`)
+
+    if(wsSeasonRounds.current!==''){
+        wsSeasonRounds.current.onopen = () => {
+            console.log("websocket connection opened!")
+        }
+        wsSeasonRounds.current.onmessage = (event) => {
+            const movedCandidatesData = JSON.parse(event.data)
+            console.log("Data from backend consumer recieved!")
+            console.log(movedCandidatesData)
+            console.log(roundTabState.currentTabId)
+            // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+            //     console.log("Condition satisfied!...")
+            //     dispatch(updateCandidateList(movedCandidatesData))
+            // }
+        }
+        wsSeasonRounds.current.onerror = (event) => {
+            console.log("Error in websocket connection!")
+            console.log(event.data)
+        }
+        wsSeasonRounds.current.onclose = () => {
+            console.log("Websocket connection closed!")
+        }
+    }
 
     const page = [
         ['Home','home'],
         [`Recruitment Season ${seasonSubHeaderState.current_season_year} (${seasonSubHeaderState.current_season_type})`,`season/${season_id}`]
     ]
 
+    // wsSeasonRounds.current.onmessage = (event) => {
+    //     const movedCandidatesData = JSON.parse(event.data)
+    //     console.log("Data from backend consumer recieved!")
+    //     console.log(movedCandidatesData)
+    //     console.log(roundTabState.currentTabId)
+    //     // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+    //     //     console.log("Condition satisfied!...")
+    //     //     dispatch(updateCandidateList(movedCandidatesData))
+    //     // }
+    // }
+
     useEffect(() => {
         dispatch(fetchCurrentSeason(season_id))
-        wsSeasonRounds.onopen = () => {
-            console.log("websocket connection opened!")
-        }
-        wsSeasonRounds.onmessage = (event) => {
-            const movedCandidatesData = JSON.parse(event.data)
-            console.log(movedCandidatesData)
-            if (movedCandidatesData['round_id']===roundTabState.currentTabId){
-                dispatch(updateCandidateList(movedCandidatesData))
-            }
-        }
-        wsSeasonRounds.onerror = (event) => {
-            console.log("Error in websocket connection!")
-            console.log(event.data)
-        }
-        wsSeasonRounds.onclose = () => {
-            console.log("Websocket connection closed!")
-        }
+        wsSeasonRounds.current = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`)
+        // wsSeasonRounds.current.onopen = () => {
+        //     console.log("websocket connection opened!")
+        // }
+        // wsSeasonRounds.current.onmessage = (event) => {
+        //     const movedCandidatesData = JSON.parse(event.data)
+        //     console.log("Data from backend consumer recieved!")
+        //     console.log(movedCandidatesData)
+        //     console.log(roundTabState.currentTabId)
+        //     // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+        //     //     console.log("Condition satisfied!...")
+        //     //     dispatch(updateCandidateList(movedCandidatesData))
+        //     // }
+        // }
+        // wsSeasonRounds.current.onmessage = (event) => {
+        //     const roundTabState = useSelector((state) => state.roundTab)
+        //     const movedCandidatesData = JSON.parse(event.data)
+        //     console.log("Data from backend consumer recieved!")
+        //     console.log(movedCandidatesData)
+        //     console.log(roundTabState.currentTabId)
+        //     // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
+        //     //     console.log("Condition satisfied!...")
+        //     //     dispatch(updateCandidateList(movedCandidatesData))
+        //     // }
+        // }
+        // wsSeasonRounds.current.onerror = (event) => {
+        //     console.log("Error in websocket connection!")
+        //     console.log(event.data)
+        // }
+        // wsSeasonRounds.current.onclose = () => {
+        //     console.log("Websocket connection closed!")
+        // }
     },[])
 
     if(userAuthenticated && logoutState){

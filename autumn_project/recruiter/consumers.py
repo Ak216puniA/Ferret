@@ -59,29 +59,31 @@ class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def receive_json(self, content, **kwargs):
-        serializer = MoveCandidateListSerializer(data=content)
-        serializer.is_valid(raise_exception=True)
-        move_data = serializer.validated_data
+        # serializer = MoveCandidateListSerializer(data=content)
+        # serializer.is_valid(raise_exception=True)
+        # move_data = serializer.validated_data
 
-        if move_data['next_round_id']>move_data['current_round_id']:
-            moved_candidate_ids = await move_candidates_to_further_round(move_data)
-            moved_candidate_data = {
-                'candidate_list': moved_candidate_ids,
-                'next_round_id': move_data['next_round_id']
-            }
-            moved_candidate_list = await get_moved_candidates_data(moved_candidate_data)
-            response_data = {
-                'candidate_list': moved_candidate_list,
-                'action': 'add',
-                'round_id': move_data['next_round_id']
-            }
-        elif move_data['next_round_id']<move_data['current_round_id']:
-            moved_candidate_list = await move_candidates_to_previous_round(move_data)
-            response_data = {
-                'candidate_list': moved_candidate_list,
-                'action': 'delete',
-                'round_id': move_data['current_round_id']
-            }
+        # if move_data['next_round_id']>move_data['current_round_id']:
+        #     moved_candidate_ids = await move_candidates_to_further_round(move_data)
+        #     moved_candidate_data = {
+        #         'candidate_list': moved_candidate_ids,
+        #         'next_round_id': move_data['next_round_id']
+        #     }
+        #     moved_candidate_list = await get_moved_candidates_data(moved_candidate_data)
+        #     response_data = {
+        #         'candidate_list': moved_candidate_list,
+        #         'action': 'add',
+        #         'round_id': move_data['next_round_id']
+        #     }
+        # elif move_data['next_round_id']<move_data['current_round_id']:
+        #     moved_candidate_list = await move_candidates_to_previous_round(move_data)
+        #     response_data = {
+        #         'candidate_list': moved_candidate_list,
+        #         'action': 'delete',
+        #         'round_id': move_data['current_round_id']
+        #     }
+
+        response_data = []
 
         await self.channel_layer.group_send(
             self.group_name,
