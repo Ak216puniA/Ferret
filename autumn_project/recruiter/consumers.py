@@ -53,6 +53,7 @@ def update_panel_status(panel_data):
 class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
     
     async def candidates_moved(self,event):
+        print("SEASON ROUNDS.........................")
         candidates = event['message']
         await self.send_json(candidates)
 
@@ -133,6 +134,26 @@ class AsyncInterviewPanelsConsumer(AsyncJsonWebsocketConsumer):
                 'message': response_data
             }
         )
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(
+            self.group_name, 
+            channel=self.channel_name
+        )
+        await self.close()
+
+class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        print("SECTION MARKS.........................")
+        self.group_name = 'section_marks_'+str(self.scope['url_route']['kwargs']['pk'])
+        await self.channel_layer.group_add(
+            group=self.group_name, 
+            channel=self.channel_name
+        )
+        await self.accept()
+
+    async def receive_json(self, content, **kwargs):
+        print(content)
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(

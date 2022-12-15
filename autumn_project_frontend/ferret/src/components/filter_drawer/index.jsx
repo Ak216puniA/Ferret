@@ -96,10 +96,9 @@ function FilterDrawer() {
             /> : 
             <></>
             return (
-                <>
+                <div key={category}>
                     {filterCategoryDivider}
-                    <ListItem
-                    key={category}  
+                    <ListItem 
                     disablePadding
                     >
                     <ListItemButton
@@ -114,7 +113,7 @@ function FilterDrawer() {
                         />
                     </ListItemButton>
                     </ListItem>
-                </>
+                </div>
             )
         })
     )

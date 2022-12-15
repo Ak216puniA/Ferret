@@ -49,27 +49,6 @@ export const uploadCSV = createAsyncThunk('seasonRoundContent/uploadCSV', (candi
     })
 })
 
-// export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
-//     return axios
-//     .post(
-//         `${CANDIDATE_ROUND}`,
-//         {
-//             candidate_list: move_data['candidate_list'],
-//             next_round_id: move_data['next_round_id'],
-//             current_round_id: move_data['current_round_id']
-//         },
-//         {
-//             headers: {
-//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-//             },
-//             withCredentials:true
-//         },
-//     )
-//     .then((response) => {
-//         return response.data
-//     })
-// })
-
 export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/fetchCandidateSectionMarks', (requestData) => {
     return axios
     .post(
@@ -225,19 +204,6 @@ const seasonRoundContentSlice = createSlice({
             state.csv_uploaded = false
             console.log("CSV upload unsuccessful!")
         })
-        // .addCase(moveCandidates.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(moveCandidates.fulfilled, (state) => {
-        //     state.loading = false
-        //     state.error = ''
-        //     state.move_candidate_list = []
-        // })
-        // .addCase(moveCandidates.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.error = action.error.message
-        //     console.log("Candidates not moved!")
-        // })
         .addCase(fetchCandidateSectionMarks.pending, (state) => {
             state.loading = true
         })

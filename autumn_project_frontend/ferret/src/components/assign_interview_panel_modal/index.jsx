@@ -54,12 +54,6 @@ function AssignInterviewPanelModal(props) {
                 status: event.target.value
             })
         )
-        // dispatch(
-        //     updateInterviewPanelStatus({
-        //         panelId: interviewPanelState.panel['id'],
-        //         status: event.target.value
-        //     })
-        // )
     }
 
     const assignCandidateToInterviewPanel = () => {

@@ -30,6 +30,7 @@ function Questions(){
         dispatch(fetchCurrentSeason(season_id))
         dispatch(fetchRound(round_id))
         dispatch(fetchSections(round_id))
+        localStorage.setItem('page','questions')
     },[])
 
     if(userAuthenticated && logoutState){

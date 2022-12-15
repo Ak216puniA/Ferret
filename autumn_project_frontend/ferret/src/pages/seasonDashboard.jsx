@@ -21,7 +21,7 @@ function SeasonDashboard() {
 
     if(wsSeasonRounds.current!==''){
         wsSeasonRounds.current.onopen = () => {
-            console.log("websocket connection opened!")
+            console.log("Season rounds websocket connection opened!")
         }
         wsSeasonRounds.current.onmessage = (event) => {
             const movedCandidatesData = JSON.parse(event.data)
@@ -44,6 +44,7 @@ function SeasonDashboard() {
     useEffect(() => {
         dispatch(fetchCurrentSeason(season_id))
         wsSeasonRounds.current = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${season_id}/`)
+        localStorage.setItem('page','seasonDashboard')
     },[])
 
     if(userAuthenticated && logoutState){

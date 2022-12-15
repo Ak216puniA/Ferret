@@ -1,7 +1,8 @@
 from django.urls import path
-from .consumers import AsyncSeasonRoundsConsumer, AsyncInterviewPanelsConsumer
+from .consumers import AsyncSeasonRoundsConsumer, AsyncInterviewPanelsConsumer, AsyncSectionMarksConsumer
 
 websocket_urlpatterns = [
     path('ws/season_rounds/<int:pk>/', AsyncSeasonRoundsConsumer.as_asgi()),
-    path('ws/interview_panels/<int:pk>/', AsyncInterviewPanelsConsumer.as_asgi())
+    path('ws/interview_panels/<int:pk>/', AsyncInterviewPanelsConsumer.as_asgi()),
+    path('ws/section_marks/<int:pk>/', AsyncSectionMarksConsumer.as_asgi())
 ]

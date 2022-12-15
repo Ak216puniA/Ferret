@@ -13,7 +13,7 @@ import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
 import CandidateTestModal from "../candidate_test_modal";
-import { SEASON_ROUNDS_WEBSOCKET } from "../../urls";
+import { SEASON_ROUNDS_WEBSOCKET, SECTION_MARKS_WEBSOCKET } from "../../urls";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -109,6 +109,24 @@ function RoundContent(props) {
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+    let wsSectionMarks = useRef('')
+
+    if(wsSectionMarks.current!==''){
+        wsSectionMarks.current.onopen = () => {
+            console.log("Section marks websocket connection opened!")
+        }
+        wsSectionMarks.current.onmessage = (event) => {
+            const sectionMarksData = JSON.parse(event.data)
+            console.log(sectionMarksData)
+        }
+        wsSectionMarks.current.onerror = (event) => {
+            console.log("Error in websocket connection!")
+            console.log(event.data)
+        }
+        wsSectionMarks.current.onclose = () => {
+            console.log("Websocket connection closed!")
+        }
+    }
 
     let navigate = useNavigate()
     const routeChange = () => {
@@ -116,6 +134,10 @@ function RoundContent(props) {
         const url = `/season/${s_id}/${roundTabState.currentTabId}/questions`
         navigate(url)
     }
+
+    useEffect(() => {
+        if(roundTabState.currentTabId>0) wsSectionMarks.current = new WebSocket(`${SECTION_MARKS_WEBSOCKET}${roundTabState.currentTabId}/`)
+    },[roundTabState.currentTabId])
 
     useEffect(() => {
         dispatch(

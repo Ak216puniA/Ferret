@@ -51,6 +51,7 @@ function InterviewPanel() {
         if(season_id>0) dispatch(fetchCurrentSeason(season_id))
         dispatch(fetchInterviewPanels(season_id))
         dispatch(listRounds(season_id))
+        localStorage.setItem('page','interviewPanel')
     },[])
 
     if(userAuthenticated && logoutState){

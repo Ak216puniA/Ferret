@@ -26,6 +26,7 @@ export const INTERVIEW_PANEL = `${BACKEND_BASE_URL}interview_panel/`
 export const BACKEND_WEBSOCKET_BASE_URL = 'ws://localhost:8000/'
 export const SEASON_ROUNDS_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/season_rounds/`
 export const INTERVIEW_PANELS_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/interview_panels/`
+export const SECTION_MARKS_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/section_marks/`
 
 
 // Frontend URLs

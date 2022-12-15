@@ -382,7 +382,7 @@ class SectionMarksView(APIView):
         candidate_list = request.data['candidate_list']
         section_list = request.data['section_list']
         candidate_section_marks_list = []
-        if len(candidate_list)>0 and len(section_list):
+        if len(candidate_list)>0 and len(section_list)>0:
             for candidate_id in candidate_list:
                 candidate_section_data = {
                     'candidate_id': candidate_id,

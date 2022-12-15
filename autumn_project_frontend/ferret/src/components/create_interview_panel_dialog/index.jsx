@@ -27,7 +27,6 @@ function CreateInterviewPanelDialog(props) {
     }
 
     const createNewInterviewPanel = () => {
-        alert("hello")
         dispatch(
             createInterviewPanel({
                 seasonId: seasonId,
