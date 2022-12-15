@@ -109,30 +109,6 @@ function RoundContent(props) {
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
-    // const wsSeasonRounds = useRef('')
-
-    // if(wsSeasonRounds.current!==''){
-    //     wsSeasonRounds.current.onopen = () => {
-    //         console.log("websocket connection opened!")
-    //     }
-    //     wsSeasonRounds.current.onmessage = (event) => {
-    //         const movedCandidatesData = JSON.parse(event.data)
-    //         console.log("Data from backend consumer recieved!")
-    //         console.log(movedCandidatesData)
-    //         console.log(roundTabState.currentTabId)
-    //         // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
-    //         //     console.log("Condition satisfied!...")
-    //         //     dispatch(updateCandidateList(movedCandidatesData))
-    //         // }
-    //     }
-    //     wsSeasonRounds.current.onerror = (event) => {
-    //         console.log("Error in websocket connection!")
-    //         console.log(event.data)
-    //     }
-    //     wsSeasonRounds.current.onclose = () => {
-    //         console.log("Websocket connection closed!")
-    //     }
-    // }
 
     let navigate = useNavigate()
     const routeChange = () => {
@@ -140,30 +116,6 @@ function RoundContent(props) {
         const url = `/season/${s_id}/${roundTabState.currentTabId}/questions`
         navigate(url)
     }
-
-    // useEffect(() => {
-    //     wsSeasonRounds.current = new WebSocket(`${SEASON_ROUNDS_WEBSOCKET}${s_id}/`)
-    //     // wsSeasonRounds.current.onopen = () => {
-    //     //     console.log("websocket connection opened!")
-    //     // }
-    //     // wsSeasonRounds.current.onmessage = (event) => {
-    //     //     const movedCandidatesData = JSON.parse(event.data)
-    //     //     console.log("Data from backend consumer recieved!")
-    //     //     console.log(movedCandidatesData)
-    //     //     console.log(roundTabState.currentTabId)
-    //     //     // if (movedCandidatesData['round_id']===roundTabState.currentTabId){
-    //     //     //     console.log("Condition satisfied!...")
-    //     //     //     dispatch(updateCandidateList(movedCandidatesData))
-    //     //     // }
-    //     // }
-    //     // wsSeasonRounds.current.onerror = (event) => {
-    //     //     console.log("Error in websocket connection!")
-    //     //     console.log(event.data)
-    //     // }
-    //     // wsSeasonRounds.current.onclose = () => {
-    //     //     console.log("Websocket connection closed!")
-    //     // }
-    // },[])
 
     useEffect(() => {
         dispatch(

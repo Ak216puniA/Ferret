@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axios from "axios";
-import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
+import { CANDIDATE_ROUND, CSV, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
 import Cookies from "js-cookie";
 import { updateCandidateRoundStatus } from "../candidateModal/candidateModalSlice";
 
@@ -162,6 +162,22 @@ const seasonRoundContentSlice = createSlice({
         closeMoveCandidatesDialog: (state) => {
             state.open_move_dialog = false
         },
+        updateCandidateList: (state,action) => {
+            if(action.payload['action']==='add'){
+                state.candidate_list = state.candidate_list.concat(action.payload['candidate_list'])
+            }else if(action.payload['action']==='delete'){
+                let keep
+                state.candidate_list = state.candidate_list.filter(candidate => {
+                    keep=true
+                    for(let i=0; i<action.payload['candidate_list'].length && keep===true; i++){
+                        if(action.payload['candidate_list'][i]===candidate['candidate_id']['id']){
+                            keep=false
+                        }
+                    }
+                    return keep
+                })
+            }
+        },
         resetMoveCandidatesList: (state) => {
             state.move_candidate_list = []
         },
@@ -176,25 +192,6 @@ const seasonRoundContentSlice = createSlice({
             state.candidate_marks = []
             state.section_marks = []
         },
-        updateCandidateList: (state,action) => {
-            console.log("Update candidate list!")
-            // if(action.payload['action']==='add'){
-            //     state.candidate_list = state.candidate_list.concat(action.payload['candidate_list'])
-            // }else if(action.payload['action']==='delete'){
-            //     let deleteList = action.payload['candidate_list']
-            //     let i, j 
-            //     state.candidate_list.forEach((candidateRound,index) => {
-            //         i=index
-            //         deleteList.forEach((candidate_id,index) => {
-            //             j=index
-            //             if(candidateRound['candidate_id']['id']===candidate_id){
-            //                 state.candidate_list.splice(i,1)
-            //                 deleteList.splice(j,1)
-            //             }
-            //         })
-            //     })
-            // }
-        }
     },
     extraReducers: builder => {
         builder

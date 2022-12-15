@@ -3,7 +3,7 @@ import './index.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { closeMoveCandidatesDialog, moveCandidates } from '../../features/seasonRoundContent/seasonRoundContentSlice'
+import { closeMoveCandidatesDialog } from '../../features/seasonRoundContent/seasonRoundContentSlice'
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
 
@@ -33,13 +33,7 @@ function MoveCandidatesDialog(props) {
                 )
             )
         }
-        // dispatch(
-        //     moveCandidates({
-        //         candidate_list: seasonRoundContentState.move_candidate_list,
-        //         next_round_id: moveToRoundId,
-        //         current_round_id: moveFromRoundId
-        //     })
-        // )
+        dispatch(closeMoveCandidatesDialog())
     }
 
     let moveToRoundList = roundTabState.round_list.length>0 ?
