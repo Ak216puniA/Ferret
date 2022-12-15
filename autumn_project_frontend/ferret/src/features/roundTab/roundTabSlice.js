@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { CANDIDATE_SECTION_MARKS, ROUNDS, SECTIONS } from "../../urls";
+import { fetchCandidateSectionMarks } from "../seasonRoundContent/seasonRoundContentSlice";
 
 const initialState = {
     loading : false,
@@ -13,7 +14,8 @@ const initialState = {
     currentTabType: '',
     open : false,
     current_sections: [],
-    current_sections_total_marks: []
+    current_sections_total_marks: [],
+    sectionsUpdated: false
 }
 
 
@@ -149,12 +151,14 @@ const roundTabSlice = createSlice({
             state.error = ''
             state.current_sections = action.payload['section_list']
             state.current_sections_total_marks = action.payload['section_total_marks_list']
+            state.sectionsUpdated = true
         })
         .addCase(fetchSections.rejected, (state, action) => {
             state.loading = false
             state.error = action.error.message
             state.current_sections = []
             state.current_sections_total_marks = []
+            state.sectionsUpdated = true
             console.log("Sections' fetch unsuccessful!")
         })
         .addCase(fetchCurrentSectionsTotalMarks.pending, (state) => {
@@ -169,6 +173,12 @@ const roundTabSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             console.log("Current sections total marks fetch unsuccessful!")
+        })
+        .addCase(fetchCandidateSectionMarks.fulfilled, (state) => {
+            state.sectionsUpdated = false
+        })
+        .addCase(fetchCandidateSectionMarks.rejected, (state) => {
+            state.sectionsUpdated = false
         })
     }
 })

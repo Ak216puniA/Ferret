@@ -140,13 +140,15 @@ function RoundContent(props) {
     },[roundTabState.currentTabId])
 
     useEffect(() => {
-        dispatch(
-            fetchCandidateSectionMarks({
-                candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
-                section_list: roundTabState.current_sections.map(section => section['id'])
-            })
-        )
-    },[seasonRoundContentState.candidate_list])
+        if(seasonRoundContentState.candidatesUpdated===true && roundTabState.sectionsUpdated===true){
+            dispatch(
+                fetchCandidateSectionMarks({
+                    candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
+                    section_list: roundTabState.current_sections.map(section => section['id'])
+                })
+            )
+        }
+    },[seasonRoundContentState.candidatesUpdated,roundTabState.sectionsUpdated])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
@@ -223,7 +225,7 @@ function RoundContent(props) {
     <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
     <></>
 
-    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateTestModal /> : <CandidateInterviewModal />
+    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateTestModal wsSectionMarks={wsSectionMarks}/> : <CandidateInterviewModal wsSectionMarks={wsSectionMarks}/>
 
     return (
         <div className="seasonTestContent">

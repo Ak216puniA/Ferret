@@ -12,7 +12,8 @@ const initialState = {
     csv_uploaded: false,
     move_candidate_list: [],
     open_move_dialog: false,
-    section_marks: []
+    section_marks: [],
+    candidatesUpdated: false
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -65,6 +66,7 @@ export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/f
         }
     )
     .then((response) => {
+        console.log(response.data)
         return response.data
     })
 })
@@ -180,12 +182,14 @@ const seasonRoundContentSlice = createSlice({
         .addCase(fetchRoundCandidates.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
+            state.candidatesUpdated = true
             state.candidate_list = action.payload
         })
         .addCase(fetchRoundCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
+            state.candidatesUpdated = true
             console.log("Candidates' retrieval failed!")
         })
         .addCase(uploadCSV.pending, (state) => {
@@ -210,12 +214,14 @@ const seasonRoundContentSlice = createSlice({
         .addCase(fetchCandidateSectionMarks.fulfilled, (state,action) => {
             state.loading = false
             state.section_marks = action.payload['data']
+            state.candidatesUpdated = false
             state.error = ''
         })
         .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
             state.section_marks = []
             state.error = action.error.message
+            state.candidatesUpdated = false
             console.log("All candidates' Section marks fetch unsuccessful!")
         })
         .addCase(filterCandidates.pending, (state) => {
