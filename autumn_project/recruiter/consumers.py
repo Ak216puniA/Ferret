@@ -87,6 +87,18 @@ def update_candidate_remarks(candidate_marks_data):
         serializer = CandidateMarksNestedSerializer(candidate_marks)
         return serializer.data
 
+@database_sync_to_async
+def update_candidate_round_status(candidate_round_data):
+    try:
+        candidate_round = CandidateRound.objects.get(id=candidate_round_data['id'])
+    except ObjectDoesNotExist:
+        return None
+    else:
+        candidate_round.status = candidate_round_data['status']
+        candidate_round.save()
+        serializer = CandidateRoundNestedSerializer(candidate_round)
+        return serializer.data
+
 class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
     
     async def candidates_moved(self,event):
@@ -178,14 +190,14 @@ class AsyncInterviewPanelsConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.close()
 
-class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
+class AsyncCandidateQuestionConsumer(AsyncJsonWebsocketConsumer):
 
-    async def marks_updated(self,event):
+    async def candidate_marks(self,event):
         updated_data = event['message']
         await self.send_json(updated_data)
     
     async def connect(self):
-        self.group_name = 'section_marks_'+str(self.scope['url_route']['kwargs']['pk'])
+        self.group_name = 'candidate_question_'+str(self.scope['url_route']['kwargs']['pk'])
         await self.channel_layer.group_add(
             group=self.group_name, 
             channel=self.channel_name
@@ -193,9 +205,6 @@ class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def receive_json(self, content, **kwargs):
-        print(content)
-        response_data = []
-
         if content['field']=='marks':
             candidate_marks = await update_candidate_marks(content)
             if candidate_marks is not None:
@@ -224,7 +233,45 @@ class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(
             self.group_name,
             {
-                'type': 'marks.updated',
+                'type': 'candidate.marks',
+                'message': response_data
+            }
+        )
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(
+            self.group_name, 
+            channel=self.channel_name
+        )
+        await self.close()
+
+class AsyncCandidateRoundConsumer(AsyncJsonWebsocketConsumer):
+
+    async def candidate_round(self,event):
+        updated_data = event['message']
+        await self.send_json(updated_data)
+    
+    async def connect(self):
+        self.group_name = 'candidate_round_'+str(self.scope['url_route']['kwargs']['pk'])
+        await self.channel_layer.group_add(
+            group=self.group_name, 
+            channel=self.channel_name
+        )
+        await self.accept()
+
+    async def receive_json(self, content, **kwargs):
+        candidate_round = await update_candidate_round_status(content)
+        if candidate_round is not None:
+            response_data = {
+                'candidate_round': candidate_round
+            }
+        else:
+            response_data = []
+
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'candidate.round',
                 'message': response_data
             }
         )

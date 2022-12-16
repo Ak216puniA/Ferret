@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react'
 import { IoMdDoneAll } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { openDeleteCofirmationDialog, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import { openDeleteCofirmationDialog } from '../../features/candidateModal/candidateModalSlice'
 import './index.css'
 
 function CandidateModalQuestion(props) {
-    const {question,index,wsSectionMarks} = props
+    const {question,index,wsCandidateQuestion} = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -34,7 +34,7 @@ function CandidateModalQuestion(props) {
 
     const marksChangeHandler = (event) => {
         setQuestionMarks(event.target.value)
-        wsSectionMarks.current.send(
+        wsCandidateQuestion.current.send(
             JSON.stringify({
                 field: 'marks',
                 id: question['id'],
@@ -46,7 +46,7 @@ function CandidateModalQuestion(props) {
     }
 
     const markQuestionChecked = () => {
-        wsSectionMarks.current.send(
+        wsCandidateQuestion.current.send(
             JSON.stringify({
                 field: 'remarks',
                 id: question['id'],
@@ -54,13 +54,6 @@ function CandidateModalQuestion(props) {
                 round_id: roundTabState.currentTabId
             })
         )
-        // dispatch(
-        //     updateCandidateQuestionStatus({
-        //         id: question['id'],
-        //         remarks: questionRemarks,
-        //         status: question['status']==='unchecked' ? 'checked' : 'unchecked'
-        //     })
-        // )
     }
 
     const questionDivider = candidateModalState.candidate_question_data.length-1===index ? 
