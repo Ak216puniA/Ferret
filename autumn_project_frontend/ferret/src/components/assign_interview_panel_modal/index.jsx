@@ -3,7 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { openAssignInterviewPanelModal, updateCandidateRoundInterviewPanel, updateInterviewPanelStatus, updatePanelCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
+import { openAssignInterviewPanelModal, updateCandidateRoundInterviewPanel, updatePanelCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
 import './index.css'
 
 function AssignInterviewPanelModal(props) {

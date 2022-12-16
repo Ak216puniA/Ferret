@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
@@ -61,7 +61,6 @@ function CandidateInterviewModal(props) {
                 status: event.target.value,
             })
         )
-        // dispatch(updateCandidateModalCandidateRoundStatus(event.target.value))
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
@@ -176,16 +175,7 @@ function CandidateInterviewModal(props) {
                 })
             )
         }
-        // if(candidateModalState.candidateRoundStatusModified===true){
-        //     dispatch(
-        //         updateCandidateRoundStatus({
-        //             candidateRoundId: candidateModalState.candidateRoundId,
-        //             candidateRoundStatus: candidateModalState.candidateRoundStatus
-        //         })
-        //     )
-        //     dispatch(updatedCandidateRoundStatus())
-        // }
-    },[candidateModalState.interviewQuestionsChanged, candidateModalState.candidateRoundStatusModified])
+    },[candidateModalState.interviewQuestionsChanged])
 
     return (
         <>

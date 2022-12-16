@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS, CANDIDATE_ROUND } from '../../urls'
+import { CANDIDATES, CANDIDATE_SECTION_MARKS, SECTION_MARKS, CANDIDATE_MARKS, QUESTIONS } from '../../urls'
 import Cookies from "js-cookie";
 import { filterCandidatesForCheckingMode } from '../seasonRoundContent/seasonRoundContentSlice';
 
@@ -11,7 +11,6 @@ const initialState = {
     candidate_id: 0,
     candidateRoundId: 0,
     candidateRoundStatus: '',
-    candidateRoundStatusModified: false,
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
@@ -129,25 +128,6 @@ export const chooseCandidateInterviewQuestion = createAsyncThunk('candidateModal
     })
 })
 
-// export const updateCandidateRoundStatus = createAsyncThunk('candidateModal/updateCandidateRoundStatus', (candidateRoundData) => {
-//     return axios
-//     .patch(
-//         `${CANDIDATE_ROUND}${candidateRoundData['candidateRoundId']}/`,
-//         {
-//             status: candidateRoundData['candidateRoundStatus']
-//         },
-//         {
-//             headers: {
-//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-//             },
-//             withCredentials:true
-//         }
-//     )
-//     .then((response) => {
-//         return response.data
-//     })
-// })
-
 export const fetchCandidateQuestionDataInCheckingMode = createAsyncThunk('candidateModal/fetchCandidateQuestionDataInCheckingMode', (candidateQuestionData) => {
     return axios
     .get(
@@ -182,13 +162,6 @@ const candidateModalSlice = createSlice({
             state.openDeleteDialog = action.payload['open']
             state.deleteQuestionId = action.payload['questionId']
         },
-        // updateCandidateModalCandidateRoundStatus: (state,action) => {
-        //     state.candidateRoundStatus = action.payload
-        //     state.candidateRoundStatusModified = true
-        // },
-        // updatedCandidateRoundStatus: (state) => {
-        //     state.candidateRoundStatusModified = false
-        // },
         updatedCandidateModalRoundStatus: (state,action) => {
             state.candidateRoundStatus = action.payload
         },
@@ -314,18 +287,6 @@ const candidateModalSlice = createSlice({
             state.interviewQuestionsChanged = false
             console.log("Cannot choose candidate interview!")
         })
-        // .addCase(updateCandidateRoundStatus.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(updateCandidateRoundStatus.fulfilled, (state) => {
-        //     state.loading = false
-        //     state.error = ''
-        // })
-        // .addCase(updateCandidateRoundStatus.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.error = action.error.message
-        //     console.log("Candidate round status not updated!")
-        // })
         .addCase(filterCandidatesForCheckingMode.fulfilled, (state) => {
             state.checkingMode = true
         })
@@ -350,4 +311,4 @@ const candidateModalSlice = createSlice({
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode, updateCandidateModalQuestionData, updatedCandidateModalRoundStatus } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, switchCheckingMode, updateCandidateModalQuestionData, updatedCandidateModalRoundStatus } = candidateModalSlice.actions

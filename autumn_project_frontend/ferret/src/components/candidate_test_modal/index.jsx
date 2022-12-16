@@ -1,10 +1,9 @@
 import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus } from '../../features/candidateModal/candidateModalSlice'
+import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import CandidateModalQuestion from '../candidate_modal_question'
 import './index.css';
@@ -46,7 +45,6 @@ function CandidateTestModal(props) {
                 status: event.target.value,
             })
         )
-        // dispatch(updateCandidateModalCandidateRoundStatus(event.target.value))
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
@@ -181,18 +179,6 @@ function CandidateTestModal(props) {
         flexDirection:'column',
         alignItems:'center',
     }
-
-    // useEffect(() => {
-    //     if(candidateModalState.candidateRoundStatusModified===true){
-    //         dispatch(
-    //             updateCandidateRoundStatus({
-    //                 candidateRoundId: candidateModalState.candidateRoundId,
-    //                 candidateRoundStatus: candidateModalState.candidateRoundStatus
-    //             })
-    //         )
-    //         dispatch(updatedCandidateRoundStatus())
-    //     }
-    // },[candidateModalState.candidateRoundStatusModified])
 
     return (
         <>

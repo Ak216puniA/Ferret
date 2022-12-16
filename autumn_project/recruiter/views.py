@@ -398,7 +398,7 @@ class SectionMarksView(APIView):
 
         return Response(response_data)
 
-class IndividualCandidateSectionMarks(APIView):
+class CandidateSectionMarks(APIView):
     def get(self, request, format=None):
         candidate_section_data = {
             'candidate_id': request.query_params.get('candidate_id'),
