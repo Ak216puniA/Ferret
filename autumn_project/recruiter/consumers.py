@@ -74,10 +74,22 @@ def get_candidate_section_marks(candidate_section_data):
         candidate_section_marks.append(section_marks)
     return candidate_section_marks
 
+@database_sync_to_async
+def update_candidate_remarks(candidate_marks_data):
+    try:
+        candidate_marks = CandidateMarks.objects.get(id=candidate_marks_data['id'])
+    except ObjectDoesNotExist:
+        return None
+    else:
+        candidate_marks.remarks = candidate_marks_data['remarks']
+        candidate_marks.status = 'checked' if candidate_marks.status=='unchecked' else 'unchecked'
+        candidate_marks.save()
+        serializer = CandidateMarksNestedSerializer(candidate_marks)
+        return serializer.data
+
 class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
     
     async def candidates_moved(self,event):
-        print("SEASON ROUNDS.........................")
         candidates = event['message']
         await self.send_json(candidates)
 
@@ -173,7 +185,6 @@ class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json(updated_data)
     
     async def connect(self):
-        print("SECTION MARKS.........................")
         self.group_name = 'section_marks_'+str(self.scope['url_route']['kwargs']['pk'])
         await self.channel_layer.group_add(
             group=self.group_name, 
@@ -183,19 +194,30 @@ class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
         print(content)
+        response_data = []
 
-        candidate_marks = await update_candidate_marks(content)
-        if candidate_marks is not None:
-            candidate_section_data = {
-                'candidate_id': candidate_marks['candidate_id']['id'],
-                'section_list': content['section_list']
-            }
-            candidate_section_marks = await get_candidate_section_marks(candidate_section_data)
-            response_data = {
-                'candidate_marks': candidate_marks,
-                'section_marks': candidate_section_marks,
-                'round_id': content['round_id']
-            }
+        if content['field']=='marks':
+            candidate_marks = await update_candidate_marks(content)
+            if candidate_marks is not None:
+                candidate_section_data = {
+                    'candidate_id': candidate_marks['candidate_id']['id'],
+                    'section_list': content['section_list']
+                }
+                candidate_section_marks = await get_candidate_section_marks(candidate_section_data)
+                response_data = {
+                    'field': 'marks',
+                    'candidate_marks': candidate_marks,
+                    'section_marks': candidate_section_marks,
+                    'round_id': content['round_id']
+                }
+        elif content['field']=='remarks':
+            candidate_marks = await update_candidate_remarks(content)
+            if candidate_marks is not None:
+                response_data = {
+                    'field': 'remarks',
+                    'candidate_marks': candidate_marks,
+                    'round_id': content['round_id']
+                }
         else:
             response_data = []
 

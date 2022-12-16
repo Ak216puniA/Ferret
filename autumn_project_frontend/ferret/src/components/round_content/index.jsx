@@ -7,7 +7,7 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalSectionMarks } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalQuestionData } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
@@ -117,12 +117,13 @@ function RoundContent(props) {
             console.log("Section marks websocket connection opened!")
         }
         wsSectionMarks.current.onmessage = (event) => {
-            const sectionMarksData = JSON.parse(event.data)
-            console.log(sectionMarksData)
-            dispatch(updateSectionMarks(sectionMarksData))
-            const candidate_id = sectionMarksData['candidate_marks']['candidate_id']['id']
-            if(sectionMarksData['round_id']===roundTabState.currentTabId && candidate_id===candidateModalState.candidate_id) {
-                dispatch(updateCandidateModalSectionMarks(sectionMarksData['section_marks']))
+            const candidateQuestionData = JSON.parse(event.data)
+            const candidate_id = candidateQuestionData['candidate_marks']['candidate_id']['id']
+            if(candidateQuestionData['field']==='marks'){
+                dispatch(updateSectionMarks(candidateQuestionData))
+            }
+            if(candidateQuestionData['round_id']===roundTabState.currentTabId && candidate_id===candidateModalState.candidate_id) {
+                dispatch(updateCandidateModalQuestionData(candidateQuestionData))
             }
         }
         wsSectionMarks.current.onerror = (event) => {

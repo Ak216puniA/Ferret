@@ -36,34 +36,31 @@ function CandidateModalQuestion(props) {
         setQuestionMarks(event.target.value)
         wsSectionMarks.current.send(
             JSON.stringify({
+                field: 'marks',
                 id: question['id'],
                 marks: event.target.value==='' ? 0 : parseInt(event.target.value),
                 section_list: roundTabState.current_sections.map(section => section['id']),
                 round_id: roundTabState.currentTabId
             })
         )
-        // dispatch(
-        //     updateCandidateQuestionMarks({
-        //         id: question['id'],
-        //         marks: event.target.value
-        //     })
-        // )
-        // dispatch(
-        //     fetchSelectedCandidateSectionMarks({
-        //         candidate_list: [candidateModalState.candidate_id],
-        //         section_list: roundTabState.current_sections.map(section => section['id'])
-        //     })
-        // )
     }
 
     const markQuestionChecked = () => {
-        dispatch(
-            updateCandidateQuestionStatus({
+        wsSectionMarks.current.send(
+            JSON.stringify({
+                field: 'remarks',
                 id: question['id'],
                 remarks: questionRemarks,
-                status: question['status']==='unchecked' ? 'checked' : 'unchecked'
+                round_id: roundTabState.currentTabId
             })
         )
+        // dispatch(
+        //     updateCandidateQuestionStatus({
+        //         id: question['id'],
+        //         remarks: questionRemarks,
+        //         status: question['status']==='unchecked' ? 'checked' : 'unchecked'
+        //     })
+        // )
     }
 
     const questionDivider = candidateModalState.candidate_question_data.length-1===index ? 
@@ -86,8 +83,8 @@ function CandidateModalQuestion(props) {
 
     useEffect(() => {
         setQuestionMarks(question['marks'])
-        setQuestionRemarks(question['remarks']==='' ? '' : question['remarks'])
-    },[])
+        setQuestionRemarks(question['remarks'])
+    },[question['marks'],question['remarks']])
 
     return (
         <>

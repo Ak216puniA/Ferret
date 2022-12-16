@@ -69,12 +69,13 @@ export const fetchQuestionWiseCandidateSectionMarks = createAsyncThunk('candidat
     })
 })
 
-// export const updateCandidateQuestionMarks = createAsyncThunk('candidateModal/updateCandidateQuestionMarks', (candidateQuestionData) => {
+// export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/updateCandidateQuestionStatus', (candidateQuestionData) => {
 //     return axios
 //     .patch(
 //         `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
 //         {
-//             marks: candidateQuestionData['marks'],
+//             status: candidateQuestionData['status'],
+//             remarks: candidateQuestionData['remarks']
 //         },
 //         {
 //             headers: {
@@ -87,26 +88,6 @@ export const fetchQuestionWiseCandidateSectionMarks = createAsyncThunk('candidat
 //         return response.data
 //     })
 // })
-
-export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/updateCandidateQuestionStatus', (candidateQuestionData) => {
-    return axios
-    .patch(
-        `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
-        {
-            status: candidateQuestionData['status'],
-            remarks: candidateQuestionData['remarks']
-        },
-        {
-            headers: {
-                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-            },
-            withCredentials:true
-        },
-    )
-    .then((response) => {
-        return response.data
-    })
-})
 
 export const createCandidateInterviewQuestion = createAsyncThunk('candidateModal/createCandidateInterviewQuestion', (questionData) => {
     return axios
@@ -231,8 +212,25 @@ const candidateModalSlice = createSlice({
         switchCheckingMode: (state,action) => {
             state.checkingMode = action.payload
         },
-        updateCandidateModalSectionMarks: (state,action) => {
-            state.candidate_section_marks = action.payload
+        updateCandidateModalQuestionData: (state,action) => {
+            if(action.payload['field']==='marks'){
+                state.candidate_section_marks = action.payload['section_marks']
+                for(let i=0; i<state.candidate_question_data.length; i++){
+                    if(state.candidate_question_data[i]['id']===action.payload['candidate_marks']['id']){
+                        state.candidate_question_data[i]['marks'] = action.payload['candidate_marks']['marks']
+                        i = state.candidate_question_data.length
+                    }
+                }
+            }else if(action.payload['field']==='remarks'){
+                for(let i=0; i<state.candidate_question_data.length; i++){
+                    if(state.candidate_question_data[i]['id']===action.payload['candidate_marks']['id']){
+                        state.candidate_question_data[i]['remarks'] = action.payload['candidate_marks']['remarks']
+                        state.candidate_question_data[i]['status'] = action.payload['candidate_marks']['status']
+                        i = state.candidate_question_data.length
+                    }
+                }
+            }
+            
         },
         resetCandidateModalState: (state) => {
             state.loading = false
@@ -286,34 +284,22 @@ const candidateModalSlice = createSlice({
             state.error = action.error.message
             state.candidate_question_data = []
         })
-        // .addCase(updateCandidateQuestionMarks.pending, (state) => {
+        // .addCase(updateCandidateQuestionStatus.pending, (state) => {
         //     state.loading = true
         // })
-        // .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
+        // .addCase(updateCandidateQuestionStatus.fulfilled, (state,action) => {
         //     state.loading = false
         //     state.error = ''
+        //     console.log(action.payload)
+        //     state.candidate_question_data.map(question => {
+        //         if(question['id']===action.payload['id']) question['status']=action.payload['status']
+        //     })
         // })
-        // .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
+        // .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
         //     state.loading = false
         //     state.error = action.error.message
-        //     console.log("Candidate question's marks update unsucessful!")
+        //     console.log("Candidate question's status update unsucessful!")
         // })
-        .addCase(updateCandidateQuestionStatus.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(updateCandidateQuestionStatus.fulfilled, (state,action) => {
-            state.loading = false
-            state.error = ''
-            console.log(action.payload)
-            state.candidate_question_data.map(question => {
-                if(question['id']===action.payload['id']) question['status']=action.payload['status']
-            })
-        })
-        .addCase(updateCandidateQuestionStatus.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Candidate question's status update unsucessful!")
-        })
         .addCase(createCandidateInterviewQuestion.pending, (state) => {
             state.loading = true
         })
@@ -396,4 +382,4 @@ const candidateModalSlice = createSlice({
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode, updateCandidateModalSectionMarks } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode, updateCandidateModalQuestionData } = candidateModalSlice.actions
