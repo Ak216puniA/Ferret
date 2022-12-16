@@ -33,6 +33,7 @@ function SubHeader(props){
         }
         if(address[0]!=='Questions'){
             localStorage.setItem('questions','close')
+            dispatch(resetQuestionsState())
         }
         const url = `/${address[1]}`
         console.log(url)

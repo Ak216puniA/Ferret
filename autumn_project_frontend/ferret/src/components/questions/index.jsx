@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
-import { updateQuestion, openCreateQuestionDialog, openQuestionDeleteConfirmationDialog, deleteQuestion, fetchQuestions, updatedQuestionList } from "../../features/question/questionSlice";
+import { updateQuestion, openCreateQuestionDialog, openQuestionDeleteConfirmationDialog, deleteQuestion, fetchQuestions, updatedQuestionList, resetQuestionsState } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import CreateQuestionDialog from "../create_question_dialog";
 import './index.css';
@@ -160,6 +160,7 @@ function QuestionsContent() {
     const routeChange = () => {
         localStorage.setItem('questions','close')
         dispatch(resetSectionTabState())
+        dispatch(resetQuestionsState())
         const url = `/season/${season_id}`
         navigate(url)
     }
