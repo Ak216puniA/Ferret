@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/header/index";
 import HomeContent from "../components/home_content/index";
@@ -13,6 +13,10 @@ function Home() {
   const page = [
     ['Home','home']
   ]
+
+  useEffect(() => {
+    localStorage.setItem('page','home')
+  },[])
 
   if(userAuthenticated && logoutState){
     return (

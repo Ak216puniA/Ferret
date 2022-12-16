@@ -118,7 +118,6 @@ function FilterStatusContent() {
     dispatch(setStatus(''))
   }
 
-  console.log(roundTabState.currentTabType)
   const filterDrawerStatusContentList = roundTabState.currentTabType==='test' ? 
   [['done','Done'],['pending','Pending']] :
   [['done','Done'],['pending','Pending'],['not_notified','Not Notified'],['notified','Notified'],['waiting_room','In Waiting Room'],['interview','In Interview']]

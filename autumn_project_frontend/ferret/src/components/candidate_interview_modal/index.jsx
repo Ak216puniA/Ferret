@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
@@ -12,7 +12,8 @@ import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 
-function CandidateInterviewModal() {
+function CandidateInterviewModal(props) {
+    const { wsCandidateQuestion, wsCandidateRound } = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -54,7 +55,12 @@ function CandidateInterviewModal() {
     }
 
     const candidateRoundStatusChangeHandler = (event) => {
-        dispatch(updateCandidateModalCandidateRoundStatus(event.target.value))
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRoundId,
+                status: event.target.value,
+            })
+        )
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
@@ -113,7 +119,7 @@ function CandidateInterviewModal() {
     candidateRoundStatusOptionsForJuniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
-    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
+    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index} wsCandidateQuestion={wsCandidateQuestion}/>) :
     []
 
     let addNewQuestionOption = candidateModalState.section_name!=='' ? 
@@ -169,16 +175,7 @@ function CandidateInterviewModal() {
                 })
             )
         }
-        if(candidateModalState.candidateRoundStatusModified===true){
-            dispatch(
-                updateCandidateRoundStatus({
-                    candidateRoundId: candidateModalState.candidateRoundId,
-                    candidateRoundStatus: candidateModalState.candidateRoundStatus
-                })
-            )
-            dispatch(updatedCandidateRoundStatus())
-        }
-    },[candidateModalState.interviewQuestionsChanged, candidateModalState.candidateRoundStatusModified])
+    },[candidateModalState.interviewQuestionsChanged])
 
     return (
         <>

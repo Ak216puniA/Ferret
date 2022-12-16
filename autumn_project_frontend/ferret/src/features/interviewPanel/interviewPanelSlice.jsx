@@ -19,7 +19,10 @@ const initialState = {
     openAssignModal: false,
     panelRoundList: [],
     panelCandidateList: [],
-    openInterviewModal: false
+    openInterviewModal: false,
+    openCreatePanelDialog: false,
+    openDeleteDialog: false,
+    deletePanelId: 0
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -28,25 +31,6 @@ export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterv
         `${INTERVIEW_PANEL}?season_id=${seasonId}`,
         {
             withCredentials: true
-        }
-    )
-    .then((response) => {
-        return response.data
-    })
-})
-
-export const updateInterviewPanelStatus = createAsyncThunk('interviewPanel/updateInterviewPanelStatus', (panelStatusData) => {
-    return axios
-    .patch(
-        `${INTERVIEW_PANEL}${panelStatusData['panelId']}/`,
-        {
-            status: panelStatusData['status']
-        },
-        {
-            headers: {
-                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-            },
-            withCredentials:true
         }
     )
     .then((response) => {
@@ -115,6 +99,44 @@ export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPan
     })
 })
 
+export const createInterviewPanel = createAsyncThunk('interviewPanel/createInterviewPanel', (panelData) => {
+    return axios
+    .post(
+        `${INTERVIEW_PANEL}`,
+        {
+            season_id: panelData['seasonId'],
+            panel_name: panelData['panelName'],
+            panelist: panelData['panelist'],
+            location: panelData['location']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
+export const deleteInterviewPanel = createAsyncThunk('interviewPanel/deleteInterviewPanel', (panelId) => {
+    return axios
+    .delete(
+        `${INTERVIEW_PANEL}${panelId}/`,
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        }
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const interviewPanelSlice = createSlice({
     name: 'interviewPanel',
     initialState,
@@ -128,6 +150,19 @@ const interviewPanelSlice = createSlice({
             state.openInterviewModal = action.payload['open']
             state.panel = action.payload['panel']
             state.panelCandidateList = action.payload['open']===false ? [] : state.panelCandidateList
+        },
+        openCreateInterviewPanelDialog: (state,action) => {
+            state.openCreatePanelDialog = action.payload
+        },
+        openInterviewPanelDeleteConfirmationDialog: (state,action) => {
+            state.openDeleteDialog = action.payload['open']
+            state.deletePanelId = action.payload['panelId']
+        },
+        updatePanelStatus: (state,action) => {
+            state.panel['status'] = action.payload['status']
+            state.panelList.forEach(panel => {
+                if(panel['id']===action.payload['panel_id']) panel['status'] = action.payload['status']
+            })
         },
         resetInterviewPanelState: (state) => {
             state.loading = false
@@ -162,22 +197,6 @@ const interviewPanelSlice = createSlice({
             state.error = action.error.message
             state.panelList = []
             console.log("Interview panels fetch unsuccessful!")
-        })
-        .addCase(updateInterviewPanelStatus.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(updateInterviewPanelStatus.fulfilled, (state,action) => {
-            state.loading = false
-            state.error = ''
-            state.panel['status'] = action.payload['status']
-            state.panelList.forEach(panel => {
-                panel['status'] = panel['id']===state.panel['id'] ? action.payload['status'] : panel['status']
-            })
-        })
-        .addCase(updateInterviewPanelStatus.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Interview panel status update unsuccessful!")
         })
         .addCase(updatePanelCandidateOptions.pending, (state) => {
             state.loading = true
@@ -233,8 +252,36 @@ const interviewPanelSlice = createSlice({
             state.error = action.error.message
             console.log("Cannot update inInterview candidate options!")
         })
+        .addCase(createInterviewPanel.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(createInterviewPanel.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+        })
+        .addCase(createInterviewPanel.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            console.log("Create interview panel unsuccessful!")
+        })
+        .addCase(deleteInterviewPanel.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteInterviewPanel.fulfilled, (state) => {
+            state.loading = false
+            state.error = ''
+            state.openDeleteDialog = false
+            state.deletePanelId = 0
+        })
+        .addCase(deleteInterviewPanel.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.openDeleteDialog = false
+            state.deletePanelId = 0
+            console.log("Delete interview panel unsuccessful!")
+        })
     }
 })
 
 export default interviewPanelSlice.reducer
-export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState } = interviewPanelSlice.actions
+export const { openAssignInterviewPanelModal, openInterviewModal, resetInterviewPanelState, openCreateInterviewPanelDialog, openInterviewPanelDeleteConfirmationDialog, updatePanelStatus } = interviewPanelSlice.actions

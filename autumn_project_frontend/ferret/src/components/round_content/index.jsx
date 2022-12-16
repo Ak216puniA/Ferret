@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks, updateSectionMarks, updateCandidateListStatus } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalQuestionData, updatedCandidateModalRoundStatus } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
 import CandidateTestModal from "../candidate_test_modal";
+import { CANDIDATE_QUESTION_WEBSOCKET, CANDIDATE_ROUND_WEBSOCKET } from "../../urls";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -104,10 +105,61 @@ function RoundTableRow(props){
 }
 
 function RoundContent(props) {
-    const { s_id } = props
+    const { s_id, wsSeasonRounds } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
+    const candidateModalState = useSelector((state) => state.candidateModal)
     const dispatch = useDispatch()
+    let wsCandidateQuestion = useRef('')
+    let wsCandidateRound = useRef('')
+
+    if(wsCandidateQuestion.current!==''){
+        wsCandidateQuestion.current.onopen = () => {
+            console.log("Candidate question websocket connection opened!")
+        }
+        wsCandidateQuestion.current.onmessage = (event) => {
+            const candidateQuestionData = JSON.parse(event.data)
+            const candidate_id = candidateQuestionData['candidate_marks']['candidate_id']['id']
+            if(candidateQuestionData['round_id']===roundTabState.currentTabId){
+                if(candidateQuestionData['field']==='marks'){
+                    dispatch(updateSectionMarks(candidateQuestionData))
+                }
+                if(candidate_id===candidateModalState.candidate_id) {
+                    dispatch(updateCandidateModalQuestionData(candidateQuestionData))
+                }
+            }
+        }
+        wsCandidateQuestion.current.onerror = (event) => {
+            console.log("Error in websocket connection!")
+            console.log(event.data)
+        }
+        wsCandidateQuestion.current.onclose = () => {
+            console.log("Websocket connection closed!")
+        }
+    }
+
+    if(wsCandidateRound.current!==''){
+        wsCandidateRound.current.onopen = () => {
+            console.log("Candidate round websocket connection opened!")
+        }
+        wsCandidateRound.current.onmessage = (event) => {
+            const candidateRoundData = JSON.parse(event.data)
+            const candidate_id = candidateRoundData['candidate_round']['candidate_id']['id']
+            if(candidateRoundData['candidate_round']['round_id']['id']===roundTabState.currentTabId){
+                dispatch(updateCandidateListStatus(candidateRoundData['candidate_round']))
+                if(candidate_id===candidateModalState.candidate_id){
+                    dispatch(updatedCandidateModalRoundStatus(candidateRoundData['candidate_round']['status']))
+                }
+            }
+        }
+        wsCandidateRound.current.onerror = (event) => {
+            console.log("Error in websocket connection!")
+            console.log(event.data)
+        }
+        wsCandidateRound.current.onclose = () => {
+            console.log("Websocket connection closed!")
+        }
+    }
 
     let navigate = useNavigate()
     const routeChange = () => {
@@ -117,13 +169,22 @@ function RoundContent(props) {
     }
 
     useEffect(() => {
-        dispatch(
-            fetchCandidateSectionMarks({
-                candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
-                section_list: roundTabState.current_sections.map(section => section['id'])
-            })
-        )
-    },[seasonRoundContentState.candidate_list])
+        if(roundTabState.currentTabId>0) {
+            wsCandidateQuestion.current = new WebSocket(`${CANDIDATE_QUESTION_WEBSOCKET}${roundTabState.currentTabId}/`)
+            wsCandidateRound.current = new WebSocket(`${CANDIDATE_ROUND_WEBSOCKET}${roundTabState.currentTabId}/`)
+        }
+    },[roundTabState.currentTabId])
+
+    useEffect(() => {
+        if(seasonRoundContentState.candidatesUpdated===true && roundTabState.sectionsUpdated===true){
+            dispatch(
+                fetchCandidateSectionMarks({
+                    candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
+                    section_list: roundTabState.current_sections.map(section => section['id'])
+                })
+            )
+        }
+    },[seasonRoundContentState.candidatesUpdated,roundTabState.sectionsUpdated])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){
@@ -200,7 +261,9 @@ function RoundContent(props) {
     <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
     <></>
 
-    let candidateModal = roundTabState.currentTabType==='test' ? <CandidateTestModal /> : <CandidateInterviewModal />
+    let candidateModal = roundTabState.currentTabType==='test' ? 
+    <CandidateTestModal wsCandidateQuestion={wsCandidateQuestion} wsCandidateRound={wsCandidateRound}/> : 
+    <CandidateInterviewModal wsCandidateQuestion={wsCandidateQuestion} wsCandidateRound={wsCandidateRound}/>
 
     return (
         <div className="seasonTestContent">
@@ -232,7 +295,7 @@ function RoundContent(props) {
             <CreateRoundDialog season_id={s_id}/>
             {move_button}
             {candidateModal}
-            <MoveCandidatesDialog />
+            <MoveCandidatesDialog wsSeasonRounds={wsSeasonRounds}/>
             <FilterDrawer />
         </div>
     )

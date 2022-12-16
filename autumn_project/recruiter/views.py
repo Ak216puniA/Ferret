@@ -1,5 +1,3 @@
-from cmath import exp
-from urllib import response
 from rest_framework.response import Response
 from .utilities.csv import *
 from .utilities.candidate_round_update import *
@@ -20,8 +18,6 @@ from .serializers import UserSerializer
 from django.shortcuts import redirect
 from rest_framework import status
 import pandas
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404
 
 env = environ.Env()
 environ.Env.read_env()
@@ -43,7 +39,6 @@ class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         season_type = self.request.query_params.get('season_type')
         season_id = self.request.query_params.get('season_id')
-        # print(self.request.user)
         if season_type is not None:
             return RecruitmentSeasons.objects.filter(type=season_type)
         if season_id is not None:
@@ -248,16 +243,8 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         round_id = self.request.query_params.get('round_id')
-        # candidate_id = self.request.query_params.get('candidate_id')
-        # question_id = self.request.query_params.get('question_id')
         if round_id is not None:
             return CandidateMarks.objects.filter(question_id__section_id__round_id=round_id)
-        # if candidate_id is not None:
-        #     candidate_marks = CandidateMarks.objects.filter(candidate_id=candidate_id)
-        #     if question_id is not None:
-        #         question_id_list = [int(id) for id in question_id.split(',')]
-        #         candidate_marks = candidate_marks.filter(question_id__in=question_id_list)
-        #     return candidate_marks
         return CandidateMarks.objects.all()
 
     def get_serializer_class(self):
@@ -395,7 +382,7 @@ class SectionMarksView(APIView):
         candidate_list = request.data['candidate_list']
         section_list = request.data['section_list']
         candidate_section_marks_list = []
-        if len(candidate_list)>0 and len(section_list):
+        if len(candidate_list)>0 and len(section_list)>0:
             for candidate_id in candidate_list:
                 candidate_section_data = {
                     'candidate_id': candidate_id,
@@ -411,7 +398,7 @@ class SectionMarksView(APIView):
 
         return Response(response_data)
 
-class IndividualCandidateSectionMarks(APIView):
+class CandidateSectionMarks(APIView):
     def get(self, request, format=None):
         candidate_section_data = {
             'candidate_id': request.query_params.get('candidate_id'),
@@ -436,13 +423,6 @@ class FilterCandidatesView(APIView):
             filter_data = request.data
             filtered_data = filter_by_question_and_status(filter_data)
             candidate_round_serializer = CandidateRoundNestedSerializer(filtered_data['filter_candidates'], many=True)
-            # candidate_marks_serializer = CandidateMarksNestedSerializer(filtered_data['filter_candidate_marks'], many=True)
-
-            # response_data = {
-                # 'status': 'success',
-                # 'candidate_round_data': candidate_round_serializer.data,
-                # 'candidate_question_data': candidate_marks_serializer.data
-            # }
             filtered_candidates = candidate_round_serializer.data
         else:
             filter_data = {

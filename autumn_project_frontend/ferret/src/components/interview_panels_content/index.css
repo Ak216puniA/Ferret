@@ -82,3 +82,30 @@
 .panelCardOuterDiv{
     position: relative;
 }
+
+.panelsContentHeading{
+    color: white;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.interviewPanelsContentButton{
+    height: 24px;
+    padding: 4px 16px;
+    font-size: 15px;
+    background-color: #EEEEEE;
+    color: black;
+    border: none;
+}
+
+.interviewPanelDeleteIconDiv{
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.interviewPanelDeleteIconDiv:hover{
+    background-color: #F2D7D5;
+}

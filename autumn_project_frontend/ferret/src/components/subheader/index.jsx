@@ -12,6 +12,7 @@ import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/
 import { resetQuestionsState } from "../../features/question/questionSlice";
 import { resetSectionTabState } from "../../features/sectionTab/sectionTabSlice";
 import { resetInterviewPanelState } from "../../features/interviewPanel/interviewPanelSlice";
+import InterviewPanelsTabs from "../interview_panels_tabs";
 
 function SubHeader(props){
     const {season_id} = useParams()
@@ -43,7 +44,7 @@ function SubHeader(props){
     <></>
 
     const tabs = noTabs===true ?
-    <></> :
+    <InterviewPanelsTabs seasonId={season_id}/> :
     (
         season_id>0 ? 
         (
@@ -54,24 +55,12 @@ function SubHeader(props){
         <HomeTabs homeTabs={initialTabs}/>
     )
 
-    const pageTabs = noTabs===true && season_id>0 ?
-    <>
-        <div className="bottomLeftCornerDark"></div>
-        <div className="panelTabRightDiv">
-            <div className="panelDashboardNavigationDiv">
-                <div className="subHeaderLinkDiv" onClick={() => routeChange(page[1][1])}>Dashboard</div>
-                <div className="centerContent"><IoMdArrowDropright size={28}/></div>
-            </div>
-            <div className="bottomRightCornerDark"></div>
-        </div>
-    </> :
-    <>
-        <div className="bottomLeftCornerDark"></div>
-        <div className="pageTabs">
-            {tabs}
-        </div>
-        <div className="bottomRightCornerDark"></div>
-    </>
+    const dashboardLink = noTabs===true ? 
+    <div className="panelDashboardNavigationDiv">
+        <div className="subHeaderLinkDiv" onClick={() => routeChange(page[1])}>Dashboard</div>
+        <div className="centerContent"><IoMdArrowDropright size={28}/></div>
+    </div> :
+    <></>
 
     useEffect(() => {
         if(season_id>0) dispatch(listRounds(season_id))
@@ -86,7 +75,12 @@ function SubHeader(props){
                     <div className="subHeaderPageHeadingDiv">{pageHeading}</div>
                 </div>
                 <div className="tabDiv">
-                    {pageTabs}
+                    <div className="bottomLeftCornerDark"></div>
+                    <div className="pageTabs">
+                        {tabs}
+                    </div>
+                    <div className="bottomRightCornerDark"></div>
+                    {dashboardLink}
                 </div>
             </div>
             <div className="topLeftCornerLight"></div>

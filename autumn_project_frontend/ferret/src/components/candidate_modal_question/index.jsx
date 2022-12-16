@@ -1,15 +1,13 @@
 import { Divider, TextField } from '@mui/material'
-import React from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IoMdDoneAll } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import { openDeleteCofirmationDialog } from '../../features/candidateModal/candidateModalSlice'
 import './index.css'
 
 function CandidateModalQuestion(props) {
-    const {question,index} = props
+    const {question,index,wsCandidateQuestion} = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -36,26 +34,24 @@ function CandidateModalQuestion(props) {
 
     const marksChangeHandler = (event) => {
         setQuestionMarks(event.target.value)
-        dispatch(
-            updateCandidateQuestionMarks({
+        wsCandidateQuestion.current.send(
+            JSON.stringify({
+                field: 'marks',
                 id: question['id'],
-                marks: event.target.value
-            })
-        )
-        dispatch(
-            fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidateModalState.candidate_id],
-                section_list: roundTabState.current_sections.map(section => section['id'])
+                marks: event.target.value==='' ? 0 : parseInt(event.target.value),
+                section_list: roundTabState.current_sections.map(section => section['id']),
+                round_id: roundTabState.currentTabId
             })
         )
     }
 
     const markQuestionChecked = () => {
-        dispatch(
-            updateCandidateQuestionStatus({
+        wsCandidateQuestion.current.send(
+            JSON.stringify({
+                field: 'remarks',
                 id: question['id'],
                 remarks: questionRemarks,
-                status: question['status']==='unchecked' ? 'checked' : 'unchecked'
+                round_id: roundTabState.currentTabId
             })
         )
     }
@@ -80,8 +76,8 @@ function CandidateModalQuestion(props) {
 
     useEffect(() => {
         setQuestionMarks(question['marks'])
-        setQuestionRemarks(question['remarks']==='' ? '' : question['remarks'])
-    },[])
+        setQuestionRemarks(question['remarks'])
+    },[question['marks'],question['remarks']])
 
     return (
         <>

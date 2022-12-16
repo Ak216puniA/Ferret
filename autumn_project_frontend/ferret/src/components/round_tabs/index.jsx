@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
-import { fetchRoundCandidates } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchRoundCandidates, resetMoveCandidatesList } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
 import { resetCheckingModeFilterState, resetFilterState } from "../../features/filter/filterSlice";
 import { switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
@@ -14,24 +14,18 @@ function RoundTabs() {
     
     useEffect(() => {
         if(roundTabState.round_list.length>0){
-            if(roundTabState.currentTab===''){
-                document.getElementById(`${roundTabState.round_list[0]['name']}Arrow`).style.display = 'block'
-                dispatch(
-                    tabClicked({
-                        tab_name: roundTabState.round_list[0]['name'],
-                        tab_id: roundTabState.round_list[0]['id'],
-                        tab_type: roundTabState.round_list[0]['type']
-                    })
-                )
-                dispatch(fetchRoundCandidates(roundTabState.round_list[0]['id']))
-                dispatch(fetchSections(roundTabState.round_list[0]['id']))
-            }else{
-                roundTabState.round_list.forEach(tab => {
-                    document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===roundTabState.currentTab) ? 'block' : 'none'
-                });
-            }
+            document.getElementById(`${roundTabState.round_list[0]['name']}Arrow`).style.display = 'block'
+            dispatch(
+                tabClicked({
+                    tab_name: roundTabState.round_list[0]['name'],
+                    tab_id: roundTabState.round_list[0]['id'],
+                    tab_type: roundTabState.round_list[0]['type']
+                })
+            )
+            dispatch(fetchRoundCandidates(roundTabState.round_list[0]['id']))
+            dispatch(fetchSections(roundTabState.round_list[0]['id']))
         }
-    })
+    },[roundTabState.round_list])
 
     const tabClickHandler = (tab_data) => {
         dispatch(
@@ -44,8 +38,15 @@ function RoundTabs() {
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
         dispatch(resetFilterState())
+        dispatch(resetMoveCandidatesList())
         dispatch(resetCheckingModeFilterState())
         dispatch(switchCheckingMode(false))
+
+        if(roundTabState.round_list.length>0){
+            roundTabState.round_list.forEach(tab => {
+                document.getElementById(`${tab['name']}Arrow`).style.display = (tab['name']===tab_data['tab_name']) ? 'block' : 'none'
+            });
+        }
     }
 
     let tabs = roundTabState.round_list.length>0 ? roundTabState.round_list.map(tab => {

@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axios from "axios";
-import { CANDIDATE_ROUND, CSV, CANDIDATE_MARKS, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
+import { CANDIDATE_ROUND, CSV, SECTION_MARKS, FILTER_CANDIDATES } from "../../urls";
 import Cookies from "js-cookie";
-import { updateCandidateRoundStatus } from "../candidateModal/candidateModalSlice";
 
 const initialState = {
     loading: false,
@@ -12,7 +11,8 @@ const initialState = {
     csv_uploaded: false,
     move_candidate_list: [],
     open_move_dialog: false,
-    section_marks: []
+    section_marks: [],
+    candidatesUpdated: false
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -39,27 +39,6 @@ export const uploadCSV = createAsyncThunk('seasonRoundContent/uploadCSV', (candi
         {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-            },
-            withCredentials:true
-        },
-    )
-    .then((response) => {
-        return response.data
-    })
-})
-
-export const moveCandidates = createAsyncThunk('seasonRoundContent/moveCandidates', (move_data) => {
-    return axios
-    .post(
-        `${CANDIDATE_ROUND}`,
-        {
-            candidate_list: move_data['candidate_list'],
-            next_round_id: move_data['next_round_id'],
-            current_round_id: move_data['current_round_id']
-        },
-        {
-            headers: {
                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
             },
             withCredentials:true
@@ -162,6 +141,41 @@ const seasonRoundContentSlice = createSlice({
         closeMoveCandidatesDialog: (state) => {
             state.open_move_dialog = false
         },
+        updateCandidateList: (state,action) => {
+            if(action.payload['action']==='add'){
+                state.candidate_list = state.candidate_list.concat(action.payload['candidate_list'])
+            }else if(action.payload['action']==='delete'){
+                let keep
+                state.candidate_list = state.candidate_list.filter(candidate => {
+                    keep=true
+                    for(let i=0; i<action.payload['candidate_list'].length && keep===true; i++){
+                        if(action.payload['candidate_list'][i]===candidate['candidate_id']['id']){
+                            keep=false
+                        }
+                    }
+                    return keep
+                })
+            }
+        },
+        updateSectionMarks: (state,action) => {
+            for(let i=0; i<state.section_marks.length; i++){
+                if(state.section_marks[i][0]===action.payload['section_marks'][0]){
+                    state.section_marks[i] = action.payload['section_marks']
+                    i = state.section_marks.length
+                }
+            }
+        },
+        updateCandidateListStatus: (state,action) => {
+            for(let i=0; i<state.candidate_list.length; i++){
+                if(state.candidate_list[i]['id']===action.payload['id']){
+                    state.candidate_list[i]['status'] = action.payload['status']
+                    i = state.candidate_list.length
+                }
+            }
+        },
+        resetMoveCandidatesList: (state) => {
+            state.move_candidate_list = []
+        },
         resetSeasonRoundContentState: (state) => {
             state.loading = false
             state.error = ''
@@ -172,7 +186,7 @@ const seasonRoundContentSlice = createSlice({
             state.open_move_dialog = false
             state.candidate_marks = []
             state.section_marks = []
-        }
+        },
     },
     extraReducers: builder => {
         builder
@@ -182,12 +196,14 @@ const seasonRoundContentSlice = createSlice({
         .addCase(fetchRoundCandidates.fulfilled, (state,action) => {
             state.loading = false
             state.error = ''
+            state.candidatesUpdated = true
             state.candidate_list = action.payload
         })
         .addCase(fetchRoundCandidates.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
             state.candidate_list = []
+            state.candidatesUpdated = true
             console.log("Candidates' retrieval failed!")
         })
         .addCase(uploadCSV.pending, (state) => {
@@ -206,31 +222,20 @@ const seasonRoundContentSlice = createSlice({
             state.csv_uploaded = false
             console.log("CSV upload unsuccessful!")
         })
-        .addCase(moveCandidates.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(moveCandidates.fulfilled, (state) => {
-            state.loading = false
-            state.error = ''
-            state.move_candidate_list = []
-        })
-        .addCase(moveCandidates.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Candidates not moved!")
-        })
         .addCase(fetchCandidateSectionMarks.pending, (state) => {
             state.loading = true
         })
         .addCase(fetchCandidateSectionMarks.fulfilled, (state,action) => {
             state.loading = false
             state.section_marks = action.payload['data']
+            state.candidatesUpdated = false
             state.error = ''
         })
         .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
             state.loading = false
             state.section_marks = []
             state.error = action.error.message
+            state.candidatesUpdated = false
             console.log("All candidates' Section marks fetch unsuccessful!")
         })
         .addCase(filterCandidates.pending, (state) => {
@@ -245,11 +250,6 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = action.error.message
             console.log("Candidates not filtered!")
-        })
-        .addCase(updateCandidateRoundStatus.fulfilled, (state,action) => {
-            state.candidate_list.forEach(candidateRound => {
-                if(candidateRound['id']===action.payload['id']) candidateRound['status']=action.payload['status']
-            })
         })
         .addCase(filterCandidatesForCheckingMode.pending, (state) => {
             state.loading = true
@@ -268,4 +268,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList, updateCandidateList, updateSectionMarks, updateCandidateListStatus } = seasonRoundContentSlice.actions

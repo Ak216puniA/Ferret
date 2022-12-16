@@ -60,6 +60,7 @@ function FilterDrawer() {
         for(let i=0 ; i<categories.length ; i++){
             document.getElementsByClassName('filterCategoryButton')[i].style.backgroundColor = '#F5B041'
         }
+        dispatch(switchCheckingMode(false))
     }
 
     let categories = localStorage.getItem('year')>2 ? 
@@ -95,10 +96,9 @@ function FilterDrawer() {
             /> : 
             <></>
             return (
-                <>
+                <div key={category}>
                     {filterCategoryDivider}
-                    <ListItem
-                    key={category}  
+                    <ListItem 
                     disablePadding
                     >
                     <ListItemButton
@@ -113,7 +113,7 @@ function FilterDrawer() {
                         />
                     </ListItemButton>
                     </ListItem>
-                </>
+                </div>
             )
         })
     )

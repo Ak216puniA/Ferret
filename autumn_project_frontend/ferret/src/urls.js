@@ -23,6 +23,12 @@ export const CSV = `${BACKEND_BASE_URL}api/csv/`
 export const FILTER_CANDIDATES = `${BACKEND_BASE_URL}api/filter_candidates/`
 export const INTERVIEW_PANEL = `${BACKEND_BASE_URL}interview_panel/`
 
+export const BACKEND_WEBSOCKET_BASE_URL = 'ws://localhost:8000/'
+export const SEASON_ROUNDS_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/season_rounds/`
+export const INTERVIEW_PANELS_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/interview_panels/`
+export const CANDIDATE_QUESTION_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/candidate_question/`
+export const CANDIDATE_ROUND_WEBSOCKET = `${BACKEND_WEBSOCKET_BASE_URL}ws/candidate_round/`
+
 
 // Frontend URLs
 

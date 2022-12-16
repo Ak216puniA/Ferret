@@ -12,7 +12,8 @@ import { resetSeasonRoundContentState } from "../../features/seasonRoundContent/
 import { resetQuestionsState } from "../../features/question/questionSlice";
 import { resetInterviewPanelState } from "../../features/interviewPanel/interviewPanelSlice";
 
-function NavigationBar() {
+function NavigationBar(props) {
+    const { ws } = props
     const {season_id} = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -31,12 +32,14 @@ function NavigationBar() {
     }
 
     const homeClickHandler = () => {
+        if(localStorage.getItem('page')!=='home' && ws!=null) ws.current.close()
         resetSeasonDashboardState()
         dispatch(resetInterviewPanelState())
         routeChange('home')
     }
 
     const interviewPanelClickHandler = () => {
+        if(localStorage.getItem('page')!=='interviewPanel' && ws!=null) ws.current.close()
         resetSeasonDashboardState()
         const address = season_id>0 ? `season/${season_id}/interview_panels` : 'season/0/interview_panels'
         routeChange(address)
