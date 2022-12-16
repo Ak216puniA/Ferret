@@ -69,24 +69,24 @@ export const fetchQuestionWiseCandidateSectionMarks = createAsyncThunk('candidat
     })
 })
 
-export const updateCandidateQuestionMarks = createAsyncThunk('candidateModal/updateCandidateQuestionMarks', (candidateQuestionData) => {
-    return axios
-    .patch(
-        `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
-        {
-            marks: candidateQuestionData['marks'],
-        },
-        {
-            headers: {
-                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
-            },
-            withCredentials:true
-        },
-    )
-    .then((response) => {
-        return response.data
-    })
-})
+// export const updateCandidateQuestionMarks = createAsyncThunk('candidateModal/updateCandidateQuestionMarks', (candidateQuestionData) => {
+//     return axios
+//     .patch(
+//         `${CANDIDATE_MARKS}${candidateQuestionData['id']}/`,
+//         {
+//             marks: candidateQuestionData['marks'],
+//         },
+//         {
+//             headers: {
+//                 "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+//             },
+//             withCredentials:true
+//         },
+//     )
+//     .then((response) => {
+//         return response.data
+//     })
+// })
 
 export const updateCandidateQuestionStatus = createAsyncThunk('candidateModal/updateCandidateQuestionStatus', (candidateQuestionData) => {
     return axios
@@ -231,6 +231,9 @@ const candidateModalSlice = createSlice({
         switchCheckingMode: (state,action) => {
             state.checkingMode = action.payload
         },
+        updateCandidateModalSectionMarks: (state,action) => {
+            state.candidate_section_marks = action.payload
+        },
         resetCandidateModalState: (state) => {
             state.loading = false
             state.error = ''
@@ -283,18 +286,18 @@ const candidateModalSlice = createSlice({
             state.error = action.error.message
             state.candidate_question_data = []
         })
-        .addCase(updateCandidateQuestionMarks.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
-            state.loading = false
-            state.error = ''
-        })
-        .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Candidate question's marks update unsucessful!")
-        })
+        // .addCase(updateCandidateQuestionMarks.pending, (state) => {
+        //     state.loading = true
+        // })
+        // .addCase(updateCandidateQuestionMarks.fulfilled, (state) => {
+        //     state.loading = false
+        //     state.error = ''
+        // })
+        // .addCase(updateCandidateQuestionMarks.rejected, (state,action) => {
+        //     state.loading = false
+        //     state.error = action.error.message
+        //     console.log("Candidate question's marks update unsucessful!")
+        // })
         .addCase(updateCandidateQuestionStatus.pending, (state) => {
             state.loading = true
         })
@@ -393,4 +396,4 @@ const candidateModalSlice = createSlice({
 })
 
 export default candidateModalSlice.reducer
-export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode } = candidateModalSlice.actions
+export const { openCandidateModal, selectSection, resetCandidateModalState, updatedCandidateSectionQuestionList, openDeleteCofirmationDialog, updateCandidateModalCandidateRoundStatus, updatedCandidateRoundStatus, switchCheckingMode, updateCandidateModalSectionMarks } = candidateModalSlice.actions

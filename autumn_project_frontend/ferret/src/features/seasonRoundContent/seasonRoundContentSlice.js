@@ -66,7 +66,6 @@ export const fetchCandidateSectionMarks = createAsyncThunk('seasonRoundContent/f
         }
     )
     .then((response) => {
-        console.log(response.data)
         return response.data
     })
 })
@@ -157,6 +156,14 @@ const seasonRoundContentSlice = createSlice({
                     }
                     return keep
                 })
+            }
+        },
+        updateSectionMarks: (state,action) => {
+            for(let i=0; i<state.section_marks.length; i++){
+                if(state.section_marks[i][0]===action.payload['section_marks'][0]){
+                    state.section_marks[i] = action.payload['section_marks']
+                    i = state.section_marks.length
+                }
             }
         },
         resetMoveCandidatesList: (state) => {
@@ -259,4 +266,4 @@ const seasonRoundContentSlice = createSlice({
 })
 
 export default seasonRoundContentSlice.reducer
-export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList, updateCandidateList } = seasonRoundContentSlice.actions
+export const { fetchCSV, unfetchCSV, resetCSVUpload, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, closeMoveCandidatesDialog, resetSeasonRoundContentState, resetMoveCandidatesList, updateCandidateList, updateSectionMarks } = seasonRoundContentSlice.actions

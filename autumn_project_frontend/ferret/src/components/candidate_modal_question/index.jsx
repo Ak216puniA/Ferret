@@ -1,15 +1,13 @@
 import { Divider, TextField } from '@mui/material'
-import React from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IoMdDoneAll } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSelectedCandidateSectionMarks, openDeleteCofirmationDialog, updateCandidateQuestionMarks, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
+import { openDeleteCofirmationDialog, updateCandidateQuestionStatus } from '../../features/candidateModal/candidateModalSlice'
 import './index.css'
 
 function CandidateModalQuestion(props) {
-    const {question,index} = props
+    const {question,index,wsSectionMarks} = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -36,18 +34,26 @@ function CandidateModalQuestion(props) {
 
     const marksChangeHandler = (event) => {
         setQuestionMarks(event.target.value)
-        dispatch(
-            updateCandidateQuestionMarks({
+        wsSectionMarks.current.send(
+            JSON.stringify({
                 id: question['id'],
-                marks: event.target.value
+                marks: event.target.value==='' ? 0 : parseInt(event.target.value),
+                section_list: roundTabState.current_sections.map(section => section['id']),
+                round_id: roundTabState.currentTabId
             })
         )
-        dispatch(
-            fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidateModalState.candidate_id],
-                section_list: roundTabState.current_sections.map(section => section['id'])
-            })
-        )
+        // dispatch(
+        //     updateCandidateQuestionMarks({
+        //         id: question['id'],
+        //         marks: event.target.value
+        //     })
+        // )
+        // dispatch(
+        //     fetchSelectedCandidateSectionMarks({
+        //         candidate_list: [candidateModalState.candidate_id],
+        //         section_list: roundTabState.current_sections.map(section => section['id'])
+        //     })
+        // )
     }
 
     const markQuestionChecked = () => {

@@ -1,8 +1,9 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from .serializers import MoveCandidateListSerializer, CandidateRoundNestedSerializer
+from .serializers import MoveCandidateListSerializer, CandidateRoundNestedSerializer, CandidateMarksNestedSerializer
 from .models import *
 from .utilities.candidate_round_update import create_candidate_round, update_previous_candidate_round_status, delete_candidate_round
 from channels.db import database_sync_to_async
+from django.core.exceptions import ObjectDoesNotExist
 
 @database_sync_to_async
 def move_candidates_to_further_round(move_data):
@@ -49,6 +50,29 @@ def update_panel_status(panel_data):
     panel.status = panel_data['status']
     panel.save()
     return panel_data
+
+@database_sync_to_async
+def update_candidate_marks(candidate_marks_data):
+    try:
+        candidate_marks = CandidateMarks.objects.get(id=candidate_marks_data['id'])
+    except ObjectDoesNotExist:
+        return None
+    else:
+        candidate_marks.marks = candidate_marks_data['marks']
+        candidate_marks.save()
+        serializer = CandidateMarksNestedSerializer(candidate_marks)
+        return serializer.data
+
+@database_sync_to_async
+def get_candidate_section_marks(candidate_section_data):
+    candidate_section_marks = [candidate_section_data['candidate_id']]
+    for section_id in candidate_section_data['section_list']:
+        section_marks=0
+        candidate_section_questions = CandidateMarks.objects.filter(question_id__section_id=section_id, candidate_id=candidate_section_data['candidate_id'])
+        for candidate_question in candidate_section_questions:
+            section_marks+=candidate_question.marks
+        candidate_section_marks.append(section_marks)
+    return candidate_section_marks
 
 class AsyncSeasonRoundsConsumer(AsyncJsonWebsocketConsumer):
     
@@ -143,6 +167,11 @@ class AsyncInterviewPanelsConsumer(AsyncJsonWebsocketConsumer):
         await self.close()
 
 class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
+
+    async def marks_updated(self,event):
+        updated_data = event['message']
+        await self.send_json(updated_data)
+    
     async def connect(self):
         print("SECTION MARKS.........................")
         self.group_name = 'section_marks_'+str(self.scope['url_route']['kwargs']['pk'])
@@ -154,6 +183,29 @@ class AsyncSectionMarksConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
         print(content)
+
+        candidate_marks = await update_candidate_marks(content)
+        if candidate_marks is not None:
+            candidate_section_data = {
+                'candidate_id': candidate_marks['candidate_id']['id'],
+                'section_list': content['section_list']
+            }
+            candidate_section_marks = await get_candidate_section_marks(candidate_section_data)
+            response_data = {
+                'candidate_marks': candidate_marks,
+                'section_marks': candidate_section_marks,
+                'round_id': content['round_id']
+            }
+        else:
+            response_data = []
+
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'marks.updated',
+                'message': response_data
+            }
+        )
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(

@@ -12,7 +12,8 @@ import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 
-function CandidateInterviewModal() {
+function CandidateInterviewModal(props) {
+    const { wsSectionMarks } = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -113,7 +114,7 @@ function CandidateInterviewModal() {
     candidateRoundStatusOptionsForJuniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
-    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
+    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index} wsSectionMarks={wsSectionMarks}/>) :
     []
 
     let addNewQuestionOption = candidateModalState.section_name!=='' ? 

@@ -1,19 +1,19 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
+import { fetchCSV, uploadCSV, appendCandidateToMove, removeCandidateFromMove, openMoveCandidatesDialog, fetchCandidateSectionMarks, updateSectionMarks } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import { Checkbox, Button } from "@mui/material"
 import './index.css';
 import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalSectionMarks } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
 import CandidateTestModal from "../candidate_test_modal";
-import { SEASON_ROUNDS_WEBSOCKET, SECTION_MARKS_WEBSOCKET } from "../../urls";
+import { SECTION_MARKS_WEBSOCKET } from "../../urls";
 
 function RoundTableRow(props){
     const {candidate, status, index, candidateRoundId} = props
@@ -108,6 +108,7 @@ function RoundContent(props) {
     const { s_id, wsSeasonRounds } = props
     const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
+    const candidateModalState = useSelector((state) => state.candidateModal)
     const dispatch = useDispatch()
     let wsSectionMarks = useRef('')
 
@@ -118,6 +119,11 @@ function RoundContent(props) {
         wsSectionMarks.current.onmessage = (event) => {
             const sectionMarksData = JSON.parse(event.data)
             console.log(sectionMarksData)
+            dispatch(updateSectionMarks(sectionMarksData))
+            const candidate_id = sectionMarksData['candidate_marks']['candidate_id']['id']
+            if(sectionMarksData['round_id']===roundTabState.currentTabId && candidate_id===candidateModalState.candidate_id) {
+                dispatch(updateCandidateModalSectionMarks(sectionMarksData['section_marks']))
+            }
         }
         wsSectionMarks.current.onerror = (event) => {
             console.log("Error in websocket connection!")

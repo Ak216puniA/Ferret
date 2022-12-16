@@ -4,13 +4,13 @@ import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, resetCandidateModalState, selectSection, updateCandidateModalCandidateRoundStatus, updateCandidateRoundStatus, updatedCandidateRoundStatus } from '../../features/candidateModal/candidateModalSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
-import { fetchCurrentSectionsTotalMarks } from '../../features/roundTab/roundTabSlice'
 import CandidateModalQuestion from '../candidate_modal_question'
 import './index.css';
 
-function CandidateTestModal() {
+function CandidateTestModal(props) {
+    const { wsSectionMarks } = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
@@ -87,7 +87,7 @@ function CandidateTestModal() {
     const candidateRoundStatusMenuItems = candidateRoundStatusOptionsForSeniorYear.map(status => <MenuItem key={status[0]} value={status[0]}>{status[1]}</MenuItem>)
 
     let sectionQuestionData = candidateModalState.candidate_question_data.length>0 ?
-    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index}/>) :
+    candidateModalState.candidate_question_data.map((question,index) => <CandidateModalQuestion key={question['id']} question={question} index={index} wsSectionMarks={wsSectionMarks}/>) :
     []
 
     const yearWiseSectionCards = localStorage.getItem('year')>2 && candidateModalState.checkingMode!==true?
@@ -216,34 +216,6 @@ function CandidateTestModal() {
                 <Box
                 sx={flexBoxColumn}
                 >
-                    {/* <div className='candidateModalContentDiv'>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Email:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Year:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Contact No.:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>CG:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
-                        </div>
-                    </div>
-                    {yearWiseSectionCards}
-                    {yearWiseCandidateRoundStatus}
-                    <Divider 
-                    style={{
-                        width:'100%', 
-                        backgroundColor: '#00BCC5',
-                        margin: '8px 0px'
-                    }}
-                    />
-                    {yearWiseSectionDesc} */}
                     {dialogContent}
                 </Box>
             </DialogContent>
