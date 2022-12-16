@@ -21,7 +21,8 @@ export const createQuestion = createAsyncThunk('question/createQuestion', (quest
             section_id: questionData['section_id'],
             text: questionData['questionText'],
             marks: questionData['questionMarks'],
-            assignee: questionData['questionAssignee']
+            assignee: questionData['questionAssignee'],
+            candidate_id: null
         },
         {
             headers: {

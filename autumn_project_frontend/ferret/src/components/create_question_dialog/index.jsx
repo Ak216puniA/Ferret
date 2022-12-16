@@ -6,11 +6,13 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { closeCreateQuestionDialog, createQuestion } from "../../features/question/questionSlice";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
+import { createCandidateInterviewQuestion } from "../../features/candidateModal/candidateModalSlice";
 
 function CreateQuestionDialog(props) {
     const { section_id } = props
     const questionState = useSelector((state) => state.question.open)
     const userState = useSelector((state) => state.user)
+    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const [questionText, setQuestionText] = useState('')
@@ -18,19 +20,21 @@ function CreateQuestionDialog(props) {
     const [questionMarks, setQuestionMarks] = useState('')
 
     let assignee_list = userState.users.length>0 ?
-    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
+    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['name']} - {user['username']}</MenuItem>) : 
     []
 
     const createNewQuestion = () => {
-        localStorage.setItem('openQuestions',false)
-        dispatch(
-            createQuestion({
-                section_id:section_id,
-                questionText:questionText,
-                questionMarks:questionMarks,
-                questionAssignee:questionAssignee
-            })
-        )
+        // localStorage.setItem('openQuestions',false)
+        if(questionText!==''){
+            dispatch(
+                createQuestion({
+                    section_id: section_id,
+                    questionText: questionText,
+                    questionMarks: parseInt(questionMarks),
+                    questionAssignee: questionAssignee
+                })
+            )
+        } 
     }
 
     const textChangeHandler = (e) => {
