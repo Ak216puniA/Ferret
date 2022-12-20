@@ -6,13 +6,11 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { closeCreateQuestionDialog, createQuestion } from "../../features/question/questionSlice";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
-import { createCandidateInterviewQuestion } from "../../features/candidateModal/candidateModalSlice";
 
 function CreateQuestionDialog(props) {
     const { section_id } = props
     const questionState = useSelector((state) => state.question.open)
     const userState = useSelector((state) => state.user)
-    const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
 
     const [questionText, setQuestionText] = useState('')
@@ -57,7 +55,7 @@ function CreateQuestionDialog(props) {
         PaperProps={{ sx: { width: "40%" } }}
         >
             <div className='crossDiv' onClick={() => dispatch(closeCreateQuestionDialog())}><GrClose size={12}/></div>
-            <DialogTitle>Create New Recruitment Season</DialogTitle>
+            <DialogTitle>Create New Question</DialogTitle>
             <DialogContent>
                 <form id='createSeasonForm' onSubmit={() => dispatch()}>
                     <div className='fieldsDiv'>
