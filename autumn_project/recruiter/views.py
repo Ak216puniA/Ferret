@@ -117,14 +117,8 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
     def create(self, request):
         section = Sections.objects.get(id=request.data['section_id'])
         round = Rounds.objects.get(id=section.round_id.id)
-        if round.type=='test':
-            question_id = create_question(request.data)
-            data = {
-                'round_id':round.id,
-                'question_id':question_id
-            }
-            create_test_candidate_marks_with_question(data)
-        if round.type=='interview':
+
+        if request.data['candidate_id'] is not None:
             question_data = {
                 'section_id': request.data['section_id'],
                 'text': request.data['text'],
@@ -132,7 +126,7 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
                 'assignee': None
             }
             question_id = create_question(question_data)
-            
+
             data = {
                 'candidate_id': request.data['candidate_id'],
                 'question_id': question_id,
@@ -140,6 +134,14 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
                 'remarks': request.data['remarks']
             }
             create_interview_candidate_marks_with_question(data)
+        else:
+            question_id = create_question(request.data)
+            if round.type=='test':
+                data = {
+                    'round_id':round.id,
+                    'question_id':question_id
+                }
+                create_test_candidate_marks_with_question(data)
 
         response_data = {
             'status': 'success'

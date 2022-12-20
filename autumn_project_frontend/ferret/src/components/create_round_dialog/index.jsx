@@ -59,7 +59,7 @@ function CreateRoundDialog(props) {
                         </div>
                         <div className='field'>
                             <FormControl fullWidth>
-                                <InputLabel id='type'>Season Type</InputLabel>
+                                <InputLabel id='type'>Round Type</InputLabel>
                                 <Select 
                                 required 
                                 labelId='type' 

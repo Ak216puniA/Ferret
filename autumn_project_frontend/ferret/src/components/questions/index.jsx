@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropleft } from "react-icons/io"
-import { updateQuestion, openCreateQuestionDialog, openQuestionDeleteConfirmationDialog, deleteQuestion, fetchQuestions, updatedQuestionList } from "../../features/question/questionSlice";
+import { updateQuestion, openCreateQuestionDialog, openQuestionDeleteConfirmationDialog, deleteQuestion, fetchQuestions, updatedQuestionList, resetQuestionsState } from "../../features/question/questionSlice";
 import { TextField, MenuItem, Select } from "@mui/material";
 import CreateQuestionDialog from "../create_question_dialog";
 import './index.css';
@@ -17,11 +17,12 @@ import { useEffect } from "react";
 function QuestionSegment(props) {
     const { question, index } = props
     const userState = useSelector((state) => state.user)
-    const roundTabState = useSelector((state) => state.roundTab)
+    // const roundTabState = useSelector((state) => state.roundTab)
+    const roundState = useSelector((state) => state.round)
     const dispatch = useDispatch()
 
     const [questionMarks, setQuestionMarks] = useState(question['marks'])
-    const [questionAssignee, setQuestionAssignee] = useState(question['assignee']!=null ? question['assignee']['username'] : '')
+    const [questionAssignee, setQuestionAssignee] = useState(question['assignee']!=null ? `${question['assignee']['name']} (${question['assignee']['username']})` : '')
     const [questionEdit, setQuestionEdit] = useState(false)
 
     const editClickhandler = () => {
@@ -57,14 +58,16 @@ function QuestionSegment(props) {
     }
 
     let assignee_list = userState.users.length>0 ?
-    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
+    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['name']} ({user['username']})</MenuItem>) : 
     []
 
-    let questionAssigneeComponent = roundTabState.currentTabType==='test' ?
+    // let questionAssigneeComponent = roundTabState.currentTabType==='test' ?
+    let questionAssigneeComponent = roundState.round['type']==='test' ?
     <div className="questionAssignee">Assignee: {questionAssignee}</div> :
     <></>
 
-    let questionAssigneeEditComponent = roundTabState.currentTabType==='test' ?
+    // let questionAssigneeEditComponent = roundTabState.currentTabType==='test' ?
+    let questionAssigneeEditComponent = roundState.round['type']==='test' ?
     <div className="editQuestionField">
         <div className="questionMarks">{`Assignee: `}</div>
         <Select 
@@ -133,7 +136,6 @@ function QuestionSegment(props) {
             <div className="editQuestionDiv">
                 <div className="questionNumberDiv">
                     <div className="questionNumber">Q.{index}</div>
-                    {/* <div className='candidateModalQuestionDeleteIconDiv' onClick={questionDeleteHandler}><MdDelete color='#C0392B' size={18} /></div> */}
                     {yearWiseDeleteButton}
                 </div>
                 <div>
@@ -160,6 +162,7 @@ function QuestionsContent() {
     const routeChange = () => {
         localStorage.setItem('questions','close')
         dispatch(resetSectionTabState())
+        dispatch(resetQuestionsState())
         const url = `/season/${season_id}`
         navigate(url)
     }

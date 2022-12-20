@@ -9,10 +9,11 @@ import { useState } from "react";
 function CreateSectionDialog(props) {
     const { round_id } = props
     const sectionTabState = useSelector((state) => state.sectionTab)
+    const roundState = useSelector((state) => state.round)
     const dispatch = useDispatch()
 
     const [sectionName, setSectionName] = useState('')
-    const [sectionWeightage, setSectionWeightage] = useState(0)
+    const [sectionWeightage, setSectionWeightage] = useState(1)
 
     const nameChangeHandler = (e) => {
         setSectionName(e.target.value)
@@ -31,6 +32,22 @@ function CreateSectionDialog(props) {
             })
         )
     }
+
+    const roundTypeWiseSectionWeightageField = roundState.round['type']==='test' ?
+    <div className='field'>
+        <TextField 
+        required 
+        label='Section Weightage' 
+        type='number' 
+        value={sectionWeightage}
+        placeholder='Section Weightage' 
+        variant='outlined'
+        InputProps={{ inputProps: { min: 0 } }}
+        fullWidth
+        onChange={weightageChangeHandler}
+        />
+    </div> :
+    <></>
 
     return (
         <Dialog 
@@ -55,7 +72,7 @@ function CreateSectionDialog(props) {
                             onChange={nameChangeHandler}
                             />
                         </div>
-                        <div className='field'>
+                        {/* <div className='field'>
                             <TextField 
                             required 
                             label='Section Weightage' 
@@ -67,7 +84,8 @@ function CreateSectionDialog(props) {
                             fullWidth
                             onChange={weightageChangeHandler}
                             />
-                        </div>
+                        </div> */}
+                        {roundTypeWiseSectionWeightageField}
                     </div>
                 </form>
             </DialogContent>

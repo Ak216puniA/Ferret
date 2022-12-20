@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { SEASONS_BY_TYPE } from '../../urls'
+import { SEASONS } from '../../urls'
 import Cookies from 'js-cookie';
 
 const initialState = {
@@ -9,12 +9,14 @@ const initialState = {
     season_list : [],
     error : '',
     open : false,
+    openConfirmationDialog: false,
+    endSeasonId: 0
 }
 
 export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) => {
     return axios
     .get(
-        `${SEASONS_BY_TYPE}?season_type=${season_type}`,
+        `${SEASONS}?season_type=${season_type}`,
         {
             withCredentials: true
         }
@@ -31,7 +33,7 @@ export const listSeasons = createAsyncThunk('season/listSeasons', (season_type) 
 export const createSeason = createAsyncThunk('season/createSeason', (seasonData) => {
     return axios
     .post(
-        `${SEASONS_BY_TYPE}`,
+        `${SEASONS}`,
         {
             name: seasonData['year'],
             end: null,
@@ -52,6 +54,25 @@ export const createSeason = createAsyncThunk('season/createSeason', (seasonData)
     .catch((error) =>  alert("Cannot create new season! \n"+error.message))
 })
 
+export const endSeason = createAsyncThunk('season/endSeason', (seasonData) => {
+    return axios
+    .patch(
+        `${SEASONS}${seasonData['seasonId']}/`,
+        {
+            end: seasonData['end']
+        },
+        {
+            headers: {
+                "X-CSRFToken":Cookies.get('ferret_csrftoken'),
+            },
+            withCredentials:true
+        },
+    )
+    .then((response) => {
+        return response.data
+    })
+})
+
 const seasonSlice = createSlice({
     name : 'season',
     initialState,
@@ -61,7 +82,11 @@ const seasonSlice = createSlice({
         },
         closeCreateSeasonDialog: (state) => {
             state.open = false
-        }
+        },
+        openEndSeasonConfirmationDialog: (state,action) => {
+            state.openConfirmationDialog = action.payload['open']
+            state.endSeasonId = action.payload['seasonId']
+        },
     },
     extraReducers: builder => {
         builder
@@ -87,14 +112,35 @@ const seasonSlice = createSlice({
             state.error = ''
             state.new_year = 0
             state.new_type = ''
-            // console.log("Created new season")
         })
         .addCase(createSeason.rejected, (state,action) => {
             state.loading = false
             state.error = action.error.message
         })
+        .addCase(endSeason.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(endSeason.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            for(let i=0; i<state.season_list.length; i++){
+                if(state.season_list[i]['id']===action.payload['id']){
+                    state.season_list[i]['end'] = action.payload['end']
+                    i = state.season_list.length
+                }
+            }
+            state.openConfirmationDialog = false
+            state.endSeasonId = 0
+        })
+        .addCase(endSeason.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.openConfirmationDialog = false
+            state.endSeasonId = 0
+            console.log("End season patch unsuccessful!")
+        })
     }
 })
 
 export default seasonSlice.reducer
-export const {openCreateSeasonDialog,closeCreateSeasonDialog,handleChangeNewYear,handleChangeNewType} = seasonSlice.actions
+export const {openCreateSeasonDialog,closeCreateSeasonDialog,openEndSeasonConfirmationDialog} = seasonSlice.actions

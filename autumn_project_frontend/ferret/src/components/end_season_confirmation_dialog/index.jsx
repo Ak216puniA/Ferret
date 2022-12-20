@@ -2,7 +2,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import React from 'react'
 import './index.css'
 
-function DeleteConfirmationDialog(props){
+function EndSeasonConfirmationDialog(props) {
     const { open, dialogCloseHandler, agreeActionClickHandler } = props
 
     return (
@@ -11,19 +11,19 @@ function DeleteConfirmationDialog(props){
         onClose={dialogCloseHandler}
         >
             <DialogTitle>
-                Delete item?
+                End Season?
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Item will be deleted forever without any possible recovery.
+                    Once season has ended, you won't be able to alter the end date.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <button onClick={dialogCloseHandler} className='blueDialogActionButton'>Cancel</button>
-                <button onClick={agreeActionClickHandler} autoFocus className='redDialogActionButton'>Delete</button>
+                <button onClick={agreeActionClickHandler} autoFocus className='redDialogActionButton'>End</button>
             </DialogActions>
         </Dialog>
     )
 }
 
-export default DeleteConfirmationDialog
+export default EndSeasonConfirmationDialog

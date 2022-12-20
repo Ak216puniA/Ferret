@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SEASONS_BY_TYPE } from "../../urls"
+import { SEASONS } from "../../urls"
 
 const initialState = {
     loading: false,
@@ -14,7 +14,7 @@ const initialState = {
 export const fetchCurrentSeason = createAsyncThunk('seasonSubHeader/fetchCurrentSeason', (season_id) => {
     return axios
     .get(
-        `${SEASONS_BY_TYPE}?season_id=${season_id}`,
+        `${SEASONS}?season_id=${season_id}`,
         {
             withCredentials: true
         }

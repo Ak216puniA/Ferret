@@ -110,3 +110,14 @@
 .createSeasonButton:hover{
     background-color: #F7A624;
 }
+
+.homeContentEndSeasonButton{
+    border: None;
+    border-radius: 4px;
+    background-color: #00ADB5;
+    padding: 4px 8px;
+}
+
+.homeContentEndSeasonButton:hover{
+    background-color: #0099A0;
+}

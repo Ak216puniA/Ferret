@@ -18,19 +18,21 @@ function CreateQuestionDialog(props) {
     const [questionMarks, setQuestionMarks] = useState('')
 
     let assignee_list = userState.users.length>0 ?
-    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['username']}</MenuItem>) : 
+    userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['name']} - {user['username']}</MenuItem>) : 
     []
 
     const createNewQuestion = () => {
-        localStorage.setItem('openQuestions',false)
-        dispatch(
-            createQuestion({
-                section_id:section_id,
-                questionText:questionText,
-                questionMarks:questionMarks,
-                questionAssignee:questionAssignee
-            })
-        )
+        // localStorage.setItem('openQuestions',false)
+        if(questionText!==''){
+            dispatch(
+                createQuestion({
+                    section_id: section_id,
+                    questionText: questionText,
+                    questionMarks: parseInt(questionMarks),
+                    questionAssignee: questionAssignee
+                })
+            )
+        } 
     }
 
     const textChangeHandler = (e) => {
@@ -53,7 +55,7 @@ function CreateQuestionDialog(props) {
         PaperProps={{ sx: { width: "40%" } }}
         >
             <div className='crossDiv' onClick={() => dispatch(closeCreateQuestionDialog())}><GrClose size={12}/></div>
-            <DialogTitle>Create New Recruitment Season</DialogTitle>
+            <DialogTitle>Create New Question</DialogTitle>
             <DialogContent>
                 <form id='createSeasonForm' onSubmit={() => dispatch()}>
                     <div className='fieldsDiv'>
