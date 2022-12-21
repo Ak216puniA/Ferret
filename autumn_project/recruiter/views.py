@@ -148,10 +148,10 @@ class QuestionsModelViewSet(viewsets.ModelViewSet):
         }
         return Response(response_data,status.HTTP_201_CREATED)
 
-    def destroy(self, request, pk=None):
-        delete_question(pk)
-        delete_question_for_all_candidates(pk)
-        return Response({'status':'success'},status.HTTP_200_OK)
+    # def destroy(self, request, pk=None):
+    #     delete_question(pk)
+    #     delete_question_for_all_candidates(pk)
+    #     return Response({'status':'success'},status.HTTP_200_OK)
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
@@ -380,7 +380,38 @@ class UploadCSV(APIView):
         return Response(response_data,status.HTTP_201_CREATED)
 
 class SectionMarksView(APIView):
-    def post(self, request, format=None):
+    def get(self, request):
+        candidate_id = request.query_params.get('candidate_id')
+        response_data = []
+        rounds = Rounds.objects.filter(season_id=request.query_params.get('season_id'))
+        round_info = []
+        for round in rounds:
+            candidate_round = CandidateRound.objects.get(candidate_id=candidate_id, round_id=round.id)
+            candidate_round_serializer = CandidateRoundOnlyRoundSerializer(candidate_round)
+            candidate_round_data = {
+                'candidate_id': candidate_id,
+                'round_id': round.id
+            }
+            round_total_marks = get_candidate_total_marks(candidate_round_data)
+            round_info.append([candidate_round_serializer.data, round_total_marks[1]])
+            sections = Sections.objects.filter(round_id=round.id)
+            candidate_section_data = {
+                'candidate_id': candidate_id,
+                'section_list': [section.id for section in sections]
+            }
+            candidate_section_wise_marks = get_candidate_section_marks(candidate_section_data)
+
+            index=1
+            for section in sections:
+                round_info.append([section.name, candidate_section_wise_marks[index]])
+                index+=1
+
+            response_data.append(round_info)
+            round_info = []
+
+        return Response(response_data)
+
+    def post(self, request):
         candidate_list = request.data['candidate_list']
         section_list = request.data['section_list']
         candidate_section_marks_list = []
@@ -391,6 +422,10 @@ class SectionMarksView(APIView):
                     'section_list': section_list
                 }
                 candidate_section_marks = get_candidate_section_marks(candidate_section_data)
+                # total_marks=0
+                # for index in range(1,len(candidate_section_marks),1):
+                #     total_marks+=candidate_section_marks[index]
+                # candidate_section_marks.append(total_marks)
                 candidate_section_marks_list.append(candidate_section_marks)
         
         response_data={
@@ -400,8 +435,8 @@ class SectionMarksView(APIView):
 
         return Response(response_data)
 
-class CandidateSectionMarks(APIView):
-    def get(self, request, format=None):
+class CandidateSectionView(APIView):
+    def get(self, request):
         candidate_section_data = {
             'candidate_id': request.query_params.get('candidate_id'),
             'section_id': request.query_params.get('section_id'),
@@ -410,7 +445,7 @@ class CandidateSectionMarks(APIView):
         question_data = get_candidate_question_data(candidate_section_data)
         return Response(question_data)
 
-    def post(self, request, format=None):
+    def post(self, request):
         section_total_marks = get_interview_candidate_all_section_total_marks(request.data)
         response_data = {
             'status':'success',

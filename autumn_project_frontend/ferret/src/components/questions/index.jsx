@@ -17,7 +17,6 @@ import { useEffect } from "react";
 function QuestionSegment(props) {
     const { question, index } = props
     const userState = useSelector((state) => state.user)
-    // const roundTabState = useSelector((state) => state.roundTab)
     const roundState = useSelector((state) => state.round)
     const dispatch = useDispatch()
 
@@ -61,12 +60,10 @@ function QuestionSegment(props) {
     userState.users.map(user => <MenuItem key={user['id']} value={user['id']}>{user['name']} ({user['username']})</MenuItem>) : 
     []
 
-    // let questionAssigneeComponent = roundTabState.currentTabType==='test' ?
     let questionAssigneeComponent = roundState.round['type']==='test' ?
     <div className="questionAssignee">Assignee: {questionAssignee}</div> :
     <></>
 
-    // let questionAssigneeEditComponent = roundTabState.currentTabType==='test' ?
     let questionAssigneeEditComponent = roundState.round['type']==='test' ?
     <div className="editQuestionField">
         <div className="questionMarks">{`Assignee: `}</div>

@@ -40,7 +40,7 @@ function CreateRoundDialog(props) {
         className='dialog'
         >
             <div className='crossDiv' onClick={() => dispatch(closeCreateRoundDialog())}><GrClose size={12}/></div>
-            <DialogTitle>Create New Recruitment Season</DialogTitle>
+            <DialogTitle>Create New Round</DialogTitle>
             <DialogContent>
                 <form id='createSeasonForm' onSubmit={() => dispatch()}>
                     <div className='fieldsDiv'>

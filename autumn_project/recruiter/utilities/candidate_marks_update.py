@@ -67,10 +67,19 @@ def get_candidate_section_marks(candidate_section_data):
 
 def get_candidate_total_marks(candidate_round_data):
     candidate_total_marks = [candidate_round_data['candidate_id']]
-    candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=candidate_round_data['round_id'], candidate_id=candidate_round_data['candidate_id'])
+    # candidate_marks = CandidateMarks.objects.filter(question_id__section_id__round_id=candidate_round_data['round_id'], candidate_id=candidate_round_data['candidate_id'])
+    # total_marks=0
+    # for candidate_question in candidate_marks:
+    #     total_marks+=candidate_question.marks
+    # candidate_total_marks.append(total_marks)
+    # return candidate_total_marks
+
     total_marks=0
-    for question in candidate_marks:
-        total_marks+=question.marks
+    sections = Sections.objects.filter(round_id=candidate_round_data['round_id'])
+    for section in sections:
+        candidate_section_questions = CandidateMarks.objects.filter(question_id__section_id=section.id, candidate_id=candidate_round_data['candidate_id'])
+        for candidate_question in candidate_section_questions:
+            total_marks+= (section.weightage)*(candidate_question.marks)
     candidate_total_marks.append(total_marks)
     return candidate_total_marks
 
@@ -103,8 +112,8 @@ def get_candidate_question_data(candidate_section_data):
         candidate_section_marks.append(question_data)
     return candidate_section_marks
 
-def delete_question_for_all_candidates(question_id):
-    candidate_marks = CandidateMarks.objects.filter(question_id=question_id)
-    for candidate in candidate_marks:
-        candidate.delete()
+# def delete_question_for_all_candidates(question_id):
+#     candidate_marks = CandidateMarks.objects.filter(question_id=question_id)
+#     for candidate in candidate_marks:
+#         candidate.delete()
     

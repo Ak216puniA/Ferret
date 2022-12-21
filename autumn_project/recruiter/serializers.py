@@ -153,6 +153,12 @@ class CandidateRoundSerializer(serializers.ModelSerializer):
         model = CandidateRound
         fields = '__all__'
 
+class CandidateRoundOnlyRoundSerializer(serializers.ModelSerializer):
+    round_id = RoundsSerializer()
+    class Meta:
+        model = CandidateRound
+        fields = '__all__'
+
 
 # CandidateProjectLink model serializers
 

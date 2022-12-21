@@ -1,6 +1,6 @@
 from django.urls import path,include
 from .views import *
-from rest_framework.routers import DefaultRouter,SimpleRouter
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
@@ -24,6 +24,6 @@ urlpatterns =[
     path('auth/logout/', LogoutView.as_view()),
     path('api/csv/', UploadCSV.as_view()),
     path('api/section_marks/', SectionMarksView.as_view()),
-    path('api/candidate_section_marks/', CandidateSectionMarks.as_view()),
+    path('api/candidate_section_marks/', CandidateSectionView.as_view()),
     path('api/filter_candidates/', FilterCandidatesView.as_view())
 ]

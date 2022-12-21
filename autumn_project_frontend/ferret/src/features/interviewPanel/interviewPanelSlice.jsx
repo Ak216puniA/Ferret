@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from 'axios'
-import { CANDIDATE_ROUND, INTERVIEW_PANEL } from "../../urls";
+import { CANDIDATE_ROUND, INTERVIEW_PANEL, SECTION_MARKS } from "../../urls";
 import Cookies from "js-cookie";
 import { listRounds } from "../roundTab/roundTabSlice";
 
@@ -16,13 +16,14 @@ const initialState = {
         status: '',
     },
     panelList: [],
-    openAssignModal: false,
     panelRoundList: [],
     panelCandidateList: [],
     openInterviewModal: false,
     openCreatePanelDialog: false,
     openDeleteDialog: false,
-    deletePanelId: 0
+    openAssignModal: false,
+    deletePanelId: 0,
+    candidatePrevRoundInfo: []
 }
 
 export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterviewPanels', (seasonId) => {
@@ -66,18 +67,18 @@ export const updateInInterviewCandidateOptions = createAsyncThunk('interviewPane
     })
 })
 
-export const updatePanelRoundOptions = createAsyncThunk('interviewPanel/updatePanelRoundOptions', (panelRoundData) => {
-    return axios
-    .get(
-        `${CANDIDATE_ROUND}?candidate_id=${panelRoundData['candidateId']}`,
-        {
-            withCredentials: true
-        }
-    )
-    .then((response) => {
-        return response.data
-    })
-})
+// export const updatePanelRoundOptions = createAsyncThunk('interviewPanel/updatePanelRoundOptions', (panelRoundData) => {
+//     return axios
+//     .get(
+//         `${CANDIDATE_ROUND}?candidate_id=${panelRoundData['candidateId']}`,
+//         {
+//             withCredentials: true
+//         }
+//     )
+//     .then((response) => {
+//         return response.data
+//     })
+// })
 
 export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPanel/updateCandidateRoundInterviewPanel', (candidateInterviewData) => {
     return axios
@@ -94,9 +95,7 @@ export const updateCandidateRoundInterviewPanel = createAsyncThunk('interviewPan
             withCredentials:true
         }
     )
-    .then((response) => {
-        return response.data
-    })
+    .then(response => response.data)
 })
 
 export const createInterviewPanel = createAsyncThunk('interviewPanel/createInterviewPanel', (panelData) => {
@@ -116,9 +115,7 @@ export const createInterviewPanel = createAsyncThunk('interviewPanel/createInter
             withCredentials:true
         }
     )
-    .then((response) => {
-        return response.data
-    })
+    .then(response => response.data)
 })
 
 export const deleteInterviewPanel = createAsyncThunk('interviewPanel/deleteInterviewPanel', (panelId) => {
@@ -132,9 +129,18 @@ export const deleteInterviewPanel = createAsyncThunk('interviewPanel/deleteInter
             withCredentials:true
         }
     )
-    .then((response) => {
-        return response.data
-    })
+    .then(response => response.data)
+})
+
+export const fetchCandidateRoundsInfo = createAsyncThunk('interviewPanel/fetchCandidateRoundsInfo', (candidateSeasonData) => {
+    return axios
+    .get(
+        `${SECTION_MARKS}?candidate_id=${candidateSeasonData['candidateId']}&season_id=${candidateSeasonData['seasonId']}`,
+        {
+            withCredentials: true
+        }
+    )
+    .then(response => response.data)
 })
 
 const interviewPanelSlice = createSlice({
@@ -211,19 +217,19 @@ const interviewPanelSlice = createSlice({
             state.error = action.error.message
             console.log('Cannot update panel candidate list by round!')
         })
-        .addCase(updatePanelRoundOptions.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(updatePanelRoundOptions.fulfilled, (state,action) => {
-            state.loading = false
-            state.error = ''
-            state.panelRoundList = action.payload.map(candidateRound => candidateRound['round_id'])
-        })
-        .addCase(updatePanelRoundOptions.rejected, (state,action) => {
-            state.loading = false
-            state.error = action.error.message
-            console.log("Cannot update panel round list by candidate!")
-        })
+        // .addCase(updatePanelRoundOptions.pending, (state) => {
+        //     state.loading = true
+        // })
+        // .addCase(updatePanelRoundOptions.fulfilled, (state,action) => {
+        //     state.loading = false
+        //     state.error = ''
+        //     state.panelRoundList = action.payload.map(candidateRound => candidateRound['round_id'])
+        // })
+        // .addCase(updatePanelRoundOptions.rejected, (state,action) => {
+        //     state.loading = false
+        //     state.error = action.error.message
+        //     console.log("Cannot update panel round list by candidate!")
+        // })
         .addCase(listRounds.fulfilled, (state,action) => {
             state.panelRoundList = action.payload
         })
@@ -279,6 +285,21 @@ const interviewPanelSlice = createSlice({
             state.openDeleteDialog = false
             state.deletePanelId = 0
             console.log("Delete interview panel unsuccessful!")
+        })
+        .addCase(fetchCandidateRoundsInfo.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchCandidateRoundsInfo.fulfilled, (state,action) => {
+            state.loading = false
+            state.error = ''
+            state.candidatePrevRoundInfo = action.payload
+            console.log(state.candidatePrevRoundInfo)
+        })
+        .addCase(fetchCandidateRoundsInfo.rejected, (state,action) => {
+            state.loading = false
+            state.error = action.error.message
+            state.candidatePrevRoundInfo = []
+            console.log("Candidate round info fetch unsuccessful!")
         })
     }
 })

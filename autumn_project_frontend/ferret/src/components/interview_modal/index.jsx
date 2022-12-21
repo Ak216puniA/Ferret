@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openCandidateModal, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
-import { openInterviewModal, updateInInterviewCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
+import { fetchCandidateRoundsInfo, openInterviewModal, updateInInterviewCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks, fetchSections, resetRoundTabState } from '../../features/roundTab/roundTabSlice'
 import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add_question'
@@ -13,7 +13,8 @@ import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 
-function InterviewModal() {
+function InterviewModal(props) {
+    const { seasonId } = props
     const interviewPanelState = useSelector((state) => state.interviewPanel)
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
@@ -44,6 +45,12 @@ function InterviewModal() {
             fetchCurrentSectionsTotalMarks({
                 candidateId: event.target.value['candidate_id']['id'],
                 sectionList: roundTabState.current_sections.map((section) => section['id'])
+            })
+        )
+        dispatch(
+            fetchCandidateRoundsInfo({
+                candidateId: event.target.value['candidate_id']['id'],
+                seasonId: seasonId
             })
         )
         setCandidateSet(true)
