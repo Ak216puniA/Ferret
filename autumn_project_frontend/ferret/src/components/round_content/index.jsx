@@ -92,6 +92,10 @@ function RoundTableRow(props){
     </div> :
     <></>
 
+    const roundTypeWiseTimeSlot = roundTabState.currentTabType==='interview' ?
+    <div className={`roundContentCandidateStatus singleElementRowFlex`}>{candidateRound['time_slot']}</div> :
+    <></>
+
     return (
         <>
         <div className='roundCandidateRow'>
@@ -99,6 +103,7 @@ function RoundTableRow(props){
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
             <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidateRound['candidate_id']['name']}</div>
             <div className={`roundContentCandidateStatus singleElementRowFlex`}>{candidateRound['status']}</div>
+            {roundTypeWiseTimeSlot}
             {candidate_marks}
         </div>
         </>
@@ -272,6 +277,10 @@ function RoundContent(props) {
     <div className={`roundContentCheckbox  singleElementRowFlex`}></div> :
     <></>
 
+    const roundTypeWiseTimeSlotHeading = roundTabState.currentTabType==='interview' ?
+    <div className={`roundContentCandidateStatus singleElementRowFlex`}>Time slot</div> :
+    <></>
+
     let candidateModal = roundTabState.currentTabType==='test' ? 
     <CandidateTestModal wsCandidateQuestion={wsCandidateQuestion} wsCandidateRound={wsCandidateRound}/> : 
     <CandidateInterviewModal wsCandidateQuestion={wsCandidateQuestion} wsCandidateRound={wsCandidateRound}/>
@@ -299,6 +308,7 @@ function RoundContent(props) {
                     <div className={`roundContentIndex singleElementRowFlex`}>S.No.</div>
                     <div className={`roundContentCandidateNameHeading singleElementRowFlex`}>Name</div>
                     <div className={`roundContentCandidateStatus singleElementRowFlex`}>Status</div>
+                    {roundTypeWiseTimeSlotHeading}
                     {roundTableSectionHeading}
                 </div>
                 {roundTable}

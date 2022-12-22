@@ -166,7 +166,7 @@ const seasonRoundContentSlice = createSlice({
             }
         },
         updateCandidateListStatus: (state,action) => {
-            const field = action.payload['field']==='status' ? 'status' : 'remark'
+            const field = action.payload['field']==='remarks' ? 'remark' : action.payload['field']
             for(let i=0; i<state.candidate_list.length; i++){
                 if(state.candidate_list[i]['id']===action.payload['value']['id']){
                     state.candidate_list[i][field] = action.payload['value'][field]
