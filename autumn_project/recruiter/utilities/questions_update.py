@@ -21,10 +21,10 @@ def create_question(question_data):
     question.save()
     return question.id
 
-def delete_question(question_id):
-    try:
-        question = Questions.objects.get(id=question_id)
-    except ObjectDoesNotExist:
-        print("Requested question not found!")
-    else:
-        question.delete()
+# def delete_question(question_id):
+#     try:
+#         question = Questions.objects.get(id=question_id)
+#     except ObjectDoesNotExist:
+#         print("Requested question not found!")
+#     else:
+#         question.delete()

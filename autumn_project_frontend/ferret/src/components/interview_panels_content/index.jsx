@@ -140,7 +140,7 @@ function InterviewPanelsContent(props) {
                 {panelCards}
             </div>
             <AssignInterviewPanelModal wsInterviewPanels={wsInterviewPanels} />
-            <InterviewModal />
+            <InterviewModal seasonId={seasonId}/>
             <CreateInterviewPanelDialog seasonId={seasonId} />
             <DeleteConfirmationDialog
             open={interviewPanelState.openDeleteDialog}

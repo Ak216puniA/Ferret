@@ -1,0 +1,69 @@
+.panelRoundInfoButton{
+    border: none;
+    border-radius: 8px;
+    padding: 12px 8px;
+    width: 40%;
+    margin: 8px 0px;
+    font-size: 18px;
+    color: #EEEEEE;
+}
+
+.panelHideRoundInfoButton{
+    background-color: #0099A0;
+}
+
+.panelHideRoundInfoButton:hover{
+    background-color: #00ADB5;
+}
+
+.panelShowRoundInfoButton{
+    background-color: #00ADB5;
+}
+
+.panelShowRoundInfoButton:hover{
+    background-color: #0099A0;
+}
+
+.candidateRoundInfoContentDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+}
+
+.roundInfoDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.roundInfoHeading{
+    font-size: 18px;
+    margin: 8px 0px 4px 0px;
+}
+
+.roundInfoRoundMarks{
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.roundInfoSectionMarksDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.roundInfoSectionMarks{
+    margin: 8px 16px;
+    opacity: 0.6;
+}
+
+.roundInfoRemarksDiv{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 4px 0px;
+}

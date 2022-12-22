@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recruiter',
     'rest_framework',
+    'django_filters',
     'corsheaders',
 ]
 

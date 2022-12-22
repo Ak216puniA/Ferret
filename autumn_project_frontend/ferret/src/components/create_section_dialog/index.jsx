@@ -72,19 +72,6 @@ function CreateSectionDialog(props) {
                             onChange={nameChangeHandler}
                             />
                         </div>
-                        {/* <div className='field'>
-                            <TextField 
-                            required 
-                            label='Section Weightage' 
-                            type='number' 
-                            value={sectionWeightage}
-                            placeholder='Section Weightage' 
-                            variant='outlined'
-                            InputProps={{ inputProps: { min: 0 } }}
-                            fullWidth
-                            onChange={weightageChangeHandler}
-                            />
-                        </div> */}
                         {roundTypeWiseSectionWeightageField}
                     </div>
                 </form>
