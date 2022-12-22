@@ -38,13 +38,14 @@ function RoundTableRow(props){
         dispatch(
             openCandidateModal({
                 open: true,
-                candidate_id: candidateRound['candidate_id']['id'],
-                candidateRoundId: candidateRound['id'],
-                candidateRoundStatus: candidateRound['status'],
-                candidateRoundRemarks: candidateRound['remark']
+                // candidate_id: candidateRound['candidate_id']['id'],
+                // candidateRoundId: candidateRound['id'],
+                // candidateRoundStatus: candidateRound['status'],
+                // candidateRoundRemarks: candidateRound['remark'],
+                candidateRound: candidateRound
             })
         )
-        dispatch(fetchCandidate(candidateRound['candidate_id']['id']))
+        // dispatch(fetchCandidate(candidateRound['candidate_id']['id']))
         if(checkingMode===true){
             const questionId = filterState.question!=='' && filterState.question>0 ? 
             [filterState.question] :
@@ -93,7 +94,10 @@ function RoundTableRow(props){
     <></>
 
     const roundTypeWiseTimeSlot = roundTabState.currentTabType==='interview' ?
-    <div className={`roundContentCandidateStatus singleElementRowFlex`}>{candidateRound['time_slot']}</div> :
+    <>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{candidateRound['date']}</div>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{candidateRound['time']}</div>
+    </> :
     <></>
 
     return (
@@ -130,7 +134,8 @@ function RoundContent(props) {
                 if(candidateQuestionData['field']==='marks'){
                     dispatch(updateSectionMarks(candidateQuestionData))
                 }
-                if(candidate_id===candidateModalState.candidate_id) {
+                // if(candidate_id===candidateModalState.candidate_id) {
+                if(candidate_id===candidateModalState.candidateRound['candidate_id']['id']) {
                     dispatch(updateCandidateModalQuestionData(candidateQuestionData))
                 }
             }
@@ -158,7 +163,8 @@ function RoundContent(props) {
                         value: candidateRoundData['candidate_round']
                     })
                 )
-                if(candidate_id===candidateModalState.candidate_id){
+                // if(candidate_id===candidateModalState.candidate_id) {
+                if(candidate_id===candidateModalState.candidateRound['candidate_id']['id']) {
                     dispatch(
                         updatedCandidateModalRoundStatus({
                             field: candidateRoundData['field'],
@@ -278,7 +284,10 @@ function RoundContent(props) {
     <></>
 
     const roundTypeWiseTimeSlotHeading = roundTabState.currentTabType==='interview' ?
-    <div className={`roundContentCandidateStatus singleElementRowFlex`}>Time slot</div> :
+    <>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>Date</div>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>Time</div>
+    </> :
     <></>
 
     let candidateModal = roundTabState.currentTabType==='test' ? 

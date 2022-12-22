@@ -20,7 +20,8 @@ function CandidateModalInterviewChooseQuestion() {
         console.log(question)
         dispatch(
             chooseCandidateInterviewQuestion({
-                candidateId: candidateModalState.candidate_id,
+                // candidateId: candidateModalState.candidate_id,
+                candidateId: candidateModalState.candidateRound['candidate_id']['id'],
                 questionId: question
             })
         )

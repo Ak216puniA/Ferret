@@ -29,7 +29,8 @@ function CandidateInterviewModal(props) {
     function sectionCardClickHandler(section_id,section_name){
         dispatch(
             fetchQuestionWiseCandidateSectionMarks({
-                candidate_id: candidateModalState.candidate['id'],
+                candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
+                // candidate_id: candidateModalState.candidate['id'],
                 section_id: section_id
             })
         )
@@ -39,7 +40,8 @@ function CandidateInterviewModal(props) {
         }))
         dispatch(
             fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidateModalState.candidate_id],
+                // candidate_list: [candidateModalState.candidate_id],
+                candidate_list: [candidateModalState.candidateRound['candidate_id']['id']],
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
@@ -61,8 +63,10 @@ function CandidateInterviewModal(props) {
     const candidateRoundStatusChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                id: candidateModalState.candidateRoundId,
+                // id: candidateModalState.candidateRoundId,
+                id: candidateModalState.candidateRound['id'],
                 status: event.target.value,
+                field: 'status'
             })
         )
     }
@@ -70,7 +74,8 @@ function CandidateInterviewModal(props) {
     const candidateRoundRemarksChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                id: candidateModalState.candidateRoundId,
+                // id: candidateModalState.candidateRoundId,
+                id: candidateModalState.candidateRound['id'],
                 remarks: event.target.value,
                 field: 'remarks'
             })
@@ -156,7 +161,8 @@ function CandidateInterviewModal(props) {
         </div>
         <TextField
         type='text' 
-        value={candidateModalState.candidateRoundRemarks}
+        // value={candidateModalState.candidateRoundRemarks}
+        value={candidateModalState.candidateRound['remark']}
         variant='outlined'
         fullWidth
         multiline={true}
@@ -210,19 +216,23 @@ function CandidateInterviewModal(props) {
         if(candidateModalState.interviewQuestionsChanged===true){
             dispatch(
                 fetchQuestionWiseCandidateSectionMarks({
-                    candidate_id: candidateModalState.candidate['id'],
+                    // candidate_id: candidateModalState.candidate['id'],
+                    candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                     section_id: candidateModalState.section_id
                 })
             )
             dispatch(updatedCandidateSectionQuestionList())
             dispatch(
                 fetchCurrentSectionsTotalMarks({
-                    candidateId: candidateModalState.candidate['id'],
+                    // candidateId: candidateModalState.candidate['id'],
+                    candidateId: candidateModalState.candidateRound['candidate_id']['id'],
                     sectionList: roundTabState.current_sections.map(section => section['id'])
                 })
             )
         }
     },[candidateModalState.interviewQuestionsChanged])
+
+    console.log()
 
     return (
         <>
@@ -238,8 +248,10 @@ function CandidateInterviewModal(props) {
                 <Box
                 sx={flexBoxRow}
                 >
-                    <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div>
-                    <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div>
+                    {/* <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div> */}
+                    {/* <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div> */}
+                    <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['name']}</div>
+                    <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['enrollment_no']}</div>
                 </Box>
             </DialogTitle>
             <Divider 
@@ -255,19 +267,23 @@ function CandidateInterviewModal(props) {
                     <div className='candidateModalContentDiv'>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Email:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
+                            {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div> */}
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['email']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Year:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
+                            {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div> */}
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['year']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Contact No.:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
+                            {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div> */}
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['mobile_no']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>CG:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
+                            {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div> */}
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['cg']}</div>
                         </div>
                     </div>
                     {yearWiseSectionCards}
@@ -280,7 +296,8 @@ function CandidateInterviewModal(props) {
                             <FormControl fullWidth>
                                 <Select 
                                 required
-                                value={candidateModalState.candidateRoundStatus}
+                                // value={candidateModalState.candidateRoundStatus}
+                                value={candidateModalState.candidateRound['status']}
                                 placeholder='Filtering criteria' 
                                 variant='outlined'
                                 onChange={candidateRoundStatusChangeHandler}

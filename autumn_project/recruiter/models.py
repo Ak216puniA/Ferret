@@ -110,7 +110,6 @@ class CandidateRound(models.Model):
     remark=models.TextField(null=True, blank=True)
     interview_panel=models.ForeignKey(InterviewPanel,on_delete=models.CASCADE,null=True, blank=True)
     date=models.DateField(null=True)
-    # time_slot=models.CharField(max_length=64,null=True, blank=True)
     time=models.TimeField(null=True)
     total_marks=models.IntegerField(null=True, blank=True)
 
