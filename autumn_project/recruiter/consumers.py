@@ -96,8 +96,12 @@ def update_candidate_round_status(candidate_round_data):
     else:
         if candidate_round_data['field']=='status':
             candidate_round.status = candidate_round_data['status']
-        elif candidate_round_data['field']=='remarks':
-            candidate_round.remark = candidate_round_data['remarks']
+        elif candidate_round_data['field']=='remark':
+            candidate_round.remark = candidate_round_data['remark']
+        elif candidate_round_data['field']=='date':
+            candidate_round.date = candidate_round_data['date']
+        elif candidate_round_data['field']=='time':
+            candidate_round.time = candidate_round_data['time']
         candidate_round.save()
         serializer = CandidateRoundNestedSerializer(candidate_round)
         return serializer.data

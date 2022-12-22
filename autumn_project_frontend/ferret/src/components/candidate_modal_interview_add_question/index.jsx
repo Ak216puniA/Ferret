@@ -35,7 +35,8 @@ function CandidateModalInterviewAddQuestion() {
         if(questionText!==''){
             dispatch(
                 createCandidateInterviewQuestion({
-                    candidate_id: candidateModalState.candidate_id,
+                    // candidate_id: candidateModalState.candidate_id,
+                    candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                     section_id: candidateModalState.section_id,
                     questionText: questionText,
                     questionMarks: questionMarks,

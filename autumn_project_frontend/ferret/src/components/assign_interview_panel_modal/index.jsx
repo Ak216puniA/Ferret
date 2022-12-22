@@ -139,22 +139,24 @@ function AssignInterviewPanelModal(props) {
                     <div className='dialogTitleText'>{interviewPanelState.panel['panel_name']}</div>
                 </Box>
                 <div className='interviewModalPanelistsDiv'>{interviewPanelists}</div>
-                <div className='candidateModalContentStatusDiv'>
-                    <div className='candidateModalStatusHeading'>
-                        Status: 
-                    </div>
-                    <div className='candidateModalStatusOptionsDiv'>
-                    <FormControl fullWidth>
-                        <Select 
-                        required
-                        value={interviewPanelState.panel['status']}
-                        placeholder='Status' 
-                        variant='outlined'
-                        onChange={interviewPanelStatusChangeHandler}
-                        >
-                            {interviewPanelStatusMenuItems}
-                        </Select>
-                    </FormControl>
+                <div className='candidateModalContentRoundDataDiv'>
+                    <div className='candidateModalContentStatusDiv'>
+                        <div className='candidateModalStatusHeading'>
+                            Status: 
+                        </div>
+                        <div className='candidateModalStatusOptionsDiv'>
+                        <FormControl fullWidth>
+                            <Select 
+                            required
+                            value={interviewPanelState.panel['status']}
+                            placeholder='Status' 
+                            variant='outlined'
+                            onChange={interviewPanelStatusChangeHandler}
+                            >
+                                {interviewPanelStatusMenuItems}
+                            </Select>
+                        </FormControl>
+                        </div>
                     </div>
                 </div>
             </DialogTitle>

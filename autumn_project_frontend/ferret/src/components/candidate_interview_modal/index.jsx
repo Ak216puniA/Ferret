@@ -1,5 +1,9 @@
 import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select, TextField } from '@mui/material'
 import { Box } from '@mui/system'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
@@ -11,6 +15,8 @@ import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add
 import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
+import './index.css'
+import dayjs from 'dayjs';
 
 function CandidateInterviewModal(props) {
     const { wsCandidateQuestion, wsCandidateRound } = props
@@ -25,7 +31,7 @@ function CandidateInterviewModal(props) {
     function sectionCardClickHandler(section_id,section_name){
         dispatch(
             fetchQuestionWiseCandidateSectionMarks({
-                candidate_id: candidateModalState.candidate['id'],
+                candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                 section_id: section_id
             })
         )
@@ -35,7 +41,7 @@ function CandidateInterviewModal(props) {
         }))
         dispatch(
             fetchSelectedCandidateSectionMarks({
-                candidate_list: [candidateModalState.candidate_id],
+                candidate_list: [candidateModalState.candidateRound['candidate_id']['id']],
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
         )
@@ -57,8 +63,9 @@ function CandidateInterviewModal(props) {
     const candidateRoundStatusChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                id: candidateModalState.candidateRoundId,
+                id: candidateModalState.candidateRound['id'],
                 status: event.target.value,
+                field: 'status'
             })
         )
     }
@@ -66,9 +73,33 @@ function CandidateInterviewModal(props) {
     const candidateRoundRemarksChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                id: candidateModalState.candidateRoundId,
-                remarks: event.target.value,
-                field: 'remarks'
+                id: candidateModalState.candidateRound['id'],
+                remark: event.target.value,
+                field: 'remark'
+            })
+        )
+    }
+
+    const candidateRoundDateChangeHandler = (event) => {
+        const month = event['$M']+1>9 ? event['$M']+1 : `0${event['$M']+1}`
+        const day = event['$D']>9 ? event['$D'] : `0${event['$D']}`
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRound['id'],
+                date: `${event['$y']}-${month}-${day}`,
+                field: 'date'
+            })
+        )
+    }
+
+    const candidateRoundTimeChangeHandler = (event) => {
+        const hour = event['$H']>9 ? event['$H'] : `0${event['$H']}`
+        const minute = event['$m']>9 ? event['$m'] : `0${event['$m']}`
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRound['id'],
+                time: `${hour}:${minute}`,
+                field: 'time'
             })
         )
     }
@@ -152,7 +183,7 @@ function CandidateInterviewModal(props) {
         </div>
         <TextField
         type='text' 
-        value={candidateModalState.candidateRoundRemarks}
+        value={candidateModalState.candidateRound['remark']}
         variant='outlined'
         fullWidth
         multiline={true}
@@ -175,6 +206,28 @@ function CandidateInterviewModal(props) {
     </div> :
     <></>
 
+    const dateTimePicker = (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+            label="Interview Date"
+            inputFormat="YYYY-MM-DD"
+            value={candidateModalState.candidateRound['date']}
+            onChange={candidateRoundDateChangeHandler}
+            renderInput={(params) => <TextField {...params} />}
+            />
+            <TimePicker
+            label="Interview Time"
+            value={
+                dayjs(
+                    `${candidateModalState.candidateRound['date']}T${candidateModalState.candidateRound['time']}:00.000+05:30`
+                )
+            }
+            onChange={candidateRoundTimeChangeHandler}
+            renderInput={(params) => <TextField {...params} />}
+            />
+        </LocalizationProvider>
+    )
+
     const flexBoxRow = {
         display:'flex',
         flexDirection:'row',
@@ -194,19 +247,21 @@ function CandidateInterviewModal(props) {
         if(candidateModalState.interviewQuestionsChanged===true){
             dispatch(
                 fetchQuestionWiseCandidateSectionMarks({
-                    candidate_id: candidateModalState.candidate['id'],
+                    candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                     section_id: candidateModalState.section_id
                 })
             )
             dispatch(updatedCandidateSectionQuestionList())
             dispatch(
                 fetchCurrentSectionsTotalMarks({
-                    candidateId: candidateModalState.candidate['id'],
+                    candidateId: candidateModalState.candidateRound['candidate_id']['id'],
                     sectionList: roundTabState.current_sections.map(section => section['id'])
                 })
             )
         }
     },[candidateModalState.interviewQuestionsChanged])
+
+    console.log()
 
     return (
         <>
@@ -222,8 +277,8 @@ function CandidateInterviewModal(props) {
                 <Box
                 sx={flexBoxRow}
                 >
-                    <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div>
-                    <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div>
+                    <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['name']}</div>
+                    <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['enrollment_no']}</div>
                 </Box>
             </DialogTitle>
             <Divider 
@@ -239,38 +294,43 @@ function CandidateInterviewModal(props) {
                     <div className='candidateModalContentDiv'>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Email:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['email']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Year:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['year']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Contact No.:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['mobile_no']}</div>
                         </div>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>CG:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
+                            <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['cg']}</div>
                         </div>
                     </div>
                     {yearWiseSectionCards}
-                    <div className='candidateModalContentStatusDiv'>
-                        <div className='candidateModalStatusHeading'>
-                            Status: 
+                    <div className='candidateModalContentRoundDataDiv'>
+                        <div className='candidateModalContentStatusDiv'>
+                            <div className='candidateModalStatusHeading'>
+                                Status: 
+                            </div>
+                            <div className='candidateModalStatusOptionsDiv'>
+                            <FormControl fullWidth>
+                                <Select 
+                                required
+                                value={candidateModalState.candidateRound['status']}
+                                placeholder='Filtering criteria' 
+                                variant='outlined'
+                                onChange={candidateRoundStatusChangeHandler}
+                                >
+                                    {candidateRoundStatusMenuItems}
+                                </Select>
+                            </FormControl>
+                            </div>
                         </div>
-                        <div className='candidateModalStatusOptionsDiv'>
-                        <FormControl fullWidth>
-                            <Select 
-                            required
-                            value={candidateModalState.candidateRoundStatus}
-                            placeholder='Filtering criteria' 
-                            variant='outlined'
-                            onChange={candidateRoundStatusChangeHandler}
-                            >
-                                {candidateRoundStatusMenuItems}
-                            </Select>
-                        </FormControl>
+                        <div className='candidateModalContentTimeSlotDiv'>
+                            {dateTimePicker}
                         </div>
                     </div>
                     {yearWiseCandidateRoundRemarks}
