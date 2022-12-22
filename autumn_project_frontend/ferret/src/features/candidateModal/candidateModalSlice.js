@@ -177,13 +177,14 @@ const candidateModalSlice = createSlice({
             state.deleteQuestionId = action.payload['questionId']
         },
         updatedCandidateModalRoundStatus: (state,action) => {
-            if(action.payload['field']==='status'){
-                // state.candidateRoundStatus = action.payload['value']['status']
-                state.candidateRound['status'] = action.payload['value']['status']
-            }else if(action.payload['field']==='remarks'){
-                // state.candidateRoundRemarks = action.payload['value']['remark']
-                state.candidateRound['remark'] = action.payload['value']['remark']
-            }  
+            // if(action.payload['field']==='status'){
+            //     // state.candidateRoundStatus = action.payload['value']['status']
+            //     state.candidateRound['status'] = action.payload['value']['status']
+            // }else if(action.payload['field']==='remarks'){
+            //     // state.candidateRoundRemarks = action.payload['value']['remark']
+            //     state.candidateRound['remark'] = action.payload['value']['remark']
+            // }  
+            state.candidateRound[action.payload['field']] = action.payload['value'][action.payload['field']]
         },
         switchCheckingMode: (state,action) => {
             state.checkingMode = action.payload

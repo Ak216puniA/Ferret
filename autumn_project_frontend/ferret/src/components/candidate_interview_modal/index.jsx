@@ -3,6 +3,7 @@ import { Box } from '@mui/system'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
@@ -76,10 +77,31 @@ function CandidateInterviewModal(props) {
             JSON.stringify({
                 // id: candidateModalState.candidateRoundId,
                 id: candidateModalState.candidateRound['id'],
-                remarks: event.target.value,
-                field: 'remarks'
+                remark: event.target.value,
+                field: 'remark'
             })
         )
+    }
+
+    const candidateRoundDateChangeHandler = (event) => {
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRound['id'],
+                date: `${event['$y']}-${event['$M']+1}-${event['$D']}`,
+                field: 'date'
+            })
+        )
+    }
+
+    const candidateRoundTimeChangeHandler = (event) => {
+        console.log(event)
+        // wsCandidateRound.current.send(
+        //     JSON.stringify({
+        //         id: candidateModalState.candidateRound['id'],
+        //         time: event.target.value,
+        //         field: 'time'
+        //     })
+        // )
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
@@ -190,8 +212,14 @@ function CandidateInterviewModal(props) {
             <DesktopDatePicker
             label="Date desktop"
             inputFormat="YYYY-MM-DD"
-            // value={value}
-            // onChange={handleChange}
+            value={candidateModalState.candidateRound['date']}
+            onChange={candidateRoundDateChangeHandler}
+            renderInput={(params) => <TextField {...params} />}
+            />
+            <TimePicker
+            label="Time"
+            value={candidateModalState.candidateRound['time']}
+            onChange={candidateRoundTimeChangeHandler}
             renderInput={(params) => <TextField {...params} />}
             />
         </LocalizationProvider>
