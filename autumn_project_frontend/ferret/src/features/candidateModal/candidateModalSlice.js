@@ -8,10 +8,6 @@ const initialState = {
     loading: false,
     error: '',
     open_candidate_modal: false,
-    // candidate_id: 0,
-    // candidateRoundId: 0,
-    // candidateRoundStatus: '',
-    // candidateRoundRemarks: '',
     candidateRound: {
         candidate_id: [],
         round_id: [],
@@ -21,7 +17,6 @@ const initialState = {
         time: '',
         interview_panel: []
     },
-    // candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
     section_name: '',
@@ -31,20 +26,6 @@ const initialState = {
     deleteQuestionId: 0,
     checkingMode: false
 }
-
-// export const fetchCandidate = createAsyncThunk('candidateModal/fetchCandidate', (candidate_id) => {
-//     return axios
-//     .get(
-//         `${CANDIDATES}${candidate_id}`,
-//         {
-//             withCredentials: true
-//         }
-//     )
-//     .then((response) => {
-//         // console.log(response.data)
-//         return response.data
-//     })
-// })
 
 export const fetchSelectedCandidateSectionMarks = createAsyncThunk('candidateModal/fetchSelectedCandidateSectionMarks', (requestData) => {
     return axios
@@ -158,12 +139,7 @@ const candidateModalSlice = createSlice({
     reducers: {
         openCandidateModal: (state,action) => {
             state.open_candidate_modal = action.payload['open']
-            // state.candidate_id = action.payload['candidate_id']
-            // state.candidateRoundId = action.payload['candidateRoundId']
-            // state.candidateRoundStatus = action.payload['candidateRoundStatus']
-            // state.candidateRoundRemarks = action.payload['candidateRoundRemarks']
             state.candidateRound = action.payload['candidateRound']
-            // console.log(state.candidateRound)
         },
         selectSection: (state,action) => {
             state.section_name = action.payload['section_name']
@@ -177,13 +153,6 @@ const candidateModalSlice = createSlice({
             state.deleteQuestionId = action.payload['questionId']
         },
         updatedCandidateModalRoundStatus: (state,action) => {
-            // if(action.payload['field']==='status'){
-            //     // state.candidateRoundStatus = action.payload['value']['status']
-            //     state.candidateRound['status'] = action.payload['value']['status']
-            // }else if(action.payload['field']==='remarks'){
-            //     // state.candidateRoundRemarks = action.payload['value']['remark']
-            //     state.candidateRound['remark'] = action.payload['value']['remark']
-            // }  
             state.candidateRound[action.payload['field']] = action.payload['value'][action.payload['field']]
         },
         switchCheckingMode: (state,action) => {
@@ -214,11 +183,6 @@ const candidateModalSlice = createSlice({
             state.loading = false
             state.error = ''
             state.open_candidate_modal = false
-            // state.candidate_id = 0
-            // state.candidate = []
-            // state.candidateRoundId = 0
-            // state.candidateRoundStatus = ''
-            // state.candidateRoundRemarks = ''
             state.candidateRound = {
                 candidate_id: [],
                 round_id: [],
@@ -235,19 +199,6 @@ const candidateModalSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-        // .addCase(fetchCandidate.pending, (state) => {
-        //     state.loading = true
-        // })
-        // .addCase(fetchCandidate.fulfilled, (state,action) => {
-        //     state.loading = false
-        //     state.error = ''
-        //     state.candidate = action.payload
-        // })
-        // .addCase(fetchCandidate.rejected, (state,action) => {
-        //     state.loading = false
-        //     state.error = action.error.message
-        //     state.candidate = []
-        // })
         .addCase(fetchSelectedCandidateSectionMarks.pending, (state) => {
             state.loading = true
         })
