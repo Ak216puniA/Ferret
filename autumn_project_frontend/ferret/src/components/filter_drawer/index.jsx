@@ -76,10 +76,18 @@ function FilterDrawer() {
             'Section',
             'Marks',
             'Status',
+            'Time Slot'
         ]
     ) :
     [
-        'Status'
+        roundTabState.currentTabType==='test' ?
+        [
+            'Status'
+        ] :
+        [
+            'Status',
+            'Time Slot'
+        ]
     ]
 
     const categoryList = (
