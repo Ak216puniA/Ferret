@@ -386,28 +386,32 @@ class SectionMarksView(APIView):
         rounds = Rounds.objects.filter(season_id=request.query_params.get('season_id'))
         round_info = []
         for round in rounds:
-            candidate_round = CandidateRound.objects.get(candidate_id=candidate_id, round_id=round.id)
-            candidate_round_serializer = CandidateRoundOnlyRoundSerializer(candidate_round)
-            candidate_round_data = {
-                'candidate_id': candidate_id,
-                'round_id': round.id
-            }
-            round_total_marks = get_candidate_total_marks(candidate_round_data)
-            round_info.append([candidate_round_serializer.data, round_total_marks[1]])
-            sections = Sections.objects.filter(round_id=round.id)
-            candidate_section_data = {
-                'candidate_id': candidate_id,
-                'section_list': [section.id for section in sections]
-            }
-            candidate_section_wise_marks = get_candidate_section_marks(candidate_section_data)
+            try:
+                candidate_round = CandidateRound.objects.get(candidate_id=candidate_id, round_id=round.id)
+            except ObjectDoesNotExist:
+                pass
+            else:
+                candidate_round_serializer = CandidateRoundOnlyRoundSerializer(candidate_round)
+                candidate_round_data = {
+                    'candidate_id': candidate_id,
+                    'round_id': round.id
+                }
+                round_total_marks = get_candidate_total_marks(candidate_round_data)
+                round_info.append([candidate_round_serializer.data, round_total_marks[1]])
+                sections = Sections.objects.filter(round_id=round.id)
+                candidate_section_data = {
+                    'candidate_id': candidate_id,
+                    'section_list': [section.id for section in sections]
+                }
+                candidate_section_wise_marks = get_candidate_section_marks(candidate_section_data)
 
-            index=1
-            for section in sections:
-                round_info.append([section.name, candidate_section_wise_marks[index]])
-                index+=1
+                index=1
+                for section in sections:
+                    round_info.append([section.name, candidate_section_wise_marks[index]])
+                    index+=1
 
-            response_data.append(round_info)
-            round_info = []
+                response_data.append(round_info)
+                round_info = []
 
         return Response(response_data)
 

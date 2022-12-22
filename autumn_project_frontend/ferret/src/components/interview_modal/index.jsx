@@ -12,6 +12,7 @@ import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add
 import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
+import InterviewRoundPrevRoundsInfo from '../interview_modal_prev_rounds_info'
 
 function InterviewModal(props) {
     const { seasonId } = props
@@ -136,6 +137,8 @@ function InterviewModal(props) {
     let interviewPanelCandidateMenuItems = interviewPanelState.panelCandidateList.length>0 ?
     interviewPanelState.panelCandidateList.map(candidateRound => <MenuItem key={candidateRound['id']} value={candidateRound}>{candidateRound['candidate_id']['name']}</MenuItem>) :
     []
+
+    let candidatePrevRoundsInfo = candidateSet ? <InterviewRoundPrevRoundsInfo /> : <></>
 
     let sectionName = candidateSet ? (candidateModalState.section_name!=='' ? candidateModalState.section_name : 'No section selected!') : ''
 
@@ -299,6 +302,7 @@ function InterviewModal(props) {
                             <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
                         </div>
                     </div>
+                    {candidatePrevRoundsInfo}
                     <div className='candidateModalContentDiv'>
                         {sectionCards}
                     </div>

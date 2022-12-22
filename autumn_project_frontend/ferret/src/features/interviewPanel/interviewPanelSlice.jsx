@@ -34,9 +34,7 @@ export const fetchInterviewPanels = createAsyncThunk('interviewPanel/fetchInterv
             withCredentials: true
         }
     )
-    .then((response) => {
-        return response.data
-    })
+    .then(response => response.data)
 })
 
 export const updatePanelCandidateOptions = createAsyncThunk('interviewPanel/updatePanelCandidateOptions', (panelRoundData) => {
@@ -47,10 +45,7 @@ export const updatePanelCandidateOptions = createAsyncThunk('interviewPanel/upda
             withCredentials: true
         }
     )
-    .then((response) => {
-        console.log(response.data)
-        return response.data
-    })
+    .then(response => response.data)
 })
 
 export const updateInInterviewCandidateOptions = createAsyncThunk('interviewPanel/updateInInterviewCandidateOptions', (inInterviewRoundData) => {
@@ -61,10 +56,7 @@ export const updateInInterviewCandidateOptions = createAsyncThunk('interviewPane
             withCredentials: true
         }
     )
-    .then((response) => {
-        console.log(response.data)
-        return response.data
-    })
+    .then(response => response.data)
 })
 
 // export const updatePanelRoundOptions = createAsyncThunk('interviewPanel/updatePanelRoundOptions', (panelRoundData) => {
@@ -186,6 +178,7 @@ const interviewPanelSlice = createSlice({
             state.panelRoundList = []
             state.panelCandidateList = []
             state.openInterviewModal = false
+            state. candidatePrevRoundInfo = []
         }
     },
     extraReducers: builder => {
@@ -293,7 +286,6 @@ const interviewPanelSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidatePrevRoundInfo = action.payload
-            console.log(state.candidatePrevRoundInfo)
         })
         .addCase(fetchCandidateRoundsInfo.rejected, (state,action) => {
             state.loading = false
