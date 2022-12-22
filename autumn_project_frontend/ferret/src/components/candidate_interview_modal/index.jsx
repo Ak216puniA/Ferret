@@ -1,4 +1,4 @@
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select } from '@mui/material'
+import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import { useEffect } from 'react'
@@ -59,6 +59,16 @@ function CandidateInterviewModal(props) {
             JSON.stringify({
                 id: candidateModalState.candidateRoundId,
                 status: event.target.value,
+            })
+        )
+    }
+
+    const candidateRoundRemarksChangeHandler = (event) => {
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRoundId,
+                remarks: event.target.value,
+                field: 'remarks'
             })
         )
     }
@@ -135,6 +145,28 @@ function CandidateInterviewModal(props) {
     </div> :
     <></>
 
+    const yearWiseCandidateRoundRemarks = localStorage.getItem('year')>2 ?
+    <div className='candidateModalRoundRemarksDiv'>
+        <div className='candidateModalStatusHeading'>
+            Remarks:
+        </div>
+        <TextField
+        type='text' 
+        value={candidateModalState.candidateRoundRemarks}
+        variant='outlined'
+        fullWidth
+        multiline={true}
+        rows='2'
+        onChange={candidateRoundRemarksChangeHandler}
+        sx={{
+            width: '100%',
+            fontSize: '14px',
+            margin: '4px 0px'
+        }}
+        />
+    </div> :
+    <></>
+
     const yearWiseSectionDesc = localStorage.getItem('year')>2 ?
     <div className='candidateModalSectionDescDiv'>
         <div className='candidateModalHeading1'>{sectionName}</div>
@@ -142,7 +174,6 @@ function CandidateInterviewModal(props) {
         {addNewQuestionOption}
     </div> :
     <></>
-
 
     const flexBoxRow = {
         display:'flex',
@@ -242,6 +273,7 @@ function CandidateInterviewModal(props) {
                         </FormControl>
                         </div>
                     </div>
+                    {yearWiseCandidateRoundRemarks}
                     <Divider 
                     style={{
                         width:'100%', 
