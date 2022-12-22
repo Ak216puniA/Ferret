@@ -7,13 +7,14 @@ import CreateRoundDialog from "../create_round_dialog";
 import MoveCandidatesDialog from "../move_candidates_dialog";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCandidate, fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalQuestionData, updatedCandidateModalRoundStatus } from "../../features/candidateModal/candidateModalSlice";
+import { fetchCandidateQuestionDataInCheckingMode, fetchSelectedCandidateSectionMarks, openCandidateModal, updateCandidateModalQuestionData, updatedCandidateModalRoundStatus } from "../../features/candidateModal/candidateModalSlice";
 import { openFilterDrawer } from "../../features/filter/filterSlice";
 import FilterDrawer from "../filter_drawer";
 import { fetchCurrentSectionsTotalMarks } from "../../features/roundTab/roundTabSlice";
 import CandidateInterviewModal from "../candidate_interview_modal";
 import CandidateTestModal from "../candidate_test_modal";
 import { CANDIDATE_QUESTION_WEBSOCKET, CANDIDATE_ROUND_WEBSOCKET } from "../../urls";
+import dayjs from "dayjs";
 
 function RoundTableRow(props){
     const { candidateRound, index } = props
@@ -38,14 +39,9 @@ function RoundTableRow(props){
         dispatch(
             openCandidateModal({
                 open: true,
-                // candidate_id: candidateRound['candidate_id']['id'],
-                // candidateRoundId: candidateRound['id'],
-                // candidateRoundStatus: candidateRound['status'],
-                // candidateRoundRemarks: candidateRound['remark'],
                 candidateRound: candidateRound
             })
         )
-        // dispatch(fetchCandidate(candidateRound['candidate_id']['id']))
         if(checkingMode===true){
             const questionId = filterState.question!=='' && filterState.question>0 ? 
             [filterState.question] :
@@ -93,10 +89,16 @@ function RoundTableRow(props){
     </div> :
     <></>
 
+    const formatTimeSlot = candidateRound['date']!==null && candidateRound['time']!=null ?
+    dayjs(`${candidateRound['date']}T${candidateRound['time']}`).format('DD-MM-YYYY LT') :
+    '-'
+    const date = formatTimeSlot!=='-' ? formatTimeSlot.substring(0,10) : '-'
+    const time = formatTimeSlot!=='-' ? formatTimeSlot.substring(11,) : '-'
+
     const roundTypeWiseTimeSlot = roundTabState.currentTabType==='interview' ?
     <>
-        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{candidateRound['date']}</div>
-        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{candidateRound['time']}</div>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{date}</div>
+        <div className={`roundContentCandidateTimeSlot singleElementRowFlex`}>{time}</div>
     </> :
     <></>
 
@@ -163,7 +165,6 @@ function RoundContent(props) {
                         value: candidateRoundData['candidate_round']
                     })
                 )
-                // if(candidate_id===candidateModalState.candidate_id) {
                 if(candidate_id===candidateModalState.candidateRound['candidate_id']['id']) {
                     dispatch(
                         updatedCandidateModalRoundStatus({
