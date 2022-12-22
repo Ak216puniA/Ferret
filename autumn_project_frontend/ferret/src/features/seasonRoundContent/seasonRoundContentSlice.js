@@ -12,7 +12,8 @@ const initialState = {
     move_candidate_list: [],
     open_move_dialog: false,
     section_marks: [],
-    candidatesUpdated: false
+    candidatesUpdated: false,
+    filteredCandidates: false
 }
 
 export const fetchRoundCandidates = createAsyncThunk('seasonRoundContent/fetchRoundCandidates', (round_id) => {
@@ -79,7 +80,9 @@ export const filterCandidates = createAsyncThunk('seasonRoundContent/filterCandi
             section: filterData['section'],
             status: filterData['status'],
             marks: filterData['marks'],
-            marks_criteria: filterData['marksCriteria']
+            marks_criteria: filterData['marksCriteria'],
+            date: filterData['date'],
+            time: filterData['time']
         },
         {
             headers: {
@@ -229,6 +232,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.section_marks = action.payload['data']
             state.candidatesUpdated = false
+            state.filteredCandidates = false
             state.error = ''
         })
         .addCase(fetchCandidateSectionMarks.rejected, (state,action) => {
@@ -236,6 +240,7 @@ const seasonRoundContentSlice = createSlice({
             state.section_marks = []
             state.error = action.error.message
             state.candidatesUpdated = false
+            state.filteredCandidates = false
             console.log("All candidates' Section marks fetch unsuccessful!")
         })
         .addCase(filterCandidates.pending, (state) => {
@@ -245,6 +250,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_list = action.payload['data']
+            state.filteredCandidates = true
         })
         .addCase(filterCandidates.rejected, (state,action) => {
             state.loading = false
@@ -258,6 +264,7 @@ const seasonRoundContentSlice = createSlice({
             state.loading = false
             state.error = ''
             state.candidate_list = action.payload['data']
+            state.filteredCandidates = true
         })
         .addCase(filterCandidatesForCheckingMode.rejected, (state,action) => {
             state.loading = false

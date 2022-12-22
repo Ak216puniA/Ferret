@@ -16,7 +16,9 @@ const initialState = {
     questionStatus: '',
     question: '',
     assigneeQuestionList: [],
-    filterCheckingMode: false
+    filterCheckingMode: false,
+    date: '',
+    time: ''
 }
 
 export const fetchAssigneeQuestionList = createAsyncThunk('filter/fetchAssigneeQuestionList', (assigneeQuestionData) => {
@@ -64,6 +66,43 @@ const filterSlice = createSlice({
         setQuestion: (state,action) => {
             state.question = action.payload
         },
+        setDate: (state,action) => {
+            state.date = action.payload
+        },
+        setTime: (state,action) => {
+            state.time = action.payload
+        },
+        setFilterValue: (state,action) => {
+            switch(action.payload['field']) {
+                case 'marksCriteria':
+                    state.marksCriteria = action.payload['value']
+                    break
+                case 'marks':
+                    state.marks = action.payload['value']
+                    break
+                case 'section':
+                    state.section = action.payload['value']
+                    break
+                case 'status':
+                    state.status = action.payload['value']
+                    break
+                case 'assignee':
+                    state.assignee = action.payload['value']
+                    break
+                case 'questionStatus':
+                    state.questionStatus = action.payload['value']
+                    break
+                case 'question':
+                    state.question = action.payload['value']
+                    break
+                case 'date':
+                    state.date = action.payload['value']
+                    break
+                case 'time':
+                    state.time = action.payload['value']
+                    break
+            }
+        },
         resetFilterState: (state) => {
             state.loading= false
             state.error= ''
@@ -71,6 +110,8 @@ const filterSlice = createSlice({
             state.marks= -1
             state.section= -1
             state.status= ''
+            state.date= ''
+            state.time= ''
         },
         resetCheckingModeFilterState: (state) => {
             state.assignee = ''
@@ -105,4 +146,4 @@ const filterSlice = createSlice({
 })
 
 export default filterSlice.reducer
-export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus, setAssignee, setQuestionStatus, setQuestion, resetFilterState, resetCheckingModeFilterState } = filterSlice.actions
+export const { openFilterDrawer, selectCategory, setMarks, setMarksCriteria, setSection, setStatus, setAssignee, setQuestionStatus, setQuestion, resetFilterState, resetCheckingModeFilterState, setFilterValue, setDate, setTime } = filterSlice.actions

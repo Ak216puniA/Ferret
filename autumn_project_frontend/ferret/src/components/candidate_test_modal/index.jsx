@@ -21,7 +21,6 @@ function CandidateTestModal(props) {
     function sectionCardClickHandler(section_id,section_name){
         dispatch(
             fetchQuestionWiseCandidateSectionMarks({
-                // candidate_id: candidateModalState.candidate['id'],
                 candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                 section_id: section_id
             })
@@ -32,7 +31,6 @@ function CandidateTestModal(props) {
         }))
         dispatch(
             fetchSelectedCandidateSectionMarks({
-                // candidate_list: [candidateModalState.candidate_id],
                 candidate_list: [candidateModalState.candidateRound['candidate_id']['id']],
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
@@ -43,7 +41,6 @@ function CandidateTestModal(props) {
     const candidateRoundStatusChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                // id: candidateModalState.candidateRoundId,
                 id: candidateModalState.candidateRound['id'],
                 status: event.target.value,
                 field: 'status'
@@ -54,7 +51,6 @@ function CandidateTestModal(props) {
     const candidateRoundRemarksChangeHandler = (event) => {
         wsCandidateRound.current.send(
             JSON.stringify({
-                // id: candidateModalState.candidateRoundId,
                 id: candidateModalState.candidateRound['id'],
                 remarks: event.target.value,
                 field: 'remarks'
@@ -124,7 +120,6 @@ function CandidateTestModal(props) {
         <FormControl fullWidth>
             <Select 
             required
-            // value={candidateModalState.candidateRoundStatus}
             value={candidateModalState.candidateRound['status']}
             placeholder='Filtering criteria' 
             variant='outlined'
@@ -144,7 +139,6 @@ function CandidateTestModal(props) {
         </div>
         <TextField 
         type='text' 
-        // value={candidateModalState.candidateRoundRemarks}
         value={candidateModalState.candidateRound['remark']}
         variant='outlined'
         fullWidth
@@ -173,43 +167,21 @@ function CandidateTestModal(props) {
     </> :
     (
         <>
-        {/* <div className='candidateModalContentDiv'>
-            <div className='candidateModalInnerInfoDivData'>
-                <div className='candidateModalInfoHeading'>Email:</div>
-                <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
-            </div>
-            <div className='candidateModalInnerInfoDivData'>
-                <div className='candidateModalInfoHeading'>Year:</div>
-                <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
-            </div>
-            <div className='candidateModalInnerInfoDivData'>
-                <div className='candidateModalInfoHeading'>Contact No.:</div>
-                <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
-            </div>
-            <div className='candidateModalInnerInfoDivData'>
-                <div className='candidateModalInfoHeading'>CG:</div>
-                <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
-            </div>
-        </div> */}
         <div className='candidateModalContentDiv'>
             <div className='candidateModalInnerInfoDivData'>
                 <div className='candidateModalInfoHeading'>Email:</div>
-                {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div> */}
                 <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['email']}</div>
             </div>
             <div className='candidateModalInnerInfoDivData'>
                 <div className='candidateModalInfoHeading'>Year:</div>
-                {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div> */}
                 <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['year']}</div>
             </div>
             <div className='candidateModalInnerInfoDivData'>
                 <div className='candidateModalInfoHeading'>Contact No.:</div>
-                {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div> */}
                 <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['mobile_no']}</div>
             </div>
             <div className='candidateModalInnerInfoDivData'>
                 <div className='candidateModalInfoHeading'>CG:</div>
-                {/* <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div> */}
                 <div className='candidateModalInfoData'>{candidateModalState.candidateRound['candidate_id']['cg']}</div>
             </div>
         </div>
@@ -256,8 +228,6 @@ function CandidateTestModal(props) {
                 <Box
                 sx={flexBoxRow}
                 >
-                    {/* <div className='dialogTitleText'>{candidateModalState.candidate['name']}</div>
-                    <div className='dialogTitleText'>{candidateModalState.candidate['enrollment_no']}</div> */}
                     <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['name']}</div>
                     <div className='dialogTitleText'>{candidateModalState.candidateRound['candidate_id']['enrollment_no']}</div>
                 </Box>

@@ -18,13 +18,11 @@ import dayjs from "dayjs";
 
 function RoundTableRow(props){
     const { candidateRound, index } = props
-    const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
+    const seasonRoundContentState = useSelector((state) => state.seasonRoundContent)
     const roundTabState = useSelector((state) => state.roundTab)
     const checkingMode = useSelector((state) => state.candidateModal.checkingMode)
     const filterState = useSelector((state) => state.filter)
     const dispatch = useDispatch()
-
-    let candidate_section_marks = section_marks[index-1]
 
     const checkboxClickHandler = (event) => {
         if (event.target.checked){
@@ -68,16 +66,15 @@ function RoundTableRow(props){
         }
     }
 
-    let candidate_marks = <></>
-    if(candidate_section_marks!=null && localStorage.getItem('year')>2){
-        candidate_marks = (
-            candidate_section_marks.length>0 ?
-            candidate_section_marks.map((marks,index) => {
-                if(index>0) return <div key={index} className={`roundContentCandidateSection singleElementRowFlex`}>{marks}</div>
-            }) :
-            <div></div>
-        )
-    }
+    const candidate_marks = seasonRoundContentState.section_marks[index-1]!==null && seasonRoundContentState.section_marks[index-1]!==undefined ?
+    (
+        localStorage.getItem('year')>2 && seasonRoundContentState.section_marks[index-1].length>0 ?
+        seasonRoundContentState.section_marks[index-1].map((marks,index) => {
+            if(index>0) return <div key={index} className={`roundContentCandidateSection singleElementRowFlex`}>{marks}</div>
+        }) :
+        <></>
+    ) :
+    <></>
 
     const yearWiseCheckbox = localStorage.getItem('year')>2 ?
     <div className={`roundContentCheckbox  singleElementRowFlex`}>
@@ -207,7 +204,15 @@ function RoundContent(props) {
                 })
             )
         }
-    },[seasonRoundContentState.candidatesUpdated,roundTabState.sectionsUpdated])
+        if(seasonRoundContentState.filteredCandidates===true){
+            dispatch(
+                fetchCandidateSectionMarks({
+                    candidate_list: seasonRoundContentState.candidate_list.map(candidate => candidate['candidate_id']['id']),
+                    section_list: roundTabState.current_sections.map(section => section['id'])
+                })
+            )
+        }
+    },[seasonRoundContentState.candidate_list,roundTabState.current_sections,seasonRoundContentState.filteredCandidates])
 
     let current_round_index = -1
     for(let index=0; index<roundTabState.round_list.length; index++){

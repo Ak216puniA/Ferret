@@ -10,6 +10,14 @@ def filter_by_status(status_round_data):
         candidate_list = CandidateRound.objects.filter(round_id=status_round_data['round_id'])
     return candidate_list
 
+def filter_by_time_slot(date_time_data):
+    candidate_list = date_time_data['candidate_list']
+    if date_time_data['date'] is not None and date_time_data['date']!='':
+        candidate_list = candidate_list.filter(date=date_time_data['date'])
+    if date_time_data['time'] is not None and date_time_data['time']!='':
+        candidate_list = candidate_list.filter(time=date_time_data['time'])
+    return candidate_list
+
 def filter_by_section(filter_section_data):
     filter_candidate_list = []
     if filter_section_data['section'] is not None and filter_section_data['section'] > 0:

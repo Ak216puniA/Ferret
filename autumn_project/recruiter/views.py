@@ -17,6 +17,7 @@ from django.contrib.auth import login,logout
 from .serializers import UserSerializer
 from django.shortcuts import redirect
 from rest_framework import status
+from rest_framework import filters
 import pandas
 
 env = environ.Env()
@@ -182,6 +183,9 @@ class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
 class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateRound.objects.all()
     permission_classes=[YearWisePermission]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['candidate_id__name']
+    ordering = ['candidate_id__name']
 
     def get_queryset(self):
         round_id = self.request.query_params.get('round_id')
@@ -426,10 +430,6 @@ class SectionMarksView(APIView):
                     'section_list': section_list
                 }
                 candidate_section_marks = get_candidate_section_marks(candidate_section_data)
-                # total_marks=0
-                # for index in range(1,len(candidate_section_marks),1):
-                #     total_marks+=candidate_section_marks[index]
-                # candidate_section_marks.append(total_marks)
                 candidate_section_marks_list.append(candidate_section_marks)
         
         response_data={
@@ -459,7 +459,6 @@ class CandidateSectionView(APIView):
 
 class FilterCandidatesView(APIView):
     def post(self, request, format=None):
-        print(request.data)
         if request.data['checking_mode']:
             filter_data = request.data
             filtered_data = filter_by_question_and_status(filter_data)
@@ -471,7 +470,9 @@ class FilterCandidatesView(APIView):
                 'section': int(request.data['section']),
                 'status': request.data['status'],
                 'marks': int(request.data['marks']),
-                'marks_criteria': request.data['marks_criteria']
+                'marks_criteria': request.data['marks_criteria'],
+                'date': request.data['date'],
+                'time': request.data['time']
             }
 
             status_round_data = {
@@ -479,6 +480,13 @@ class FilterCandidatesView(APIView):
                 'round_id': filter_data['round_id']
             }
             candidate_list = filter_by_status(status_round_data)
+
+            date_time_data = {
+                'candidate_list': candidate_list,
+                'date': filter_data['date'],
+                'time': filter_data['time']
+            }
+            candidate_list = filter_by_time_slot(date_time_data)
 
             filter_section_data = {
                 'section': filter_data['section'],
@@ -494,14 +502,12 @@ class FilterCandidatesView(APIView):
             }
             candidate_list = filter_by_marks(filter_marks_data)
 
-            filtered_candidates = []
-            for candidate_marks_pair in candidate_list:
-                candidate = CandidateRound.objects.get(candidate_id=candidate_marks_pair[0], round_id=filter_data['round_id'])
-                serializer = CandidateRoundNestedSerializer(candidate)
-                filtered_candidates.append(serializer.data)
+            candidate_id_list = [candidate_marks_pair[0] for candidate_marks_pair in candidate_list]
+            filtered_candidates = CandidateRound.objects.filter(candidate_id__in=candidate_id_list, round_id=filter_data['round_id']).order_by('candidate_id__name')
+            serializer = CandidateRoundNestedSerializer(filtered_candidates, many=True)
 
         response_data = {
             'status': 'success',
-            'data': filtered_candidates
+            'data': serializer.data
         }
         return Response(response_data)

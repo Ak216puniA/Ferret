@@ -1,7 +1,7 @@
 import React from 'react'
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { openFilterDrawer, resetCheckingModeFilterState, resetFilterState, selectCategory } from '../../features/filter/filterSlice'
+import { openFilterDrawer, resetCheckingModeFilterState, resetFilterState, selectCategory, setDate, setTime } from '../../features/filter/filterSlice'
 import './index.css'
 import FilterDrawerContent from '../filter_drawer_content'
 import { AiOutlineReload } from 'react-icons/ai'
@@ -48,9 +48,13 @@ function FilterDrawer() {
                 section: filterState.section,
                 status: filterState.status,
                 marks: filterState.marks,
-                marksCriteria: filterState.marksCriteria
+                marksCriteria: filterState.marksCriteria,
+                date: filterState.date,
+                time: filterState.time
                 })
             )
+            dispatch(setDate(''))
+            dispatch(setTime(''))
         }
     }
 
@@ -76,10 +80,18 @@ function FilterDrawer() {
             'Section',
             'Marks',
             'Status',
+            'Time Slot'
         ]
     ) :
     [
-        'Status'
+        roundTabState.currentTabType==='test' ?
+        [
+            'Status'
+        ] :
+        [
+            'Status',
+            'Time Slot'
+        ]
     ]
 
     const categoryList = (

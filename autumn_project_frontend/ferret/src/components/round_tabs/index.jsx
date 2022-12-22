@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { tabClicked, openCreateRoundDialog, fetchSections } from "../../features/roundTab/roundTabSlice";
 import { MdAddBox } from "react-icons/md"
 import { fetchRoundCandidates, resetMoveCandidatesList } from "../../features/seasonRoundContent/seasonRoundContentSlice";
 import "./index.css";
-import { resetCheckingModeFilterState, resetFilterState } from "../../features/filter/filterSlice";
+import { resetCheckingModeFilterState, resetFilterState, selectCategory } from "../../features/filter/filterSlice";
 import { switchCheckingMode } from "../../features/candidateModal/candidateModalSlice";
 
 function RoundTabs() {
@@ -38,6 +38,7 @@ function RoundTabs() {
         dispatch(fetchRoundCandidates(tab_data['tab_id']))
         dispatch(fetchSections(tab_data['tab_id']))
         dispatch(resetFilterState())
+        dispatch(selectCategory(''))
         dispatch(resetMoveCandidatesList())
         dispatch(resetCheckingModeFilterState())
         dispatch(switchCheckingMode(false))

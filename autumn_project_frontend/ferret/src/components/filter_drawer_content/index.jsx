@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormControl, TextField, Select, InputLabel, MenuItem, FormControlLabel, RadioGroup, Radio } from '@mui/material'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { AiOutlineReload } from 'react-icons/ai'
-import { fetchAssigneeQuestionList, setAssignee, setMarks, setMarksCriteria, setQuestion, setQuestionStatus, setSection, setStatus } from '../../features/filter/filterSlice'
+import { fetchAssigneeQuestionList, setAssignee, setDate, setMarks, setMarksCriteria, setQuestion, setQuestionStatus, setSection, setStatus, setTime } from '../../features/filter/filterSlice'
 import { useEffect } from 'react'
 import { fetchUsers } from '../../features/user/userSlice'
 
@@ -136,6 +140,65 @@ function FilterStatusContent() {
         </RadioGroup>
       </FormControl>
     </div>
+    </>
+  )
+}
+
+function FilterTimeSlotContent() {
+  const dispatch = useDispatch()
+
+  const [filterDate, setFilterDate] = useState(null)
+  const [filterTime, setFilterTime] = useState(null)
+
+  const resetButtonHandler = () => {
+    setFilterDate(null)
+    setFilterTime(null)
+    dispatch(setDate(''))
+    dispatch(setTime(''))
+  }
+
+  const dateChangeHandler = (date) => {
+    setFilterDate(date)
+    const month = date['$M']+1>9 ? date['$M']+1 : `0${date['$M']+1}`
+    const day = date['$D']>9 ? date['$D'] : `0${date['$D']}`
+    dispatch(setDate(`${date['$y']}-${month}-${day}`))
+  }
+
+  const timeChangeHandler = (time) => {
+    setFilterTime(time)
+    const hour = time['$H']>9 ? time['$H'] : `0${time['$H']}`
+    const minute = time['$m']>9 ? time['$m'] : `0${time['$m']}`
+    dispatch(setTime(`${hour}:${minute}`))
+  }
+
+  return (
+    <>
+      <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
+      <div className='categoryContentDiv'>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div className='timeSlotCategoryContentDiv'>
+            <div className='timeSlotCategoryContentField'>
+              <DesktopDatePicker
+              fullWidth
+              label="Filter Date"
+              inputFormat="YYYY-MM-DD"
+              value={filterDate}
+              onChange={dateChangeHandler}
+              renderInput={(params) => <TextField {...params} />}
+              />
+            </div>
+            <div className='timeSlotCategoryContentField'>
+              <TimePicker
+              fullWidth
+              label="Filter Time"
+              value={filterTime}
+              onChange={timeChangeHandler}
+              renderInput={(params) => <TextField {...params} />}
+              />
+            </div>
+          </div>
+        </LocalizationProvider>
+      </div>
     </>
   )
 }
@@ -287,6 +350,9 @@ function FilterDrawerContent() {
       break
     case 'Checking Mode':
       filterDrawerContent = <FilterCheckingModeContent />
+      break
+    case 'Time Slot':
+      filterDrawerContent = <FilterTimeSlotContent />
       break
     default:
       filterDrawerContent =  <div className='noFilterContentDiv'>No filter selected!</div>
