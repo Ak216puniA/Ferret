@@ -16,12 +16,16 @@ import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import './index.css'
+import { useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 
 function CandidateInterviewModal(props) {
     const { wsCandidateQuestion, wsCandidateRound } = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    // const [candidateRoundTime, setCandidateRoundTime] = useState<Dayjs>(dayjs('2022-12-12'))
 
     const closeModalHandler = (event,reason) => {
         if(reason!=='backdropClick' && reason!=='escapeKeyDown') dispatch(resetCandidateModalState())
@@ -84,24 +88,33 @@ function CandidateInterviewModal(props) {
     }
 
     const candidateRoundDateChangeHandler = (event) => {
+        const month = event['$M']+1>9 ? event['$M']+1 : `0${event['$M']+1}`
+        const day = event['$D']>9 ? event['$D'] : `0${event['$D']}`
         wsCandidateRound.current.send(
             JSON.stringify({
                 id: candidateModalState.candidateRound['id'],
-                date: `${event['$y']}-${event['$M']+1}-${event['$D']}`,
+                date: `${event['$y']}-${month}-${day}`,
                 field: 'date'
             })
         )
     }
 
     const candidateRoundTimeChangeHandler = (event) => {
-        console.log(event)
-        // wsCandidateRound.current.send(
-        //     JSON.stringify({
-        //         id: candidateModalState.candidateRound['id'],
-        //         time: event.target.value,
-        //         field: 'time'
-        //     })
-        // )
+        // console.log(time)
+        // const hour = event['$H']>12 ? event['$H']-12 : event['$H']
+        const hour = event['$H']>9 ? event['$H'] : `0${event['$H']}`
+        const minute = event['$m']>9 ? event['$m'] : `0${event['$m']}`
+        // const am_pm = event['$H']>11 ? 'PM' : 'AM'
+        // console.log(`${hour}:${minute} ${am_pm}`)
+        console.log(`${hour}:${minute}`)
+        // setCandidateRoundTime(event)
+        wsCandidateRound.current.send(
+            JSON.stringify({
+                id: candidateModalState.candidateRound['id'],
+                time: `${hour}:${minute}`,
+                field: 'time'
+            })
+        )
     }
 
     const candidateRoundStatusOptionsForSeniorYear = [
@@ -218,7 +231,8 @@ function CandidateInterviewModal(props) {
             />
             <TimePicker
             label="Time"
-            value={candidateModalState.candidateRound['time']}
+            value={dayjs(`${candidateModalState.candidateRound['date']}T${candidateModalState.candidateRound['time']}:00.000+05:30`)}
+            // value={candidateRoundTime}
             onChange={candidateRoundTimeChangeHandler}
             renderInput={(params) => <TextField {...params} />}
             />
