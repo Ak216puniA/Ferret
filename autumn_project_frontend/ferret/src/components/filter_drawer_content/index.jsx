@@ -7,10 +7,9 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { AiOutlineReload } from 'react-icons/ai'
-import { fetchAssigneeQuestionList, setAssignee, setDate, setFilterValue, setMarks, setMarksCriteria, setQuestion, setQuestionStatus, setSection, setStatus, setTime } from '../../features/filter/filterSlice'
+import { fetchAssigneeQuestionList, setAssignee, setDate, setMarks, setMarksCriteria, setQuestion, setQuestionStatus, setSection, setStatus, setTime } from '../../features/filter/filterSlice'
 import { useEffect } from 'react'
 import { fetchUsers } from '../../features/user/userSlice'
-import dayjs from 'dayjs';
 
 function FilterMarksContent() {
   const filterState = useSelector((state) => state.filter)
@@ -148,24 +147,12 @@ function FilterStatusContent() {
 function FilterTimeSlotContent() {
   const dispatch = useDispatch()
 
-  const [filterDate, setFilterDate] = useState()
-  const [filterTime, setFilterTime] = useState()
+  const [filterDate, setFilterDate] = useState(null)
+  const [filterTime, setFilterTime] = useState(null)
 
   const resetButtonHandler = () => {
-    setFilterDate()
-    setFilterTime()
-    // dispatch(
-    //   setFilterValue({
-    //     field: 'date',
-    //     value: ''
-    //   })
-    // )
-    // dispatch(
-    //   setFilterValue({
-    //     field: 'time',
-    //     value: ''
-    //   })
-    // )
+    setFilterDate(null)
+    setFilterTime(null)
     dispatch(setDate(''))
     dispatch(setTime(''))
   }
@@ -175,12 +162,6 @@ function FilterTimeSlotContent() {
     const month = date['$M']+1>9 ? date['$M']+1 : `0${date['$M']+1}`
     const day = date['$D']>9 ? date['$D'] : `0${date['$D']}`
     dispatch(setDate(`${date['$y']}-${month}-${day}`))
-    // dispatch(
-    //   setFilterValue({
-    //     field: 'date',
-    //     value: `${date['$y']}-${month}-${day}`
-    //   })
-    // )
   }
 
   const timeChangeHandler = (time) => {
@@ -188,33 +169,37 @@ function FilterTimeSlotContent() {
     const hour = time['$H']>9 ? time['$H'] : `0${time['$H']}`
     const minute = time['$m']>9 ? time['$m'] : `0${time['$m']}`
     dispatch(setTime(`${hour}:${minute}`))
-    // dispatch(
-    //   setFilterValue({
-    //     field: 'time',
-    //     value: `${hour}:${minute}`
-    //   })
-    // )
   }
 
   return (
-    <div>
+    <>
       <div className='filterContentResetButtonDiv' onClick={resetButtonHandler}><AiOutlineReload /></div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDatePicker
-          label="Filter Date"
-          inputFormat="YYYY-MM-DD"
-          value={filterDate}
-          onChange={dateChangeHandler}
-          renderInput={(params) => <TextField {...params} />}
-          />
-          <TimePicker
-          label="Filter Time"
-          value={filterTime}
-          onChange={timeChangeHandler}
-          renderInput={(params) => <TextField {...params} />}
-          />
-      </LocalizationProvider>
-    </div>
+      <div className='categoryContentDiv'>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div className='timeSlotCategoryContentDiv'>
+            <div className='timeSlotCategoryContentField'>
+              <DesktopDatePicker
+              fullWidth
+              label="Filter Date"
+              inputFormat="YYYY-MM-DD"
+              value={filterDate}
+              onChange={dateChangeHandler}
+              renderInput={(params) => <TextField {...params} />}
+              />
+            </div>
+            <div className='timeSlotCategoryContentField'>
+              <TimePicker
+              fullWidth
+              label="Filter Time"
+              value={filterTime}
+              onChange={timeChangeHandler}
+              renderInput={(params) => <TextField {...params} />}
+              />
+            </div>
+          </div>
+        </LocalizationProvider>
+      </div>
+    </>
   )
 }
 

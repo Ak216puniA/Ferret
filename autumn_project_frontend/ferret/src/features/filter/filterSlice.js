@@ -110,6 +110,8 @@ const filterSlice = createSlice({
             state.marks= -1
             state.section= -1
             state.status= ''
+            state.date= ''
+            state.time= ''
         },
         resetCheckingModeFilterState: (state) => {
             state.assignee = ''

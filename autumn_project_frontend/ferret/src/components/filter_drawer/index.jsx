@@ -48,7 +48,9 @@ function FilterDrawer() {
                 section: filterState.section,
                 status: filterState.status,
                 marks: filterState.marks,
-                marksCriteria: filterState.marksCriteria
+                marksCriteria: filterState.marksCriteria,
+                date: filterState.date,
+                time: filterState.time
                 })
             )
         }
