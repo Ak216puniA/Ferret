@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCandidateInterviewQuestion, fetchCandidate, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openCandidateModal, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
+import { deleteCandidateInterviewQuestion, fetchQuestionWiseCandidateSectionMarks, fetchSelectedCandidateSectionMarks, openCandidateModal, openDeleteCofirmationDialog, resetCandidateModalState, selectSection, updatedCandidateSectionQuestionList } from '../../features/candidateModal/candidateModalSlice'
 import { fetchCandidateRoundsInfo, openInterviewModal, updateInInterviewCandidateOptions } from '../../features/interviewPanel/interviewPanelSlice'
 import { fetchQuestions } from '../../features/question/questionSlice'
 import { fetchCurrentSectionsTotalMarks, fetchSections, resetRoundTabState } from '../../features/roundTab/roundTabSlice'
@@ -30,14 +30,9 @@ function InterviewModal(props) {
         dispatch(
             openCandidateModal({
                 open: false,
-                // candidate_id: event.target.value['candidate_id']['id'],
-                // candidateRoundId: event.target.value['id'],
-                // candidateRoundStatus: event.target.value['status'],
-                // candidateRoundRemarks: event.target.value['remark'],
                 candidateRound: event.target.value
             })
         )
-        // dispatch(fetchCandidate(event.target.value['candidate_id']['id']))
         dispatch(
             fetchSelectedCandidateSectionMarks({
                 candidate_list: [event.target.value['candidate_id']['id']],
@@ -100,7 +95,6 @@ function InterviewModal(props) {
         dispatch(
             fetchQuestionWiseCandidateSectionMarks({
                 candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
-                // candidate_id: candidateModalState.candidate['id'],
                 section_id: section_id
             })
         )
@@ -112,7 +106,6 @@ function InterviewModal(props) {
         )
         dispatch(
             fetchSelectedCandidateSectionMarks({
-                // candidate_list: [candidateModalState.candidate_id],
                 candidate_list: [candidateModalState.candidateRound['candidate_id']['id']],
                 section_list: roundTabState.current_sections.map(section => section['id'])
             })
@@ -208,7 +201,6 @@ function InterviewModal(props) {
         if(candidateModalState.interviewQuestionsChanged===true){
             dispatch(
                 fetchQuestionWiseCandidateSectionMarks({
-                    // candidate_id: candidateModalState.candidate['id'],
                     candidate_id: candidateModalState.candidateRound['candidate_id']['id'],
                     section_id: candidateModalState.section_id
                 })
@@ -216,7 +208,6 @@ function InterviewModal(props) {
             dispatch(updatedCandidateSectionQuestionList())
             dispatch(
                 fetchCurrentSectionsTotalMarks({
-                    // candidateId: candidateModalState.candidate['id'],
                     candidateId: candidateModalState.candidateRound['candidate_id']['id'],
                     sectionList: roundTabState.current_sections.map(section => section['id'])
                 })
@@ -290,24 +281,6 @@ function InterviewModal(props) {
                 <Box
                 sx={flexBoxColumn}
                 >
-                    {/* <div className='candidateModalContentDiv'>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Email:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['email']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Year:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['year']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>Contact No.:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['mobile_no']}</div>
-                        </div>
-                        <div className='candidateModalInnerInfoDivData'>
-                            <div className='candidateModalInfoHeading'>CG:</div>
-                            <div className='candidateModalInfoData'>{candidateModalState.candidate['cg']}</div>
-                        </div>
-                    </div> */}
                     <div className='candidateModalContentDiv'>
                         <div className='candidateModalInnerInfoDivData'>
                             <div className='candidateModalInfoHeading'>Email:</div>
