@@ -16,7 +16,7 @@ import CandidateTestModal from "../candidate_test_modal";
 import { CANDIDATE_QUESTION_WEBSOCKET, CANDIDATE_ROUND_WEBSOCKET } from "../../urls";
 
 function RoundTableRow(props){
-    const {candidate, status, index, candidateRoundId} = props
+    const { candidateRound, index } = props
     const section_marks = useSelector((state) => state.seasonRoundContent.section_marks)
     const roundTabState = useSelector((state) => state.roundTab)
     const checkingMode = useSelector((state) => state.candidateModal.checkingMode)
@@ -27,10 +27,10 @@ function RoundTableRow(props){
 
     const checkboxClickHandler = (event) => {
         if (event.target.checked){
-            dispatch(appendCandidateToMove(candidate['id']))
+            dispatch(appendCandidateToMove(candidateRound['candidate_id']['id']))
         }
         if (!event.target.checked){
-            dispatch(removeCandidateFromMove(candidate['id']))
+            dispatch(removeCandidateFromMove(candidateRound['candidate_id']['id']))
         }
     }
 
@@ -38,32 +38,33 @@ function RoundTableRow(props){
         dispatch(
             openCandidateModal({
                 open: true,
-                candidate_id: candidate['id'],
-                candidateRoundId: candidateRoundId,
-                candidateRoundStatus: status
+                candidate_id: candidateRound['candidate_id']['id'],
+                candidateRoundId: candidateRound['id'],
+                candidateRoundStatus: candidateRound['status'],
+                candidateRoundRemarks: candidateRound['remark']
             })
         )
-        dispatch(fetchCandidate(candidate['id']))
+        dispatch(fetchCandidate(candidateRound['candidate_id']['id']))
         if(checkingMode===true){
             const questionId = filterState.question!=='' && filterState.question>0 ? 
             [filterState.question] :
             filterState.assigneeQuestionList.map(question => question['id'])
             dispatch(
                 fetchCandidateQuestionDataInCheckingMode({
-                    candidateId: candidate['id'],
+                    candidateId: candidateRound['candidate_id']['id'],
                     questionId: questionId
                 })
             )
         }else{
             dispatch(
                 fetchSelectedCandidateSectionMarks({
-                    candidate_list: [candidate['id']],
+                    candidate_list: [candidateRound['candidate_id']['id']],
                     section_list: roundTabState.current_sections.map((section) => section['id'])
                 })
             )
             dispatch(
                 fetchCurrentSectionsTotalMarks({
-                    candidateId: candidate['id'],
+                    candidateId: candidateRound['candidate_id']['id'],
                     sectionList: roundTabState.current_sections.map((section) => section['id'])
                 })
             )
@@ -96,8 +97,8 @@ function RoundTableRow(props){
         <div className='roundCandidateRow'>
             {yearWiseCheckbox}
             <div className={`roundContentIndex singleElementRowFlex`}>{index}</div>
-            <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidate['name']}</div>
-            <div className={`roundContentCandidateStatus singleElementRowFlex`}>{status}</div>
+            <div className={`roundContentCandidateName singleElementRowFlex`} onClick={candidateClickHandler}>{candidateRound['candidate_id']['name']}</div>
+            <div className={`roundContentCandidateStatus singleElementRowFlex`}>{candidateRound['status']}</div>
             {candidate_marks}
         </div>
         </>
@@ -146,9 +147,19 @@ function RoundContent(props) {
             const candidateRoundData = JSON.parse(event.data)
             const candidate_id = candidateRoundData['candidate_round']['candidate_id']['id']
             if(candidateRoundData['candidate_round']['round_id']['id']===roundTabState.currentTabId){
-                dispatch(updateCandidateListStatus(candidateRoundData['candidate_round']))
+                dispatch(
+                    updateCandidateListStatus({
+                        field: candidateRoundData['field'],
+                        value: candidateRoundData['candidate_round']
+                    })
+                )
                 if(candidate_id===candidateModalState.candidate_id){
-                    dispatch(updatedCandidateModalRoundStatus(candidateRoundData['candidate_round']['status']))
+                    dispatch(
+                        updatedCandidateModalRoundStatus({
+                            field: candidateRoundData['field'],
+                            value: candidateRoundData['candidate_round']
+                        })
+                    )
                 }
             }
         }
@@ -245,7 +256,7 @@ function RoundContent(props) {
     
     let roundTable = (
         seasonRoundContentState.candidate_list.length>0 ? 
-        seasonRoundContentState.candidate_list.map((candidate, index) => <RoundTableRow key={candidate['id']} candidate={candidate['candidate_id']} candidateRoundId={candidate['id']} status={candidate['status']} index={index+1}/>) : 
+        seasonRoundContentState.candidate_list.map((candidateRound, index) => <RoundTableRow key={candidateRound['id']} candidateRound={candidateRound} index={index+1}/>) : 
         <div></div>
     )
 

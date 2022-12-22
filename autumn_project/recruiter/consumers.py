@@ -94,7 +94,10 @@ def update_candidate_round_status(candidate_round_data):
     except ObjectDoesNotExist:
         return None
     else:
-        candidate_round.status = candidate_round_data['status']
+        if candidate_round_data['field']=='status':
+            candidate_round.status = candidate_round_data['status']
+        elif candidate_round_data['field']=='remarks':
+            candidate_round.remark = candidate_round_data['remarks']
         candidate_round.save()
         serializer = CandidateRoundNestedSerializer(candidate_round)
         return serializer.data
@@ -263,6 +266,7 @@ class AsyncCandidateRoundConsumer(AsyncJsonWebsocketConsumer):
         candidate_round = await update_candidate_round_status(content)
         if candidate_round is not None:
             response_data = {
+                'field': content['field'],
                 'candidate_round': candidate_round
             }
         else:

@@ -31,7 +31,7 @@ function RoundInfo(props) {
                 {sectionWiseMarks}
             </div>
             <div className='roundInfoRemarksDiv'>
-                <div>Remarks :</div>
+                <div className='roundInfoRemarksHeading'>Remarks :</div>
                 <div>{roundData[0][0]['remark']}</div>
             </div>
             {roundInfoSectionDivider}

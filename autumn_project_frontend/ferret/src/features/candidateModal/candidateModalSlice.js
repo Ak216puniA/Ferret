@@ -11,6 +11,7 @@ const initialState = {
     candidate_id: 0,
     candidateRoundId: 0,
     candidateRoundStatus: '',
+    candidateRoundRemarks: '',
     candidate: [],
     candidate_section_marks: [],
     candidate_question_data: [],
@@ -150,6 +151,7 @@ const candidateModalSlice = createSlice({
             state.candidate_id = action.payload['candidate_id']
             state.candidateRoundId = action.payload['candidateRoundId']
             state.candidateRoundStatus = action.payload['candidateRoundStatus']
+            state.candidateRoundRemarks = action.payload['candidateRoundRemarks']
         },
         selectSection: (state,action) => {
             state.section_name = action.payload['section_name']
@@ -163,7 +165,11 @@ const candidateModalSlice = createSlice({
             state.deleteQuestionId = action.payload['questionId']
         },
         updatedCandidateModalRoundStatus: (state,action) => {
-            state.candidateRoundStatus = action.payload
+            if(action.payload['field']==='status'){
+                state.candidateRoundStatus = action.payload['value']['status']
+            }else if(action.payload['field']==='remarks'){
+                state.candidateRoundRemarks = action.payload['value']['remark']
+            }  
         },
         switchCheckingMode: (state,action) => {
             state.checkingMode = action.payload
@@ -195,6 +201,9 @@ const candidateModalSlice = createSlice({
             state.open_candidate_modal = false
             state.candidate_id = 0
             state.candidate = []
+            state.candidateRoundId = 0
+            state.candidateRoundStatus = ''
+            state.candidateRoundRemarks = ''
             state.candidate_section_marks = []
             state.candidate_question_data = []
             state.section_name = ''
