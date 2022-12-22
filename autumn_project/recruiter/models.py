@@ -109,7 +109,9 @@ class CandidateRound(models.Model):
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     remark=models.TextField(null=True, blank=True)
     interview_panel=models.ForeignKey(InterviewPanel,on_delete=models.CASCADE,null=True, blank=True)
-    time_slot=models.CharField(max_length=64,null=True, blank=True)
+    date=models.DateField(null=True)
+    # time_slot=models.CharField(max_length=64,null=True, blank=True)
+    time=models.TimeField(null=True)
     total_marks=models.IntegerField(null=True, blank=True)
 
     class StatusOfRound(models.TextChoices):

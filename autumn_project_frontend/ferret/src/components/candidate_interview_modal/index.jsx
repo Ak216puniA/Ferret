@@ -1,7 +1,8 @@
 import { Card, CardContent, Dialog, DialogContent, DialogTitle, Divider, FormControl, MenuItem, Select, TextField } from '@mui/material'
 import { Box } from '@mui/system'
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import React from 'react'
 import { useEffect } from 'react'
 import { GrClose } from 'react-icons/gr'
@@ -13,6 +14,7 @@ import CandidateModalInterviewAddQuestion from '../candidate_modal_interview_add
 import CandidateModalInterviewChooseQuestion from '../candidate_modal_interview_choose_question'
 import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
+import './index.css'
 
 function CandidateInterviewModal(props) {
     const { wsCandidateQuestion, wsCandidateRound } = props
@@ -177,6 +179,18 @@ function CandidateInterviewModal(props) {
     </div> :
     <></>
 
+    const dateTimePicker = (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+            label="Date desktop"
+            inputFormat="YYYY-MM-DD"
+            // value={value}
+            // onChange={handleChange}
+            renderInput={(params) => <TextField {...params} />}
+            />
+        </LocalizationProvider>
+    )
+
     const flexBoxRow = {
         display:'flex',
         flexDirection:'row',
@@ -257,34 +271,27 @@ function CandidateInterviewModal(props) {
                         </div>
                     </div>
                     {yearWiseSectionCards}
-                    <div className='candidateModalContentStatusDiv'>
-                        <div className='candidateModalStatusHeading'>
-                            Status: 
+                    <div className='candidateModalContentRoundDataDiv'>
+                        <div className='candidateModalContentStatusDiv'>
+                            <div className='candidateModalStatusHeading'>
+                                Status: 
+                            </div>
+                            <div className='candidateModalStatusOptionsDiv'>
+                            <FormControl fullWidth>
+                                <Select 
+                                required
+                                value={candidateModalState.candidateRoundStatus}
+                                placeholder='Filtering criteria' 
+                                variant='outlined'
+                                onChange={candidateRoundStatusChangeHandler}
+                                >
+                                    {candidateRoundStatusMenuItems}
+                                </Select>
+                            </FormControl>
+                            </div>
                         </div>
-                        <div className='candidateModalStatusOptionsDiv'>
-                        <FormControl fullWidth>
-                            <Select 
-                            required
-                            value={candidateModalState.candidateRoundStatus}
-                            placeholder='Filtering criteria' 
-                            variant='outlined'
-                            onChange={candidateRoundStatusChangeHandler}
-                            >
-                                {candidateRoundStatusMenuItems}
-                            </Select>
-                        </FormControl>
-                        </div>
+                        {dateTimePicker}
                     </div>
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DesktopDateTimePicker
-                        label="For desktop"
-                        // value={value}
-                        // onChange={(newValue) => {
-                            // setValue(newValue);
-                        // }}
-                        renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider> */}
                     {yearWiseCandidateRoundRemarks}
                     <Divider 
                     style={{
