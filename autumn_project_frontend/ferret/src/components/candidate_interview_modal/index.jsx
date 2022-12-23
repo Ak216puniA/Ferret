@@ -17,12 +17,18 @@ import CandidateModalQuestion from '../candidate_modal_question'
 import DeleteConfirmationDialog from '../delete_confirmation_dialog'
 import './index.css'
 import dayjs from 'dayjs';
+import { useState } from 'react';
 
 function CandidateInterviewModal(props) {
     const { wsCandidateQuestion, wsCandidateRound } = props
     const candidateModalState = useSelector((state) => state.candidateModal)
     const roundTabState = useSelector((state) => state.roundTab)
     const dispatch = useDispatch()
+
+    const day = candidateModalState.candidateRound['date']===undefined ? null : candidateModalState.candidateRound['date']
+    const time = candidateModalState.candidateRound['time']===undefined ? null : candidateModalState.candidateRound['time']
+    const [modalDate, setModalDate] = useState(day)
+    const [modalTime, setModalTime] = useState(time===null ? time : dayjs(`2023-01-01T${time}.000+05:30`))
 
     const closeModalHandler = (event,reason) => {
         if(reason!=='backdropClick' && reason!=='escapeKeyDown') dispatch(resetCandidateModalState())
@@ -98,7 +104,7 @@ function CandidateInterviewModal(props) {
         wsCandidateRound.current.send(
             JSON.stringify({
                 id: candidateModalState.candidateRound['id'],
-                time: `${hour}:${minute}`,
+                time: `${hour}:${minute}:00`,
                 field: 'time'
             })
         )
@@ -211,17 +217,13 @@ function CandidateInterviewModal(props) {
             <DesktopDatePicker
             label="Interview Date"
             inputFormat="YYYY-MM-DD"
-            value={candidateModalState.candidateRound['date']}
+            value={modalDate}
             onChange={candidateRoundDateChangeHandler}
             renderInput={(params) => <TextField {...params} />}
             />
             <TimePicker
             label="Interview Time"
-            value={
-                dayjs(
-                    `${candidateModalState.candidateRound['date']}T${candidateModalState.candidateRound['time']}:00.000+05:30`
-                )
-            }
+            value={modalTime}
             onChange={candidateRoundTimeChangeHandler}
             renderInput={(params) => <TextField {...params} />}
             />
@@ -261,7 +263,10 @@ function CandidateInterviewModal(props) {
         }
     },[candidateModalState.interviewQuestionsChanged])
 
-    console.log()
+    useEffect(() => {
+        setModalDate(candidateModalState.candidateRound['date'])
+        setModalTime(candidateModalState.candidateRound['time']===null ? null : dayjs(`2023-01-01T${candidateModalState.candidateRound['time']}.000+05:30`))
+    },[candidateModalState.candidateRound['date'],candidateModalState.candidateRound['time']])
 
     return (
         <>

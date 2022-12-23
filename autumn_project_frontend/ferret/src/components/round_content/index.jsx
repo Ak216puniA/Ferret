@@ -86,11 +86,12 @@ function RoundTableRow(props){
     </div> :
     <></>
 
-    const formatTimeSlot = candidateRound['date']!==null && candidateRound['time']!=null ?
-    dayjs(`${candidateRound['date']}T${candidateRound['time']}`).format('DD-MM-YYYY LT') :
+    const formatTime = candidateRound['time']!=null ?
+    dayjs(`2023-01-01T${candidateRound['time']}`).format('DD-MM-YYYY LT') :
     '-'
-    const date = formatTimeSlot!=='-' ? formatTimeSlot.substring(0,10) : '-'
-    const time = formatTimeSlot!=='-' ? formatTimeSlot.substring(11,) : '-'
+    
+    const date = candidateRound['date']!==null ? candidateRound['date'] : '-'
+    const time = formatTime!=='-' ? formatTime.substring(11,) : formatTime
 
     const roundTypeWiseTimeSlot = roundTabState.currentTabType==='interview' ?
     <>
