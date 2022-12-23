@@ -13,8 +13,8 @@ const initialState = {
         round_id: [],
         status: '',
         remark: '',
-        date: '',
-        time: '',
+        date: null,
+        time: null,
         interview_panel: []
     },
     candidate_section_marks: [],

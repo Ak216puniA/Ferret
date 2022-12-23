@@ -168,7 +168,7 @@ function FilterTimeSlotContent() {
     setFilterTime(time)
     const hour = time['$H']>9 ? time['$H'] : `0${time['$H']}`
     const minute = time['$m']>9 ? time['$m'] : `0${time['$m']}`
-    dispatch(setTime(`${hour}:${minute}`))
+    dispatch(setTime(`${hour}:${minute}:00`))
   }
 
   return (
