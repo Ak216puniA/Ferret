@@ -461,9 +461,11 @@ class FilterCandidatesView(APIView):
     def post(self, request, format=None):
         if request.data['checking_mode']:
             filter_data = request.data
-            filtered_data = filter_by_question_and_status(filter_data)
-            candidate_round_serializer = CandidateRoundNestedSerializer(filtered_data['filter_candidates'], many=True)
-            filtered_candidates = candidate_round_serializer.data
+            # filtered_data = filter_by_question_and_status(filter_data)
+            # candidate_round_serializer = CandidateRoundNestedSerializer(filtered_data['filter_candidates'], many=True)
+            # filtered_candidates = candidate_round_serializer.data
+            filtered_candidates = filter_by_question_and_status(filter_data)
+            serializer = CandidateRoundNestedSerializer(filtered_candidates['filter_candidates'], many=True)
         else:
             filter_data = {
                 'round_id': request.data['round_id'],
