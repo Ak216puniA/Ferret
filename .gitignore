@@ -1,4 +1,5 @@
 .python-version
 .DS_Store
-autumn_project/..git
-autumn_project_frontend/..git
+ferret-backend/..git
+ferret-frontend/..git
+dump.rdb
