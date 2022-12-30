@@ -1,5 +1,6 @@
 .python-version
 .DS_Store
 ferret-backend/..git
-ferret-frontend/..git
+ferret-frontend/ferret/..git
 dump.rdb
+.env
