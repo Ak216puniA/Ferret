@@ -19,13 +19,13 @@ services:
   backend:
     container_name: ferret-backend
     build: 
-      context: ./ferret-backend/
+      context: ./ferret-backend
       dockerfile: Dockerfile
     ports:
       - 8000:8000
     volumes:
       - ./ferret-backend:/ferret-backend
-    command: sh -c “python /ferret-backend/manage.py runserver 0.0.0.0:8000”
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - mysql-db
 
