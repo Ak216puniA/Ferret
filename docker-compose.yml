@@ -1,16 +1,17 @@
 services:
-
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - 6379:6379
+  # redis-channels:
+  #   image: redis
+  #   container_name: redis
+  #   ports:
+  #     - 6379:6379
 
   mysql-db:
     image: mysql:8
     container_name: mysql-db
+    # expose:
+    #   - 3306
     ports:
-      - 3308:3306
+      - '3308:3306'
     volumes:
       - ferret-mysql-data:/var/lib/mysql
     env_file:
@@ -19,29 +20,30 @@ services:
   backend:
     container_name: ferret-backend
     build: 
-      context: ./ferret-backend
+      context: ./ferret-backend/
       dockerfile: Dockerfile
+    restart: on-failure:10
     ports:
-      - 8000:8000
+      - '8000:8000'
     volumes:
-      - ./ferret-backend:/ferret-backend
-    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+      - ./ferret-backend/:/backend/
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - mysql-db
 
-  frontend:
-    container_name: ferret-frontend
-    build: 
-      context: ./ferret-frontend/ferret/
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-    volumes:
-      - ./ferret-frontend/ferret:/ferret-frontend/ferret
-    command: npm start
-    depends_on:
-      - backend
-      - redis
+  # frontend:
+  #   container_name: ferret-frontend
+  #   build: 
+  #     context: ./ferret-frontend/ferret/
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./ferret-frontend/ferret:/ferret-frontend/ferret
+  #   command: npm start
+  #   depends_on:
+  #     - backend
+  #     - redis-channels
 
 volumes:
   ferret-mysql-data:
