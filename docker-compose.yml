@@ -1,9 +1,9 @@
 services:
-  # redis-channels:
-  #   image: redis
-  #   container_name: redis
-  #   ports:
-  #     - 6379:6379
+  redis-channels:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
 
   mysql-db:
     image: mysql:8
@@ -29,19 +29,19 @@ services:
     depends_on:
       - mysql-db
 
-  # frontend:
-  #   container_name: ferret-frontend
-  #   build: 
-  #     context: ./ferret-frontend/ferret/
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./ferret-frontend/ferret:/ferret-frontend/ferret
-  #   command: npm start
-  #   depends_on:
-  #     - backend
-  #     - redis-channels
+  frontend:
+    container_name: ferret-frontend
+    build: 
+      context: ./ferret-frontend/ferret/
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./ferret-frontend/ferret:/ferret-frontend/ferret
+    command: npm start
+    depends_on:
+      - backend
+      - redis-channels
 
 volumes:
   ferret-mysql-data:
